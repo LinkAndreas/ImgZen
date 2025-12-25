@@ -1,0 +1,118 @@
+name: Deploy to AppStore Connect
+
+on:
+  workflow_dispatch:
+
+jobs:
+  archive-and-deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install App Store Connect Api Key
+        env:
+          API_KEY_BASE64: ${{ secrets.API_KEY_BASE64 }}
+        run: |
+          mkdir ~/.private_keys
+          echo -n "$API_KEY_BASE64" | base64 --decode --output ~/.private_keys/AuthKey_${{ secrets.API_KEY_ID }}.p8
+          echo "After saving:"
+          ls ~/.private_keys
+
+      - name: Install Signing Certificate
+        env:
+          SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          SIGNING_CERTIFICATE_PATH=$RUNNER_TEMP/signing_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # Read Signing Certificate
+          echo -n "$SIGNING_CERTIFICATE_BASE64" | base64 --decode -o "$SIGNING_CERTIFICATE_PATH"
+
+          # Create Keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import Signing Certificate to Keychain
+          security import "$SIGNING_CERTIFICATE_PATH" -P "$SIGNING_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+      - name: Install Provisioning Profile
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          PROVISIONING_PROFILE_PATH=$RUNNER_TEMP/provisioning_profile.mobileprovision
+
+          # Read Provisioning Profile
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROVISIONING_PROFILE_PATH"
+
+          # Import Provisioning Profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+      - name: Configure exportOptions.plist
+        env: 
+          TEAM_ID: ${{ vars.TEAM_ID }}
+          BUNDLE_ID: ${{ vars.BUNDLE_ID }}
+          PROVISIONING_PROFILE_NAME: ${{ vars.PROVISIONING_PROFILE_NAME }}
+        run: |
+          sed -i '' "s/{{TEAM_ID}}/$TEAM_ID/g" exportOptions.plist
+          sed -i '' "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" exportOptions.plist
+          sed -i '' "s/{{PROVISIONING_PROFILE_NAME}}/$PROVISIONING_PROFILE_NAME/g" exportOptions.plist
+
+      - name: Inject Build Number
+        run: |
+          buildNumber=${{ github.run_number }}
+          echo "Current build number: $buildNumber"
+          agvtool new-version -all $buildNumber
+
+      - name: Build, Sign and Archive
+        run: |
+          set -o pipefail && xcodebuild clean archive \
+            -scheme "ImgVerso" \
+            -archivePath $RUNNER_TEMP/ImgVerso.xcarchive \
+            -sdk iphoneos \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER=Distribution | xcpretty
+
+      - name: Export archive
+        run: |
+          ARTIFACT_FILEPATH=$RUNNER_TEMP/ImgVerso.ipa
+          set -o pipefail && xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/ImgVerso.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath $RUNNER_TEMP | xcpretty
+
+      - name: Publish ImgVerso.ipa file
+        uses: actions/upload-artifact@v4
+        with:
+          name: ImgVerso.ipa
+          path: ${{ runner.temp }}/ImgVerso.ipa
+      
+      - name: Validate Build Artifact
+        run: |
+          xcrun altool --validate-app \
+            -f ${{ runner.temp }}/ImgVerso.ipa \
+            -t ios \
+            --apiKey ${{ secrets.API_KEY_ID }} \
+            --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
+
+      - name: Upload Build Artifact to AppStore Connect
+        run: |
+          xcrun altool --upload-app \
+            -f ${{ runner.temp }}/ImgVerso.ipa \
+            -t ios \
+            --apiKey ${{ secrets.API_KEY_ID }} \
+            --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
+
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/provisioning_profile.mobileprovision
