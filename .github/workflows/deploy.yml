@@ -81,7 +81,7 @@ jobs:
             -configuration Release \
             -destination generic/platform=iOS \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER=$PROVISIONING_PROFILE_BASE64 | xcpretty
+            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" | xcpretty
 
       - name: Export archive
         run: |
