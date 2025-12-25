@@ -5,7 +5,7 @@ on:
 
 jobs:
   archive-and-deploy:
-    runs-on: macos-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
