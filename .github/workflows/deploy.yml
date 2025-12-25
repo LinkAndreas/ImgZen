@@ -58,7 +58,7 @@ jobs:
         env: 
           TEAM_ID: ${{ vars.TEAM_ID }}
           BUNDLE_ID: ${{ vars.BUNDLE_ID }}
-          PROVISIONING_PROFILE_NAME: ${{ vars.PROVISIONING_PROFILE_NAME }}
+          PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
         run: |
           sed -i '' "s/{{TEAM_ID}}/$TEAM_ID/g" exportOptions.plist
           sed -i '' "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" exportOptions.plist
