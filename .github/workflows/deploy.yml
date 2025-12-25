@@ -71,6 +71,8 @@ jobs:
           agvtool new-version -all $buildNumber
 
       - name: Build, Sign and Archive
+        env: 
+          PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
         run: |
           set -o pipefail && xcodebuild clean archive \
             -scheme "ImgVerso" \
@@ -79,7 +81,7 @@ jobs:
             -configuration Release \
             -destination generic/platform=iOS \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER=Distribution | xcpretty
+            PROVISIONING_PROFILE_SPECIFIER=$PROVISIONING_PROFILE_BASE64 | xcpretty
 
       - name: Export archive
         run: |
