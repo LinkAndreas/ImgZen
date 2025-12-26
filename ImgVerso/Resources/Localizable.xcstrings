@@ -30,13 +30,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ImgVerso"
+            "value" : "Bildkonverter"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "ImgVerso"
+            "state" : "translated",
+            "value" : "Image Converter"
           }
         }
       }
