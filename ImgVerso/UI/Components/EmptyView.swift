@@ -19,10 +19,11 @@ struct EmptyView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: "photo")
+            Image("Logo")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 70)
+                .frame(width: 100)
+                .cornerRadius(22.0703125)
             Text(String(localized: "label.readyToSelectImages"))
                 .font(.body)
             VStack(spacing: 20) {
