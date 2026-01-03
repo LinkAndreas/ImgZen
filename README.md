@@ -1,4 +1,4 @@
-# ImgVerso
+# ImgZen
 
 A modern, native image conversion application built with SwiftUI. Convert images between various formats with support for both lossless and lossy compression, batch processing, and an intuitive user interface.
 
@@ -16,7 +16,7 @@ A modern, native image conversion application built with SwiftUI. Convert images
 
 ## Privacy
 
-ImgVerso is designed with privacy as a core principle:
+ImgZen is designed with privacy as a core principle:
 
 - **No Photo Library Permission Required** - The app uses the modern PHPicker API, which means you only grant access to the specific images you select. The app never has access to your entire photo library.
 
@@ -44,13 +44,13 @@ Your images stay on your device, under your control, at all times.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ImgVerso.git
-cd ImgVerso
+git clone https://github.com/yourusername/ImgZen.git
+cd ImgZen
 ```
 
 2. Open the project in Xcode:
 ```bash
-open ImgVerso.xcodeproj
+open ImgZen.xcodeproj
 ```
 
 3. Build and run the project (⌘R) or use Product → Run in Xcode
@@ -83,7 +83,7 @@ Dependencies are automatically resolved when opening the project in Xcode.
 ## Project Structure
 
 ```
-ImgVerso/
+ImgZen/
 ├── Domain/                    # Core business logic
 │   ├── ImageConversion/       # Image format definitions and conversion logic
 │   └── Services/             # Domain services (conversion, storage, etc.)
@@ -114,7 +114,7 @@ The project follows a clean architecture pattern with clear separation of concer
 The project includes comprehensive unit tests using Swift Testing framework. Run tests using:
 
 - **Xcode**: Press `⌘U` or select Product → Test
-- **Command Line**: `xcodebuild test -scheme ImgVerso`
+- **Command Line**: `xcodebuild test -scheme ImgZen`
 
 Test coverage includes:
 - Domain models and business logic
@@ -122,7 +122,7 @@ Test coverage includes:
 - Service layer components
 - UI components and presentation logic
 
-See [ImgVersoTests/README.md](ImgVersoTests/README.md) for detailed test documentation.
+See [ImgZenTests/README.md](ImgZenTests/README.md) for detailed test documentation.
 
 ## Development
 
