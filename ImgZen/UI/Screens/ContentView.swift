@@ -89,7 +89,7 @@ struct ContentView: View {
             }
             .mailComposer(
                 isPresenting: $sheet.isMailComposerPresented,
-                recipients: ["image.converter@appleteam.de"],
+                recipients: ["imgzen@appleteam.de"],
                 subject: String(localized: "mail.feedbackSubject"),
                 body: String(localized: "mail.feedbackBody")
             )
