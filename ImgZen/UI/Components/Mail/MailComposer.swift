@@ -36,12 +36,17 @@ struct MailComposer: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> UIViewController {
         if MFMailComposeViewController.canSendMail() {
+            let deviceInfo = DeviceInfo.compute()
+            let deviceInfoPresenter = DeviceInfoPresenter(deviceInfo: deviceInfo)
             let controller = MFMailComposeViewController()
             controller.setToRecipients(recipients)
             controller.setCcRecipients(ccRecipients)
             controller.setBccRecipients(bccRecipients)
             controller.setSubject(subject)
-            controller.setMessageBody(body, isHTML: false)
+            controller.setMessageBody([
+                body,
+                deviceInfoPresenter.formatted
+            ].joined(separator: "\n\n"), isHTML: false)
             controller.mailComposeDelegate = context.coordinator
             return controller
         } else {
