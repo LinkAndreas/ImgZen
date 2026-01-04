@@ -2,10 +2,24 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
     },
     "%@" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
     },
     "alert.removeAllImages" : {
       "extractionState" : "manual",
@@ -13,13 +27,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sollen alle Bilder entfernt werden?"
+            "value" : "Alle Bilder wirklich löschen?"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Should all images be removed?"
+            "state" : "translated",
+            "value" : "Remove all images?"
           }
         }
       }
@@ -47,13 +61,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus Dateien hinzufügen"
+            "value" : "Aus Dateien auswählen"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Add from Files"
+            "state" : "translated",
+            "value" : "Select from Files"
           }
         }
       }
@@ -64,13 +78,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus Fotogalerie hinzufügen"
+            "value" : "Aus der Fotogalerie auswählen"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Add from Photo Gallery"
+            "state" : "translated",
+            "value" : "Select from Photo Gallery"
           }
         }
       }
@@ -86,7 +100,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Cancel"
           }
         }
@@ -103,7 +117,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Convert"
           }
         }
@@ -115,12 +129,12 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht wirklich"
+            "value" : "Eher nicht"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Not really"
           }
         }
@@ -137,7 +151,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Remove"
           }
         }
@@ -154,7 +168,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Share"
           }
         }
@@ -166,12 +180,12 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja, unbedingt!"
+            "value" : "Ja, super!"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Yes, I love it!"
           }
         }
@@ -183,12 +197,12 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ohne Kompression, dadurch sehr große Dateien"
+            "value" : "Unkomprimiert, sehr große Dateien"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Uncompressed, very large files"
           }
         }
@@ -200,13 +214,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hocheffizient, modernes Format"
+            "value" : "Modernes, effizientes Format"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "High efficiency, modern format"
+            "state" : "translated",
+            "value" : "High-efficiency, modern format"
           }
         }
       }
@@ -222,8 +236,8 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Good quality, small file"
+            "state" : "translated",
+            "value" : "Good quality, small file size"
           }
         }
       }
@@ -234,13 +248,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verlustfrei und transparent"
+            "value" : "Verlustfrei, unterstützt Transparenz"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lossless and transparent"
+            "state" : "translated",
+            "value" : "Lossless, supports transparency"
           }
         }
       }
@@ -251,13 +265,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal für Druck oder Archivierung"
+            "value" : "Perfekt für Druck oder Archiv"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Best for print or archive"
+            "state" : "translated",
+            "value" : "Ideal for print or archive"
           }
         }
       }
@@ -268,13 +282,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleine Dateigröße, klare Darstellung"
+            "value" : "Kleine Dateien, klare Darstellung"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Small size, great clarity"
+            "state" : "translated",
+            "value" : "Small files, clear display"
           }
         }
       }
@@ -285,13 +299,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komprimierungsqualität"
+            "value" : "Bildqualität"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Compression Quality"
+            "state" : "translated",
+            "value" : "Image Quality"
           }
         }
       }
@@ -302,13 +316,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziel Format"
+            "value" : "Ziel-Format"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Destination Format"
+            "state" : "translated",
+            "value" : "Target Format"
           }
         }
       }
@@ -319,13 +333,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereit, Bilder auszuwählen"
+            "value" : "Bilder können ausgewählt werden"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Ready to select images"
+            "state" : "translated",
+            "value" : "Ready to pick images"
           }
         }
       }
@@ -336,13 +350,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Feedback Body"
+            "value" : "Hier dein Feedback eingeben"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Feedback Body"
+            "state" : "translated",
+            "value" : "Enter your feedback here"
           }
         }
       }
@@ -358,7 +372,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Feedback"
           }
         }
@@ -375,7 +389,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Format"
           }
         }
@@ -392,7 +406,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Ready to Share"
           }
         }
@@ -409,7 +423,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$lld of %2$lld"
           }
         }
@@ -421,12 +435,12 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bilder werden verarbeitet…"
+            "value" : "Bilder werden konvertiert…"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Converting images…"
           }
         }
@@ -443,7 +457,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Image Conversion"
           }
         }
@@ -460,7 +474,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld%%"
           }
         }
@@ -477,7 +491,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "High"
           }
         }
@@ -489,12 +503,12 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höchste Qualität"
+            "value" : "Beste Qualität"
           }
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Highest quality"
           }
         }
@@ -511,7 +525,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Low"
           }
         }
@@ -528,7 +542,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Max"
           }
         }
@@ -545,7 +559,7 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Med"
           }
         }
@@ -562,30 +576,13 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Most compression"
+            "state" : "translated",
+            "value" : "Max. compression"
           }
         }
       }
     },
     "rating.enjoyingApp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gefällt Ihnen die App?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Enjoying the app?"
-          }
-        }
-      }
-    },
-    "rating.likeUsingApp" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
@@ -597,7 +594,24 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you like using the app?"
+            "value" : "Enjoying the app?"
+          }
+        }
+      }
+    },
+    "rating.likeUsingApp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Macht die App Spaß?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you enjoy using the app?"
           }
         }
       }
@@ -613,8 +627,8 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lossless Formats"
+            "state" : "translated",
+            "value" : "Lossless formats"
           }
         }
       }
@@ -630,12 +644,12 @@
         },
         "en" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Lossy Formats"
+            "state" : "translated",
+            "value" : "Lossy formats"
           }
         }
       }
     }
   },
-  "version" : "1.1"
+  "version" : "1.2"
 }

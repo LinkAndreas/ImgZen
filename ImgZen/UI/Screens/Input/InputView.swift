@@ -16,7 +16,7 @@ struct InputView: View {
 
     @State private var isDiscardAllConfirmationShown: Bool = false
     @State private var sheet: Sheet?
-    @State private var selectedImageFormat: FormatSelection = .lossless(.png)
+    @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @State private var inputService = InputService()
 
