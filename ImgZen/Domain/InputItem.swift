@@ -2,9 +2,9 @@ import Foundation
 
 /// Represents an input item to be processed (e.g., for image conversion).
 /// Can be sourced from a file URL or a handler that provides a file URL asynchronously.
-struct InputItem: Identifiable {
+struct InputItem: Identifiable, Sendable {
     /// The underlying source type of the input item.
-    enum Source {
+    enum Source: Sendable {
         /// Input is directly provided as a file URL.
         case fileURL(URL)
         /// Input is provided asynchronously via a handler/callback supplying the file URL.
