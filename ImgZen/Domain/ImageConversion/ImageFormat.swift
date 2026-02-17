@@ -2,7 +2,7 @@ import Foundation
 import UniformTypeIdentifiers
 
 /// Represents an image format, either lossless or lossy with optional compression quality.
-enum ImageFormat {
+enum ImageFormat: Sendable {
     case lossless(LosslessImageFormat)
     case lossy(LossyImageFormat, compressionQuality: ImageCompressionQuality = 1.0)
 

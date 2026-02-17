@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents an output file produced by image processing/conversion.
-struct OutputItem: Identifiable, Hashable {
+struct OutputItem: Identifiable, Hashable, Sendable {
     /// Unique identifier (UUID) for the output item.
     let id: UUID
     /// The file URL where the output is written.

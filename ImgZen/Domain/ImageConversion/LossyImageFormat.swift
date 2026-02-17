@@ -2,12 +2,10 @@ import Foundation
 import UniformTypeIdentifiers
 
 /// Represents lossy image formats that use compression to reduce file size.
-enum LossyImageFormat: String, CaseIterable, Identifiable {
+enum LossyImageFormat: String, CaseIterable, Sendable {
     case jpeg = "JPEG"
     case heic = "HEIC"
     case webp = "WebP"
-
-    var id: String { rawValue }
 
     /// The file extension for this lossy format.
     var fileExtension: String {
@@ -26,4 +24,8 @@ enum LossyImageFormat: String, CaseIterable, Identifiable {
         case .webp: return UTType(filenameExtension: "webp")
         }
     }
+}
+
+extension LossyImageFormat: Identifiable {
+    var id: String { rawValue }
 }

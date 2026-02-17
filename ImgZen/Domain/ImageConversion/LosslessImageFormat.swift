@@ -2,12 +2,10 @@ import Foundation
 import UniformTypeIdentifiers
 
 /// Represents lossless image formats that preserve all image data without compression artifacts.
-enum LosslessImageFormat: String, CaseIterable, Identifiable {
+enum LosslessImageFormat: String, CaseIterable, Sendable {
     case png = "PNG"
     case tiff = "TIFF"
     case bmp = "BMP"
-
-    var id: String { rawValue }
 
     /// The file extension for this lossless format.
     var fileExtension: String {
@@ -26,4 +24,8 @@ enum LosslessImageFormat: String, CaseIterable, Identifiable {
         case .bmp: return .bmp
         }
     }
+}
+
+extension LosslessImageFormat: Identifiable {
+    var id: String { rawValue }
 }
