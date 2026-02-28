@@ -378,6 +378,22 @@
         }
       }
     },
+    "mail.notAvailable" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-Mail-Versand ist auf diesem Gerät nicht verfügbar."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email is not available on this device."
+          }
+        }
+      }
+    },
     "navigation.format" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -605,7 +621,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Macht die App Spaß?"
+            "value" : "Bist du zufrieden mit der App?"
           }
         },
         "en" : {

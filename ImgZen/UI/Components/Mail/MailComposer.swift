@@ -50,7 +50,28 @@ struct MailComposer: UIViewControllerRepresentable {
             controller.mailComposeDelegate = context.coordinator
             return controller
         } else {
-            return UIViewController()
+            let fallback = UIViewController()
+            fallback.view.backgroundColor = .systemBackground
+
+            let label = UILabel()
+            label.text = String(localized: "mail.notAvailable")
+            label.textAlignment = .center
+            label.numberOfLines = 0
+            label.textColor = .secondaryLabel
+            label.font = UIFont.preferredFont(forTextStyle: .body)
+            label.adjustsFontForContentSizeCategory = true
+
+            label.translatesAutoresizingMaskIntoConstraints = false
+            fallback.view.addSubview(label)
+
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: fallback.view.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: fallback.view.centerYAnchor),
+                label.leadingAnchor.constraint(greaterThanOrEqualTo: fallback.view.leadingAnchor, constant: 20),
+                label.trailingAnchor.constraint(lessThanOrEqualTo: fallback.view.trailingAnchor, constant: -20)
+            ])
+
+            return fallback
         }
     }
 
@@ -67,3 +88,4 @@ final class MailCoordinator: NSObject, MFMailComposeViewControllerDelegate {
         controller.dismiss(animated: true)
     }
 }
+
