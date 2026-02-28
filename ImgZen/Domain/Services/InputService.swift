@@ -21,7 +21,7 @@ final class InputService: Sendable {
     /// Removes specified items from the collection.
     /// - Parameter items: The items to remove.
     func didRemove(items: [InputItem]) {
-        self.items.removeAll { items.map(\.id).contains($0.id)}
+        self.items.removeAll { items.map(\.id).contains($0.id) }
     }
     
     /// Removes all items from the collection.
