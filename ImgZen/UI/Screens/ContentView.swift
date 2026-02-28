@@ -20,7 +20,7 @@ struct ContentView: View {
     @State private var path: [Destination] = []
     @State private var sheet: Sheet?
     @Environment(\.requestReview) private var requestReview
-    @AppStorage("processCompletedCount") var processCompletedCount = 0
+    @AppStorage("completedConversionsCount") var completedConversionsCount = 0
 
     /// The main application view structure. Sets up dependency context and manages navigation.
     var body: some View {
@@ -107,11 +107,13 @@ struct ContentView: View {
 
     /// Triggers in-app rating prompt or increments process count after each conversion.
     private func showInAppRatingIfNeeded() {
-        if processCompletedCount == 3 {
-            processCompletedCount += 1
+        if completedConversionsCount < 3 {
+            completedConversionsCount += 1
+        }
+
+        if completedConversionsCount == 3 {
+            completedConversionsCount += 1
             requestFeedback()
-        } else {
-            processCompletedCount += 1
         }
     }
 
@@ -120,12 +122,14 @@ struct ContentView: View {
         WindowManager.shared.present(
             InAppRatingWindowContent(
                 likeButtonAction: {
-                    WindowManager.shared.dismiss()
-                    requestReview()
+                    WindowManager.shared.dismiss {
+                        requestReview()
+                    }
                 },
                 dislikeButtonAction: {
-                    WindowManager.shared.dismiss()
-                    sheet = .mailComposer
+                    WindowManager.shared.dismiss {
+                        sheet = .mailComposer
+                    }
                 }
             )
         )

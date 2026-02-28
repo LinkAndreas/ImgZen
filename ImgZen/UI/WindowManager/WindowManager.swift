@@ -33,13 +33,18 @@ final class WindowManager {
     }
 
     /// Dismisses the current window and shows the next one in queue if available.
-    func dismiss() {
+    func dismiss(completion: @escaping () -> Void = {}) {
         // Call onDismiss callback
         currentWindow?.onDismiss?()
 
         // Hide and cleanup current window
-        hideCurrentWindow()
+        hideCurrentWindow { [weak self] in
+            self?.showNextWindowIfNeeded()
+            completion()
+        }
+    }
 
+    private func showNextWindowIfNeeded() {
         if windowQueue.isEmpty {
             // No more windows in queue
             currentWindow = nil
@@ -51,13 +56,15 @@ final class WindowManager {
     }
 
     /// Dismiss all windows including queued ones
-    func dismissAll() {
+    func dismissAll(completion: @escaping () -> Void = {}) {
         currentWindow?.onDismiss?()
         windowQueue.forEach { $0.onDismiss?() }
 
-        hideCurrentWindow()
-        currentWindow = nil
-        windowQueue.removeAll()
+        hideCurrentWindow { [weak self] in
+            self?.currentWindow = nil
+            self?.windowQueue.removeAll()
+            completion()
+        }
     }
 
     /// Get the number of windows in queue (not including current)
@@ -107,7 +114,7 @@ final class WindowManager {
     }
 
     /// Hides and cleans up the currently displayed window with animation.
-    private func hideCurrentWindow() {
+    private func hideCurrentWindow(completion: @escaping () -> Void = {}) {
         guard let window = currentUIWindow else { return }
 
         UIView.animate(
@@ -119,6 +126,7 @@ final class WindowManager {
         } completion: { _ in
             window.isHidden = true
             window.rootViewController = nil
+            completion()
         }
 
         currentUIWindow = nil
