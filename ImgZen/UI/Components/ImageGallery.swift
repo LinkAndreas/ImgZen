@@ -13,7 +13,8 @@ struct ImageGallery: View {
         }
     }
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass: UserInterfaceSizeClass?
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass: UserInterfaceSizeClass?
 
     private var columns: [GridItem] {
         switch horizontalSizeClass {
