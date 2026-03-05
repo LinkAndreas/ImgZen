@@ -123,6 +123,22 @@
         }
       }
     },
+    "button.next" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
     "button.notReally" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -170,6 +186,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Share"
+          }
+        }
+      }
+    },
+    "button.skip" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        }
+      }
+    },
+    "button.startConverting" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konvertierung starten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Converting"
           }
         }
       }
@@ -424,6 +472,108 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ready to Share"
+          }
+        }
+      }
+    },
+    "onboarding.batchAndQuality.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verarbeite mehrere Bilder mit Fortschrittsanzeige und anpassbarer Komprimierung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Process multiple images with progress tracking and adjustable compression."
+          }
+        }
+      }
+    },
+    "onboarding.batchAndQuality.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehrere Bilder & Präzise Qualitätskontrolle"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Batch Processing & Precise Quality Control"
+          }
+        }
+      }
+    },
+    "onboarding.convert.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konvertiere Bilder zwischen PNG, JPEG, TIFF, BMP, HEIC und WebP."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convert images between PNG, JPEG, TIFF, BMP, HEIC, and WebP."
+          }
+        }
+      }
+    },
+    "onboarding.convert.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einfache Konvertierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simple Conversion"
+          }
+        }
+      }
+    },
+    "onboarding.sharePrivately.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teile konvertierte Bilder sofort. Alles bleibt auf dem Gerät."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share converted images instantly. Everything stays on device."
+          }
+        }
+      }
+    },
+    "onboarding.sharePrivately.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einfacher Bilder Export"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image Export"
           }
         }
       }
