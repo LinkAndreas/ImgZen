@@ -19,10 +19,3 @@ struct ImgZenApp: App {
         }
     }
 }
-
-extension IsOnboardingCompleted {
-    var activeView: ActiveView {
-        get { self ? .second : .first }
-        set {}
-    }
-}
