@@ -4,7 +4,7 @@ import PhotosUI
 
 /// The main entry point for the app.
 /// Manages conversion flow, navigation, and feedback prompts.
-struct ContentView: View {
+struct Converter: View {
     /// Enum representing navigation destinations for the main navigation stack.
     enum Destination: Hashable {
         case output([OutputItem])
@@ -137,7 +137,7 @@ struct ContentView: View {
 }
 
 /// Extension to help present sheets in ContentView using optional Sheet binding.
-extension ContentView.Sheet? {
+extension Converter.Sheet? {
     /// Returns true if the mail composer sheet should be presented.
     var isMailComposerPresented: Bool {
         get {
