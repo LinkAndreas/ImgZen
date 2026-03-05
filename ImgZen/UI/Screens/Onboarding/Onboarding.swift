@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OnboardingView: View {
+struct Onboarding: View {
     @State private var viewModel: OnboardingViewModel
 
     init(
@@ -78,5 +78,5 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    OnboardingView()
+    Onboarding()
 }
