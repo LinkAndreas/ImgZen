@@ -482,13 +482,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verarbeite mehrere Bilder mit Fortschrittsanzeige und anpassbarer Komprimierung."
+            "value" : "Konvertiere mehrere Bilder auf einmal mit Fortschrittsanzeige und einstellbarer Komprimierung."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Process multiple images with progress tracking and adjustable compression."
+            "value" : "Convert multiple images at once with progress tracking and adjustable compression."
           }
         }
       }
@@ -499,13 +499,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mehrere Bilder & Präzise Qualitätskontrolle"
+            "value" : "Stapelverarbeitung und Qualitätskontrolle"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Batch Processing & Precise Quality Control"
+            "value" : "Batch Processing and Quality Control"
           }
         }
       }
@@ -516,13 +516,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konvertiere Bilder zwischen PNG, JPEG, TIFF, BMP, HEIC und WebP."
+            "value" : "Wechsle zwischen PNG, JPEG, TIFF, BMP, HEIC und WebP in wenigen Schritten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convert images between PNG, JPEG, TIFF, BMP, HEIC, and WebP."
+            "value" : "Switch between PNG, JPEG, TIFF, BMP, HEIC, and WebP in just a few taps."
           }
         }
       }
@@ -533,13 +533,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einfache Konvertierung"
+            "value" : "Schnelle Konvertierung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simple Conversion"
+            "value" : "Fast Conversion"
           }
         }
       }
@@ -550,13 +550,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile konvertierte Bilder sofort. Alles bleibt auf dem Gerät."
+            "value" : "Teile deine konvertierten Bilder sofort. Deine Daten bleiben auf dem Gerät."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share converted images instantly. Everything stays on device."
+            "value" : "Share converted images instantly. Your data stays on your device."
           }
         }
       }
@@ -567,13 +567,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einfacher Bilder Export"
+            "value" : "Privat teilen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image Export"
+            "value" : "Share Privately"
           }
         }
       }
