@@ -18,16 +18,8 @@ struct Onboarding: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    colors: [
-                        Color.systemBlue,
-                        Color.systemCyan,
-                        Color.systemBackground
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                Color.systemBackground
+                    .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     Image("Logo")
@@ -59,7 +51,7 @@ struct Onboarding: View {
                         Text(viewModel.bottomButtonTitle)
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                     .controlSize(.large)
                     .padding(.horizontal, 20)
                     .padding(.top, 14)
