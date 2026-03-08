@@ -29,9 +29,9 @@ struct OnboardingPageView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 28)
             .frame(maxWidth: .infinity)
-            .background(Color.secondarySystemBackground)
+            .background(Color.secondarySystemGroupedBackground)
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .shadow(color: .black.opacity(0.09), radius: 16, x: 0, y: 8)
+            .shadow(color: .black.opacity(0.25), radius: 16, x: 0, y: 8)
 
             Spacer(minLength: 0)
         }
