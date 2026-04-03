@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct BottomControlPanel: View {
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
+
     @Binding private var selectedImageFormat: FormatSelection
     @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
     private let onConvert: () -> Void
@@ -38,5 +41,6 @@ struct BottomControlPanel: View {
                 .strokeBorder(Color(.separator), lineWidth: 0.4)
         )
         .padding(20)
+        .frame(maxWidth: horizontalSizeClass == .regular ? 600 : .infinity)
     }
 }
