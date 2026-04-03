@@ -132,6 +132,7 @@ This project follows Git Flow workflow:
 - `main` - Production-ready code
 - `develop` - Integration branch for features
 - `feature/*` - Feature development branches
+- `release/*` - Release branches
 
 ### Commit Convention
 
