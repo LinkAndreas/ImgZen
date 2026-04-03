@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct OnboardingPageView: View {
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
+
     let page: OnboardingPage
 
     var body: some View {
@@ -36,6 +39,7 @@ struct OnboardingPageView: View {
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 20)
+        .frame(maxWidth: horizontalSizeClass == .regular ? 600 : .infinity)
     }
 }
 

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct Onboarding: View {
+    @Environment(\.horizontalSizeClass)
+    private var horizontalSizeClass
+
     @State private var viewModel: OnboardingViewModel
 
     init(
@@ -49,7 +52,7 @@ struct Onboarding: View {
 
                     Button(action: viewModel.advance) {
                         Text(viewModel.bottomButtonTitle)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: horizontalSizeClass == .regular ? 350 : .infinity)
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
