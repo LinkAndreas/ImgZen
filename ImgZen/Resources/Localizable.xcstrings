@@ -145,13 +145,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eher nicht"
+            "value" : "Kann besser werden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not really"
+            "value" : "Needs work"
           }
         }
       }
@@ -228,13 +228,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja, super!"
+            "value" : "Gefällt mir"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yes, I love it!"
+            "value" : "Love it"
           }
         }
       }
@@ -313,13 +313,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perfekt für Druck oder Archiv"
+            "value" : "Ideal für Druck oder Archivierung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal for print or archive"
+            "value" : "Ideal for print or archiving"
           }
         }
       }
@@ -330,13 +330,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleine Dateien, klare Darstellung"
+            "value" : "Kleine Dateien, gute Bildqualität"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Small files, clear display"
+            "value" : "Smaller files, good image quality"
           }
         }
       }
@@ -364,13 +364,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziel-Format"
+            "value" : "Zielformat"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Target Format"
+            "value" : "Output Format"
           }
         }
       }
@@ -381,13 +381,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bilder können ausgewählt werden"
+            "value" : "Wähle Bilder aus, um zu starten"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ready to pick images"
+            "value" : "Select images to get started"
           }
         }
       }
@@ -398,13 +398,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier dein Feedback eingeben"
+            "value" : "Schreibe hier dein Feedback"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter your feedback here"
+            "value" : "Share your feedback here"
           }
         }
       }
@@ -482,13 +482,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konvertiere mehrere Bilder auf einmal mit Fortschrittsanzeige und einstellbarer Komprimierung."
+            "value" : "Konvertiere mehrere Bilder gleichzeitig mit anpassbarer Komprimierung."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convert multiple images at once with progress tracking and adjustable compression."
+            "value" : "Convert multiple images at once with adjustable compression."
           }
         }
       }
@@ -499,13 +499,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stapelverarbeitung und Qualitätskontrolle"
+            "value" : "Mehrere Bilder, volle Qualitätskontrolle"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Batch Processing and Quality Control"
+            "value" : "Batch Conversion, Full Quality Control"
           }
         }
       }
@@ -533,13 +533,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schnelle Konvertierung"
+            "value" : "Einfache Konvertierung"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fast Conversion"
+            "value" : "Simple Conversion"
           }
         }
       }
@@ -550,13 +550,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile deine konvertierten Bilder sofort. Deine Daten bleiben auf dem Gerät."
+            "value" : "Teile deine konvertierten Bilder sofort."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share converted images instantly. Your data stays on your device."
+            "value" : "Share converted images instantly."
           }
         }
       }
@@ -567,7 +567,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Privat teilen"
+            "value" : "Sicher teilen"
           }
         },
         "en" : {
@@ -771,13 +771,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bist du zufrieden mit der App?"
+            "value" : "Dein Feedback hilft uns weiter."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do you enjoy using the app?"
+            "value" : "Your feedback helps us improve."
           }
         }
       }
