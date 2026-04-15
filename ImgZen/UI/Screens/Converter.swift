@@ -89,7 +89,7 @@ struct Converter: View {
             }
             .mailComposer(
                 isPresenting: $sheet.isMailComposerPresented,
-                recipients: ["imgzen@linkandreas.de"],
+                recipients: ["feedback@linkandreas.de"],
                 subject: String(localized: "mail.feedbackSubject"),
                 body: String(localized: "mail.feedbackBody")
             )
