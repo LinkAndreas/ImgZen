@@ -9,7 +9,8 @@ struct DeviceInfoPresenter {
         """
         Device: \(deviceInfo.deviceIdentifier)
         iOS: \(deviceInfo.osVersion)
-        App Version: \(deviceInfo.appVersion) (\(deviceInfo.buildNumber))
+        App: ImgZen
+        Version: \(deviceInfo.appVersion) (\(deviceInfo.buildNumber))
         """
     }
 }
