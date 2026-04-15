@@ -1,5 +1,11 @@
 # ImgZen
 
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/LinkAndreas/ImgZen/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Deploy](https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml/badge.svg)](https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml)
+![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
+![Xcode](https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white)
+
 A modern, native image conversion application built with SwiftUI. Convert images between various formats with support for both lossless and lossy compression, batch processing, and an intuitive user interface.
 
 ## Features
