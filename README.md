@@ -168,8 +168,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Built with SwiftUI and native macOS frameworks
-- WebP support powered by SDWebImageWebPCoder
+- WebP support powered by [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder)
+- Licenses generated using [LicensePlist](https://github.com/mono0926/LicensePlist)
 
+```bash
+license-plist --output-path ./Settings.bundle --add-version-numbers
+```
 ---
 
 Made with ❤️ using Swift and SwiftUI
