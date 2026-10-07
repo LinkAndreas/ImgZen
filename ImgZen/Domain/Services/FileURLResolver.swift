@@ -9,10 +9,10 @@ final class FileURLResolver {
 
     /// Creates a FileURLResolver.
     /// - Parameters:
-    ///   - cacheDirectory: Directory that handler-based sources are copied into. Defaults to `Caches/input`.
+    ///   - cacheDirectory: Directory that handler-based sources are copied into.
     ///   - fileManager: FileManager instance to use. Defaults to `.default`.
     init(
-        cacheDirectory: URL = .cachesDirectory.appending(path: "input", directoryHint: .isDirectory),
+        cacheDirectory: URL = Constants.inputCacheDirectory,
         fileManager: FileManager = .default
     ) {
         self.cacheDirectory = cacheDirectory
@@ -68,11 +68,5 @@ final class FileURLResolver {
                 throw error
             }
         }
-    }
-
-    /// Removes all files copied by previous resolutions.
-    func removeCachedFiles() {
-        resolutions.removeAll()
-        try? fileManager.removeItem(at: cacheDirectory)
     }
 }

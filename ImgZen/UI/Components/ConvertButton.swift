@@ -17,5 +17,6 @@ struct ConvertButton: View {
         }
         .buttonStyle(.glassProminent)
         .controlSize(.large)
+        .keyboardShortcut(.return, modifiers: .command)
     }
 }

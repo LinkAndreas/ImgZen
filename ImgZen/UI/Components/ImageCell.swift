@@ -89,6 +89,8 @@ struct ImageCell: View {
             )
         )
         .aspectRatio(1.0, contentMode: .fit)
+        .contentShape(.hoverEffect, RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .hoverEffect(.lift)
         .contextMenu {
             ForEach(contextActions) { action in
                 Button(role: action.destructive ? .destructive : .confirm) {

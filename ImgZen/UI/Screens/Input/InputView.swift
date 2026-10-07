@@ -20,9 +20,10 @@ struct InputView: View {
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @State private var inputService = InputService()
     @State private var isSidePanelLayout = false
+    @State private var isDropTargeted = false
 
     /// Window width from which the control panel moves next to the gallery instead of below it.
-    private static let sidePanelMinimumWidth: CGFloat = 900
+    nonisolated private static let sidePanelMinimumWidth: CGFloat = 900
 
     private var isBottomControlPanelVisible: Bool {
         !inputService.items.isEmpty
@@ -90,9 +91,26 @@ struct InputView: View {
             if isBottomControlPanelVisible && isSidePanelLayout {
                 bottomControlPanel
                     .frame(width: 400)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .frame(maxHeight: .infinity, alignment: .top)
             }
         }
+        .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
+            let items = providers
+                .filter { $0.hasItemConformingToTypeIdentifier(UTType.image.identifier) }
+                .map(InputItem.init(itemProvider:))
+            inputService.didAdd(items: items)
+            return !items.isEmpty
+        }
+        .overlay {
+            if isDropTargeted {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 3, dash: [10, 6]))
+                    .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .padding(8)
+                    .allowsHitTesting(false)
+            }
+        }
+        .animation(.smooth(duration: 0.2), value: isDropTargeted)
         .onGeometryChange(for: Bool.self) { geometry in
             geometry.size.width >= Self.sidePanelMinimumWidth
         } action: { isWide in
