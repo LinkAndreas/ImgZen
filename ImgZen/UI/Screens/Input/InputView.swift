@@ -19,6 +19,10 @@ struct InputView: View {
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @State private var inputService = InputService()
+    @State private var isSidePanelLayout = false
+
+    /// Window width from which the control panel moves next to the gallery instead of below it.
+    private static let sidePanelMinimumWidth: CGFloat = 900
 
     private var isBottomControlPanelVisible: Bool {
         !inputService.items.isEmpty
@@ -78,19 +82,21 @@ struct InputView: View {
             .opacity(inputService.items.isEmpty ? 1.0 : 0.0)
         }
         .safeAreaInset(edge: .bottom) {
-            if isBottomControlPanelVisible {
-                BottomControlPanel(
-                    selectedImageFormat: $selectedImageFormat,
-                    selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                    onConvert: {
-                        let outputFormat = ImageFormat(
-                            imageFormatSelection: selectedImageFormat,
-                            imageCompressionQuality: selectedImageCompressionQuality
-                        )
-                        onConvert(inputService.items, outputFormat)
-                    }
-                )
+            if isBottomControlPanelVisible && !isSidePanelLayout {
+                bottomControlPanel
             }
+        }
+        .safeAreaInset(edge: .trailing) {
+            if isBottomControlPanelVisible && isSidePanelLayout {
+                bottomControlPanel
+                    .frame(width: 400)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+            }
+        }
+        .onGeometryChange(for: Bool.self) { geometry in
+            geometry.size.width >= Self.sidePanelMinimumWidth
+        } action: { isWide in
+            isSidePanelLayout = isWide
         }
         .toolbar {
             if !inputService.items.isEmpty {
@@ -149,6 +155,22 @@ struct InputView: View {
         )
         .backgroundStyle(Color(.systemGroupedBackground))
         .navigationTitle(String(localized: "app.name"))
+    }
+}
+
+extension InputView {
+    private var bottomControlPanel: some View {
+        BottomControlPanel(
+            selectedImageFormat: $selectedImageFormat,
+            selectedImageCompressionQuality: $selectedImageCompressionQuality,
+            onConvert: {
+                let outputFormat = ImageFormat(
+                    imageFormatSelection: selectedImageFormat,
+                    imageCompressionQuality: selectedImageCompressionQuality
+                )
+                onConvert(inputService.items, outputFormat)
+            }
+        )
     }
 }
 
