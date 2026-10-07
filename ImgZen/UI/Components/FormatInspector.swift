@@ -31,6 +31,19 @@ struct FormatInspector: View {
     }
 
     var body: some View {
+        settings
+            .safeAreaBar(edge: .top) {
+                // Makes clear that the formats listed are the ones the images are converted to.
+                Label(String(localized: "label.destinationFormat"), systemImage: "photo")
+                    .font(.title2.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
+                    .accessibilityAddTraits(.isHeader)
+            }
+    }
+
+    private var settings: some View {
         Form {
             Section(String(localized: "section.lossyFormats")) {
                 ForEach(LossyImageFormat.allCases) { format in
