@@ -7,6 +7,7 @@ struct ImageCell: View {
     private let badge: String
     private let image: Image?
     private let contextActions: [ContextAction]
+    private let isSelected: Bool?
 
     /// Creates an image cell.
     /// - Parameters:
@@ -15,18 +16,21 @@ struct ImageCell: View {
     ///   - badge: Badge text (typically format name).
     ///   - image: Optional SwiftUI Image to display.
     ///   - contextActions: Actions available in the context menu.
+    ///   - isSelected: The selection state, or nil if the cell isn't selectable.
     init(
         title: String,
         subtitle: String,
         badge: String,
         image: Image?,
-        contextActions: [ContextAction] = []
+        contextActions: [ContextAction] = [],
+        isSelected: Bool? = nil
     ) {
         self.title = title
         self.subtitle = subtitle
         self.badge = badge
         self.image = image
         self.contextActions = contextActions
+        self.isSelected = isSelected
     }
 
     var body: some View {
@@ -83,11 +87,26 @@ struct ImageCell: View {
                 cornerRadius: 12,
                 style: .continuous
             )
-            .stroke(
-                Color.secondary.opacity(0.2),
-                lineWidth: 0.5
+            .strokeBorder(
+                isSelected == true ? Color.accentColor : Color.secondary.opacity(0.2),
+                lineWidth: isSelected == true ? 3 : 0.5
             )
         )
+        .overlay(alignment: .topTrailing) {
+            if let isSelected {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.title2)
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.25))
+                    .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.15)).padding(2))
+                    .contentTransition(.symbolEffect(.replace))
+                    .padding(8)
+            }
+        }
+        .opacity(isSelected == false ? 0.7 : 1)
+        .animation(.smooth(duration: 0.15), value: isSelected)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected == true ? .isSelected : [])
         .aspectRatio(1.0, contentMode: .fit)
         .contentShape(.hoverEffect, RoundedRectangle(cornerRadius: 12, style: .continuous))
         .hoverEffect(.lift)
