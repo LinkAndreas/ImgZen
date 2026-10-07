@@ -1,24 +1,40 @@
-name: Deploy to AppStore Connect
+name: Deploy to App Store Connect
 
 on:
+  # Every merge into main (a finished release or hotfix) deploys; manual runs stay possible.
+  push:
+    branches:
+      - main
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never upload two builds at once; a newer run waits for the running one to finish.
+concurrency:
+  group: deploy-app-store-connect
+  cancel-in-progress: false
 
 jobs:
   archive-and-deploy:
-    runs-on: macos-26
+    name: Archive and deploy
+    # Only the self-hosted Mac with Xcode 27 builds and uploads ImgZen.
+    runs-on: [self-hosted, xcode-27]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Install App Store Connect Api Key
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install App Store Connect API Key
         env:
           API_KEY_BASE64: ${{ secrets.API_KEY_BASE64 }}
+          API_KEY_ID: ${{ secrets.API_KEY_ID }}
         run: |
-          mkdir ~/.private_keys
-          echo -n "$API_KEY_BASE64" | base64 --decode --output ~/.private_keys/AuthKey_${{ secrets.API_KEY_ID }}.p8
-          echo "After saving:"
-          ls ~/.private_keys
+          mkdir -p ~/.private_keys
+          echo -n "$API_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_$API_KEY_ID.p8
 
       - name: Install Signing Certificate
         env:
@@ -39,64 +55,78 @@ jobs:
 
           # Import Signing Certificate to Keychain
           security import "$SIGNING_CERTIFICATE_PATH" -P "$SIGNING_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+          # Let codesign use the key without a UI prompt; without this it fails with errSecInternalComponent.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+
+          # Add the keychain to the search list rather than replacing it: the runner is a regular Mac
+          # whose login keychain must stay searchable once the cleanup deletes this one.
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+          # Sign with the full name of the certificate imported above. The generic "iPhone Distribution"
+          # also matches the Apple Distribution certificate in the runner's login keychain, which the
+          # ImgZen profile doesn't include.
+          SIGNING_IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep -o '"iPhone Distribution: [^"]*"' | head -n 1 | tr -d '"')
+          if [ -z "$SIGNING_IDENTITY" ]; then
+            echo "No \"iPhone Distribution\" certificate found in the imported signing certificate."
+            exit 1
+          fi
+          echo "Signing identity: $SIGNING_IDENTITY"
+          echo "SIGNING_IDENTITY=$SIGNING_IDENTITY" >> "$GITHUB_ENV"
 
       - name: Install Provisioning Profile
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
         run: |
-          PROVISIONING_PROFILE_PATH=$RUNNER_TEMP/provisioning_profile.mobileprovision
-
-          # Read Provisioning Profile
-          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROVISIONING_PROFILE_PATH"
-
-          # Import Provisioning Profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PROVISIONING_PROFILE_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          # Xcode 16 and later read profiles from UserData; older tools still look in MobileDevice.
+          for PROFILES_DIR in ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles ~/Library/MobileDevice/Provisioning\ Profiles; do
+            mkdir -p "$PROFILES_DIR"
+            echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/imgzen.mobileprovision"
+          done
 
       - name: Configure exportOptions.plist
-        env: 
+        env:
           TEAM_ID: ${{ vars.TEAM_ID }}
           BUNDLE_ID: ${{ vars.BUNDLE_ID }}
           PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
         run: |
-          sed -i '' "s/{{TEAM_ID}}/$TEAM_ID/g" exportOptions.plist
-          sed -i '' "s/{{BUNDLE_ID}}/$BUNDLE_ID/g" exportOptions.plist
-          sed -i '' "s/{{PROVISIONING_PROFILE_NAME}}/$PROVISIONING_PROFILE_NAME/g" exportOptions.plist
+          sed -i '' "s|{{TEAM_ID}}|$TEAM_ID|g" exportOptions.plist
+          sed -i '' "s|{{SIGNING_IDENTITY}}|$SIGNING_IDENTITY|g" exportOptions.plist
+          sed -i '' "s|{{BUNDLE_ID}}|$BUNDLE_ID|g" exportOptions.plist
+          sed -i '' "s|{{PROVISIONING_PROFILE_NAME}}|$PROVISIONING_PROFILE_NAME|g" exportOptions.plist
 
-      - name: Inject Build Number
-        run: |
-          buildNumber=${{ github.run_number }}
-          echo "Current build number: $buildNumber"
-          agvtool new-version -all $buildNumber
-
+      # CURRENT_PROJECT_VERSION is set on the command line so the run number becomes the build number.
       - name: Build, Sign and Archive
-        env: 
+        env:
+          TEAM_ID: ${{ vars.TEAM_ID }}
           PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
         run: |
+          echo "Build number: ${{ github.run_number }}"
           set -o pipefail && xcodebuild clean archive \
+            -project ImgZen.xcodeproj \
             -scheme "ImgZen" \
             -archivePath $RUNNER_TEMP/ImgZen.xcarchive \
-            -sdk iphoneos \
             -configuration Release \
             -destination generic/platform=iOS \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" | xcpretty
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" | xcbeautify
 
       - name: Export archive
         run: |
-          ARTIFACT_FILEPATH=$RUNNER_TEMP/ImgZen.ipa
           set -o pipefail && xcodebuild -exportArchive \
             -archivePath $RUNNER_TEMP/ImgZen.xcarchive \
             -exportOptionsPlist exportOptions.plist \
-            -exportPath $RUNNER_TEMP | xcpretty
+            -exportPath $RUNNER_TEMP | xcbeautify
 
       - name: Publish ImgZen.ipa file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ImgZen.ipa
           path: ${{ runner.temp }}/ImgZen.ipa
-      
+
       - name: Validate Build Artifact
         run: |
           xcrun altool --validate-app \
@@ -105,7 +135,7 @@ jobs:
             --apiKey ${{ secrets.API_KEY_ID }} \
             --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
 
-      - name: Upload Build Artifact to AppStore Connect
+      - name: Upload Build Artifact to App Store Connect
         run: |
           xcrun altool --upload-app \
             -f ${{ runner.temp }}/ImgZen.ipa \
@@ -113,8 +143,10 @@ jobs:
             --apiKey ${{ secrets.API_KEY_ID }} \
             --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
 
-      - name: Clean up keychain and provisioning profile
+      - name: Clean up keychain, provisioning profile and API key
         if: ${{ always() }}
         run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-          rm ~/Library/MobileDevice/Provisioning\ Profiles/provisioning_profile.mobileprovision
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+          rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/imgzen.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/imgzen.mobileprovision
+          rm -rf ~/.private_keys
