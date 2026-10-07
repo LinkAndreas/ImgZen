@@ -14,7 +14,7 @@ struct InputView: View {
         case filePicker
     }
 
-    @State private var isDiscardAllConfirmationShown: Bool = false
+    @State private var isStartOverConfirmationShown: Bool = false
     @State private var sheet: Sheet?
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
@@ -59,37 +59,44 @@ struct InputView: View {
     }
 
     var body: some View {
-        ZStack {
-            ImageGallery(
-                items: inputService.items.map { item in
-                    ImageGallery.Item(
-                        id: item.id.uuidString,
-                        imageInfo: { @concurrent in
-                            let url = try await fileURLFor(item)
-                            let imageData = try await imageData(url, .thumbnail)
-                            let metadata = try await metadata(url)
-                            return (metadata, imageData)
-                        },
-                        contextActions: [
-                            ContextAction(
-                                title: String(localized: "button.remove"),
-                                systemImage: "trash",
-                                destructive: true,
-                                execute: { inputService.didRemove(items: [item]) }
-                            )
-                        ]
-                    )
-                }
-            )
-
-            EmptyView(
-                addFromPhotosAction: { sheet = .photoPicker },
-                addFromFilesAction: { sheet = .filePicker }
-            )
-            .opacity(inputService.items.isEmpty ? 1.0 : 0.0)
+        // The gallery is the root view, so the navigation bar tracks its scrolling and collapses the title smoothly.
+        ImageGallery(
+            items: inputService.items.map { item in
+                ImageGallery.Item(
+                    id: item.id.uuidString,
+                    imageInfo: { @concurrent in
+                        let url = try await fileURLFor(item)
+                        let imageData = try await imageData(url, .thumbnail)
+                        let metadata = try await metadata(url)
+                        return (metadata, imageData)
+                    },
+                    contextActions: [
+                        ContextAction(
+                            title: String(localized: "button.remove"),
+                            systemImage: "trash",
+                            destructive: true,
+                            execute: { inputService.didRemove(items: [item]) }
+                        )
+                    ]
+                )
+            }
+        )
+        .overlay {
+            if inputService.items.isEmpty {
+                EmptyView()
+                    .transition(.opacity)
+            }
         }
+        .animation(.smooth(duration: 0.25), value: inputService.items.isEmpty)
         .safeAreaBar(edge: .bottom) {
-            if isBottomControlPanelVisible && !isInspectorLayout {
+            // The actions sit at the bottom edge, with the most used ones on the trailing side,
+            // so they're within thumb reach when holding the device in one hand.
+            if inputService.items.isEmpty {
+                AddImagesBar(
+                    addFromPhotosAction: { sheet = .photoPicker },
+                    addFromFilesAction: { sheet = .filePicker }
+                )
+            } else if !isInspectorLayout {
                 BottomControlPanel(
                     selectedImageFormat: $selectedImageFormat,
                     selectedImageCompressionQuality: $selectedImageCompressionQuality,
@@ -127,34 +134,37 @@ struct InputView: View {
         }
         .animation(.smooth(duration: 0.2), value: isDropTargeted)
         .toolbar {
-            if !inputService.items.isEmpty {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(
-                        String(localized: "button.removeAll"),
-                        systemImage: "trash",
-                        role: .destructive,
-                        action: { isDiscardAllConfirmationShown = true }
-                    )
-                    // A confirmation dialog anchored to the button is the system pattern for destructive actions.
-                    .confirmationDialog(
-                        String(localized: "alert.removeAllImages"),
-                        isPresented: $isDiscardAllConfirmationShown,
-                        titleVisibility: .visible
-                    ) {
-                        Button(String(localized: "button.removeAll"), role: .destructive) {
-                            inputService.removeAll()
-                        }
-                    }
-                }
-            }
-
             ToolbarItem(placement: .topBarTrailing) {
                 Menu(String(localized: "button.more"), systemImage: "ellipsis") {
+                    Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
+                        Label {
+                            Text(String(localized: "button.startOver"))
+                            Text(String(localized: "label.startOverSubtitle"))
+                        } icon: {
+                            Image(systemName: "arrow.counterclockwise")
+                        }
+                    }
+                    .disabled(inputService.items.isEmpty)
+
+                    Divider()
+
                     Button(
                         String(localized: "button.sendFeedback"),
                         systemImage: "envelope",
                         action: onSendFeedback
                     )
+                }
+                // Anchored to the menu button, so iPad shows it as a popover pointing at it.
+                .confirmationDialog(
+                    String(localized: "alert.removeAllImages"),
+                    isPresented: $isStartOverConfirmationShown,
+                    titleVisibility: .visible
+                ) {
+                    Button(String(localized: "button.removeAllImages"), role: .destructive) {
+                        inputService.removeAll()
+                    }
+                } message: {
+                    Text(String(localized: "alert.removeAllImages.message"))
                 }
             }
         }
@@ -173,7 +183,6 @@ struct InputView: View {
                 InputItem(source: .fileURL(url))
             })
         }
-        .backgroundStyle(Color(.systemGroupedBackground))
         .navigationTitle(String(localized: "app.name"))
     }
 }

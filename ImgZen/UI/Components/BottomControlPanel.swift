@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Floating controls at the bottom of compact screens, where they're easiest to reach:
-/// add images, pick the output format and convert.
+/// pick the output format, convert, and add more images.
 struct BottomControlPanel: View {
     @State private var isFormatSheetPresented = false
     @Binding private var selectedImageFormat: FormatSelection
@@ -33,15 +33,16 @@ struct BottomControlPanel: View {
 
     var body: some View {
         GlassEffectContainer(spacing: 12) {
+            // Add sits in the trailing corner, the easiest spot to reach with the right thumb.
             HStack(spacing: 12) {
+                formatButton
+
+                ConvertButton(action: onConvert)
+
                 ImageSourceSelection(
                     addFromPhotosAction: addFromPhotosAction,
                     addFromFilesAction: addFromFilesAction
                 )
-
-                formatButton
-
-                ConvertButton(action: onConvert)
             }
         }
         .padding(.horizontal, 16)

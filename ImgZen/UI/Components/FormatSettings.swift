@@ -45,7 +45,7 @@ struct FormatSettingsForm: View {
 
     var body: some View {
         Form {
-            Section(String(localized: "section.lossyFormats")) {
+            Section {
                 ForEach(LossyImageFormat.allCases) { format in
                     FormatListEntry(
                         title: format.title,
@@ -54,9 +54,13 @@ struct FormatSettingsForm: View {
                         action: { selectedImageFormat = .lossy(format) }
                     )
                 }
+            } header: {
+                Text(String(localized: "section.lossyFormats"))
+            } footer: {
+                Text(String(localized: "section.lossyFormats.footer"))
             }
 
-            Section(String(localized: "section.losslessFormats")) {
+            Section {
                 ForEach(LosslessImageFormat.allCases) { format in
                     FormatListEntry(
                         title: format.title,
@@ -65,19 +69,38 @@ struct FormatSettingsForm: View {
                         action: { selectedImageFormat = .lossless(format) }
                     )
                 }
+            } header: {
+                Text(String(localized: "section.losslessFormats"))
+            } footer: {
+                Text(String(localized: "section.losslessFormats.footer"))
             }
 
-            if selectedImageFormat.isLossy {
-                Section(String(localized: "label.compressionQuality")) {
-                    CompressionQualityPicker(quality: $selectedImageCompressionQuality)
-                        .padding(.vertical, 8)
-                }
+            // Always shown, and only disabled for lossless formats, so the rows above never move while choosing.
+            Section {
+                CompressionQualityPicker(quality: qualityBinding)
+                    .disabled(selectedImageFormat.isLossless)
+            } header: {
+                Text(String(localized: "label.compressionQuality"))
+            } footer: {
+                Text(qualityFooter)
             }
         }
-        .animation(.smooth(duration: 0.2), value: selectedImageFormat.isLossy)
         .sensoryFeedback(.selection, trigger: selectedImageFormat)
         .onChange(of: selectedImageFormat) {
             selectedImageCompressionQuality = 0.9
+        }
+    }
+
+    /// Lossless formats always keep every detail, so their quality reads as 100%.
+    private var qualityBinding: Binding<ImageCompressionQuality> {
+        selectedImageFormat.isLossy ? $selectedImageCompressionQuality : .constant(1.0)
+    }
+
+    private var qualityFooter: String {
+        if selectedImageFormat.isLossy {
+            String(localized: "label.compressionQuality.footer")
+        } else {
+            String(format: String(localized: "label.compressionQuality.losslessFooter"), selectedImageFormat.title)
         }
     }
 }
