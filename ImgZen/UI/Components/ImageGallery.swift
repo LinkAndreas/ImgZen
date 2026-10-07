@@ -42,9 +42,11 @@ struct ImageGallery: View {
                 }
             }
             .animation(.smooth, value: items)
-            .padding(.horizontal)
-            .padding(.bottom)
         }
+        // Margins add to the safe area insets (bars, the iPhone Duo vertical bar, the sensor housing in landscape),
+        // so the first and last rows keep their spacing instead of touching the bars.
+        .contentMargins(.horizontal, 16, for: .scrollContent)
+        .contentMargins(.vertical, 12, for: .scrollContent)
         // Grouped background, so the cells stand out from it in light and dark mode.
         .background(Color(.systemGroupedBackground))
     }

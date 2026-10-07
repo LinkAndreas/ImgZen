@@ -83,7 +83,9 @@ struct InputView: View {
         )
         .overlay {
             if inputService.items.isEmpty {
+                // Lets touches through, so pulling down still reaches the gallery and the navigation bar beneath.
                 EmptyView()
+                    .allowsHitTesting(false)
                     .transition(.opacity)
             }
         }
