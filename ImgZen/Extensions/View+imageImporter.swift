@@ -72,20 +72,26 @@ fileprivate final class PhotoPickerCoordinator: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
 
         completion(results.map { result in
-            InputItem(
-                source: .fileURLHandler(handler: { action in
-                    result.itemProvider.loadFileRepresentation(
-                        forTypeIdentifier: UTType.image.identifier
-                    ) { url, error in
-                        if let url {
-                            action(.success(url))
-                        } else {
-                            action(.failure(error ?? CocoaError(.fileReadUnknown)))
-                        }
-                    }
-                })
-            )
+            InputItem(itemProvider: result.itemProvider)
         })
+    }
+}
+
+extension InputItem {
+    /// Creates an input item that loads its image file from an item provider (e.g. the photo picker or drag and drop).
+    /// - Parameter itemProvider: The provider supplying an image.
+    init(itemProvider: NSItemProvider) {
+        self.init(source: .fileURLHandler(handler: { action in
+            itemProvider.loadFileRepresentation(
+                forTypeIdentifier: UTType.image.identifier
+            ) { url, error in
+                if let url {
+                    action(.success(url))
+                } else {
+                    action(.failure(error ?? CocoaError(.fileReadUnknown)))
+                }
+            }
+        }))
     }
 }
 
