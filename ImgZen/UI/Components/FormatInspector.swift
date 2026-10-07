@@ -49,12 +49,13 @@ struct FormatInspector: View {
             selectedImageCompressionQuality: $selectedImageCompressionQuality
         )
         .safeAreaBar(edge: .bottom) {
+            // Same order as on iPhone, with Add in the trailing corner.
             HStack(spacing: 12) {
+                ConvertButton(action: onConvert)
                 ImageSourceSelection(
                     addFromPhotosAction: addFromPhotosAction,
                     addFromFilesAction: addFromFilesAction
                 )
-                ConvertButton(action: onConvert)
             }
             .padding(16)
         }

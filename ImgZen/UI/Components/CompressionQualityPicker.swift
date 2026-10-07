@@ -1,82 +1,72 @@
 import SwiftUI
 
-/// A picker component for selecting image compression quality with preset buttons and a slider.
+/// Picks the image quality of lossy formats, with presets for the common choices and a slider for fine-tuning.
+/// Laid out as a single row, so a list shows it without separators between its parts.
 struct CompressionQualityPicker: View {
     @Binding var quality: Double
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 8) {
-                QualityButton(title: String(localized: "quality.low"), value: 0.60, selectedQuality: $quality)
-                QualityButton(title: String(localized: "quality.med"), value: 0.75, selectedQuality: $quality)
-                QualityButton(title: String(localized: "quality.high"), value: 0.90, selectedQuality: $quality)
-                QualityButton(title: String(localized: "quality.max"), value: 1.0, selectedQuality: $quality)
-            }
+    private static let presets: [(title: String, value: Double)] = [
+        (String(localized: "quality.low"), 0.60),
+        (String(localized: "quality.med"), 0.75),
+        (String(localized: "quality.high"), 0.90),
+        (String(localized: "quality.max"), 1.0)
+    ]
 
-            VStack(spacing: 8) {
-                Slider(value: $quality, in: 0.0...1.0, step: 0.01) {
-                    Text(String(localized: "label.compressionQuality"))
+    /// Rounds slider values to whole percents, so reaching a preset with the slider selects it exactly.
+    private var roundedQuality: Binding<Double> {
+        Binding(
+            get: { quality },
+            set: { quality = ($0 * 100).rounded() / 100 }
+        )
+    }
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Picker(String(localized: "label.compressionQuality"), selection: roundedQuality) {
+                ForEach(Self.presets, id: \.value) { preset in
+                    Text(preset.title).tag(preset.value)
                 }
-                .tint(.accentColor)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            VStack(spacing: 6) {
+                HStack(spacing: 12) {
+                    Slider(value: roundedQuality, in: 0.0...1.0, step: 0.01) {
+                        Text(String(localized: "label.compressionQuality"))
+                    }
+
+                    Text(quality.formatted(.percent.precision(.fractionLength(0))))
+                        .font(.body.weight(.semibold))
+                        .monospacedDigit()
+                        .contentTransition(.numericText(value: quality))
+                        .frame(minWidth: 48, alignment: .trailing)
+                        .accessibilityHidden(true)
+                }
 
                 HStack {
                     Text(String(localized: "quality.mostCompression"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
                     Spacer()
-
-                    Text(quality.formatted(.percent.precision(.fractionLength(0))))
-                        .font(.title2.bold())
-                        .monospacedDigit()
-                        .contentTransition(.numericText(value: quality))
-                        .animation(.snappy, value: quality)
-
-                    Spacer()
-
                     Text(String(localized: "quality.highestQuality"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
+                .font(.caption)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             }
         }
-    }
-}
-
-/// A button for selecting a preset compression quality value.
-struct QualityButton: View {
-    let title: String
-    let value: Double
-    @Binding var selectedQuality: Double
-
-    var isSelected: Bool {
-        selectedQuality == value
-    }
-
-    var body: some View {
-        Button(action: {
-            withAnimation(.snappy) {
-                selectedQuality = value
-            }
-        }) {
-            Text(title)
-                .font(.subheadline.weight(.medium))
-                .frame(maxWidth: .infinity, minHeight: 44)
-                .foregroundStyle(isSelected ? Color.white : Color.primary)
-                .background(isSelected ? Color.accentColor : Color(.tertiarySystemFill), in: .capsule)
-                .contentShape(.capsule)
-        }
-        .buttonStyle(.plain)
+        .padding(.vertical, 6)
+        .animation(.snappy, value: quality)
         // Ticks when a preset is reached, by tapping it or by dragging the slider across it.
-        .sensoryFeedback(.selection, trigger: isSelected) { _, isSelected in isSelected }
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .sensoryFeedback(.selection, trigger: quality) { _, quality in
+            Self.presets.contains { $0.value == quality }
+        }
     }
 }
 
 #Preview {
     @Previewable @State var compressionQuality: Double = 0.75
 
-    CompressionQualityPicker(quality: $compressionQuality)
-        .padding()
+    Form {
+        CompressionQualityPicker(quality: $compressionQuality)
+    }
 }

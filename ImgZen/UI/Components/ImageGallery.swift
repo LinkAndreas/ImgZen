@@ -38,69 +38,131 @@ struct ImageGallery: View {
                 spacing: 12
             ) {
                 ForEach(items) { item in
-                    AsyncResourceView(
-                        load: {
-                            let (image, metadata) = try await Task.detached(
-                                priority: .userInitiated
-                            ) { @concurrent in
-                                let (metadata, imageData) = try await item.imageInfo()
-                                let image = UIImage(data: imageData)
-                                return (image, metadata)
-                            }.value
-                            return (image, metadata)
-                        },
-                        notRequestedView: { load in
-                            PlaceholderTile()
-                                .onFirstAppear(perform: load)
-                        },
-                        loadingView: {
-                            PlaceholderTile {
-                                ProgressView()
-                            }
-                        },
-                        failureView: { _, retry in
-                            PlaceholderTile {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "exclamationmark.triangle")
-                                        .font(.title2)
-                                        .foregroundStyle(.secondary)
-                                    Text(String(localized: "label.imageUnavailable"))
-                                        .font(.footnote)
-                                        .foregroundStyle(.secondary)
-                                        .multilineTextAlignment(.center)
-                                    Button(String(localized: "button.tryAgain"), action: retry)
-                                        .buttonStyle(.bordered)
-                                        .controlSize(.small)
-                                }
-                                .padding(8)
-                            }
-                        },
-                        successView: { (image: UIImage?, metadata: ImageMetadata) in
-                            let presenter = ImageItemPresenter(metadata: metadata)
-                            let cell = ImageCell(
-                                title: presenter.title,
-                                subtitle: presenter.subtitle,
-                                badge: presenter.badge,
-                                image: image.map(Image.init(uiImage:)),
-                                contextActions: item.contextActions,
-                                isSelected: item.isSelected
-                            )
-
-                            if let primaryAction = item.primaryAction {
-                                Button(action: primaryAction) {
-                                    cell
-                                }
-                                .buttonStyle(.plain)
-                            } else {
-                                cell
-                            }
-                        }
-                    )
+                    GalleryTile(item: item)
                 }
             }
             .animation(.smooth, value: items)
             .padding(.horizontal)
+            .padding(.bottom)
         }
+        // Grouped background, so the cells stand out from it in light and dark mode.
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+/// One square tile of the gallery: loads its image, and handles taps, selection and the context menu.
+/// The selection is drawn here rather than in the loaded content, so it updates immediately
+/// and stays independent of the image's loading state.
+private struct GalleryTile: View {
+    let item: ImageGallery.Item
+
+    private static let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+
+    var body: some View {
+        Group {
+            if let primaryAction = item.primaryAction {
+                Button(action: primaryAction) {
+                    content
+                }
+                .buttonStyle(.plain)
+            } else {
+                content
+            }
+        }
+        .contentShape(.hoverEffect, Self.shape)
+        .hoverEffect(.lift)
+        .contextMenu {
+            ForEach(item.contextActions) { action in
+                Button(role: action.destructive ? .destructive : nil) {
+                    action.execute()
+                } label: {
+                    Label(action.title, systemImage: action.systemImage)
+                }
+            }
+        }
+        .accessibilityAddTraits(item.isSelected == true ? .isSelected : [])
+    }
+
+    private var content: some View {
+        // Only the loading closure crosses into the background task; the item's actions stay on the main actor.
+        let imageInfo = item.imageInfo
+        return AsyncResourceView(
+            load: {
+                try await Task.detached(priority: .userInitiated) { @concurrent in
+                    let (metadata, imageData) = try await imageInfo()
+                    return (UIImage(data: imageData), metadata)
+                }.value
+            },
+            notRequestedView: { load in
+                PlaceholderTile()
+                    .onFirstAppear(perform: load)
+            },
+            loadingView: {
+                PlaceholderTile {
+                    ProgressView()
+                }
+            },
+            failureView: { _, retry in
+                PlaceholderTile {
+                    VStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text(String(localized: "label.imageUnavailable"))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                        Button(String(localized: "button.tryAgain"), action: retry)
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                    }
+                    .padding(8)
+                }
+            },
+            successView: { (image: UIImage?, metadata: ImageMetadata) in
+                let presenter = ImageItemPresenter(metadata: metadata)
+                ImageCell(
+                    title: presenter.title,
+                    subtitle: presenter.subtitle,
+                    badge: presenter.badge,
+                    image: image.map(Image.init(uiImage:))
+                )
+            }
+        )
+        .aspectRatio(1.0, contentMode: .fit)
+        .clipShape(Self.shape)
+        .overlay {
+            Self.shape.strokeBorder(
+                item.isSelected == true ? Color.accentColor : Color.secondary.opacity(0.2),
+                lineWidth: item.isSelected == true ? 3 : 0.5
+            )
+        }
+        .overlay(alignment: .topTrailing) {
+            if let isSelected = item.isSelected {
+                SelectionIndicator(isSelected: isSelected)
+                    .padding(8)
+            }
+        }
+        // Dims unselected images slightly, so the selection reads at a glance, as in Photos.
+        .opacity(item.isSelected == false ? 0.6 : 1)
+        .animation(.smooth(duration: 0.15), value: item.isSelected)
+        .contentShape(Self.shape)
+    }
+}
+
+/// The checkmark badge showing whether an image is selected.
+private struct SelectionIndicator: View {
+    let isSelected: Bool
+
+    var body: some View {
+        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+            .font(.title2)
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.25))
+            .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.15)).padding(2))
+            .shadow(color: .black.opacity(0.2), radius: 2)
+            .contentTransition(.symbolEffect(.replace))
+            .accessibilityHidden(true)
     }
 }
 
