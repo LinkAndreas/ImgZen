@@ -28,15 +28,13 @@ struct Converter: View {
     var body: some View {
         WithContext {
             let fileURLResolver = FileURLResolver()
-            fileURLResolver.removeCachedFiles()
-            // Picked photos were copied here before 1.1.0 and never cleaned up.
-            try? FileManager.default.removeItem(at: .applicationSupportDirectory.appending(path: "input"))
             let imageService = ImageService(
                 imageRepository: ImageFromURLRepository()
             )
+            // Each window converts into its own folder, so windows don't delete each other's results.
             let storageService = StorageService(
-                baseDirectory: .applicationSupportDirectory,
-                subdirectoryName: "output"
+                baseDirectory: Constants.outputDirectory,
+                subdirectoryName: UUID().uuidString
             )
             let conversionService = ImageConversionService(
                 metadata: imageService.metadata(for:),

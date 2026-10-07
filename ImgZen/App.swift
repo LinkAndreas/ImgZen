@@ -6,6 +6,10 @@ typealias IsOnboardingCompleted = Bool
 /// The main entry point for the app.
 @main
 struct ImgZenApp: App {
+    init() {
+        LaunchCleanup.removeLeftovers()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootFlow(
