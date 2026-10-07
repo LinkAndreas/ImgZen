@@ -19,11 +19,13 @@ struct InputView: View {
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @State private var inputService = InputService()
-    @State private var isSidePanelLayout = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isDropTargeted = false
 
-    /// Window width from which the control panel moves next to the gallery instead of below it.
-    nonisolated private static let sidePanelMinimumWidth: CGFloat = 900
+    /// Regular width windows (iPad) show the settings in an inspector column instead of a bottom panel.
+    private var isInspectorLayout: Bool {
+        horizontalSizeClass == .regular
+    }
 
     private var isBottomControlPanelVisible: Bool {
         !inputService.items.isEmpty
@@ -83,15 +85,25 @@ struct InputView: View {
             .opacity(inputService.items.isEmpty ? 1.0 : 0.0)
         }
         .safeAreaInset(edge: .bottom) {
-            if isBottomControlPanelVisible && !isSidePanelLayout {
-                controlPanel(fillsHeight: false)
+            if isBottomControlPanelVisible && !isInspectorLayout {
+                BottomControlPanel(
+                    selectedImageFormat: $selectedImageFormat,
+                    selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                    addFromPhotosAction: { sheet = .photoPicker },
+                    addFromFilesAction: { sheet = .filePicker },
+                    onConvert: convert
+                )
             }
         }
-        .safeAreaInset(edge: .trailing) {
-            if isBottomControlPanelVisible && isSidePanelLayout {
-                controlPanel(fillsHeight: true)
-                    .frame(width: 400)
-            }
+        .inspector(isPresented: .constant(isBottomControlPanelVisible && isInspectorLayout)) {
+            FormatInspector(
+                selectedImageFormat: $selectedImageFormat,
+                selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                addFromPhotosAction: { sheet = .photoPicker },
+                addFromFilesAction: { sheet = .filePicker },
+                onConvert: convert
+            )
+            .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
         }
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
             let items = providers
@@ -110,11 +122,6 @@ struct InputView: View {
             }
         }
         .animation(.smooth(duration: 0.2), value: isDropTargeted)
-        .onGeometryChange(for: Bool.self) { geometry in
-            geometry.size.width >= Self.sidePanelMinimumWidth
-        } action: { isWide in
-            isSidePanelLayout = isWide
-        }
         .toolbar {
             if !inputService.items.isEmpty {
                 ToolbarItem(placement: .topBarLeading) {
@@ -167,21 +174,12 @@ struct InputView: View {
 }
 
 extension InputView {
-    private func controlPanel(fillsHeight: Bool) -> some View {
-        BottomControlPanel(
-            selectedImageFormat: $selectedImageFormat,
-            selectedImageCompressionQuality: $selectedImageCompressionQuality,
-            fillsHeight: fillsHeight,
-            addFromPhotosAction: { sheet = .photoPicker },
-            addFromFilesAction: { sheet = .filePicker },
-            onConvert: {
-                let outputFormat = ImageFormat(
-                    imageFormatSelection: selectedImageFormat,
-                    imageCompressionQuality: selectedImageCompressionQuality
-                )
-                onConvert(inputService.items, outputFormat)
-            }
+    private func convert() {
+        let outputFormat = ImageFormat(
+            imageFormatSelection: selectedImageFormat,
+            imageCompressionQuality: selectedImageCompressionQuality
         )
+        onConvert(inputService.items, outputFormat)
     }
 }
 
