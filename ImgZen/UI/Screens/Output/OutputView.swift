@@ -67,28 +67,36 @@ struct OutputView: View {
         )
         .safeAreaBar(edge: .bottom) {
             // Selecting and sharing are the main actions here, so they sit within thumb reach.
-            HStack(spacing: 12) {
-                Button(
-                    String(localized: areAllItemsSelected ? "button.deselectAll" : "button.selectAll"),
-                    action: toggleSelectAll
-                )
-                .buttonStyle(.glass)
-                .controlSize(.large)
+            GlassEffectContainer(spacing: 12) {
+                HStack(spacing: 12) {
+                    Button(action: toggleSelectAll) {
+                        // Sized for the longer of both titles, so the share button doesn't resize when it switches.
+                        ZStack {
+                            Text(String(localized: "button.selectAll")).hidden()
+                            Text(String(localized: "button.deselectAll")).hidden()
+                            Text(String(localized: areAllItemsSelected ? "button.deselectAll" : "button.selectAll"))
+                        }
+                    }
+                    .buttonStyle(.glass)
+                    .controlSize(.large)
 
-                // ShareLink presents the system share sheet, anchored to the button as a popover on iPad.
-                ShareLink(items: selectedFileURLs) {
-                    Label(
-                        String(format: String(localized: "button.shareCount"), selectedItemIDs.count),
-                        systemImage: "square.and.arrow.up"
-                    )
-                    .frame(maxWidth: .infinity)
+                    // ShareLink presents the system share sheet, anchored to the button as a popover on iPad.
+                    ShareLink(items: selectedFileURLs) {
+                        Label(
+                            String(format: String(localized: "button.shareCount"), selectedItemIDs.count),
+                            systemImage: "square.and.arrow.up"
+                        )
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.glassProminent)
+                    .controlSize(.large)
+                    .disabled(selectedItemIDs.isEmpty)
                 }
-                .buttonStyle(.glassProminent)
-                .controlSize(.large)
-                .disabled(selectedItemIDs.isEmpty)
             }
+            // Same spacing as the bottom bar of the input screen.
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
             .frame(maxWidth: 560)
-            .padding(20)
         }
         .sensoryFeedback(.selection, trigger: selectedItemIDs)
         .sheet(item: $shareItem) { item in

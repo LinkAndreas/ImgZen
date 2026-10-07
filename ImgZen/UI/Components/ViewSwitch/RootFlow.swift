@@ -22,8 +22,9 @@ struct RootFlow<Onboarding: View, Converter: View>: View {
     var body: some View {
         ZStack {
             if isOnboardingCompleted {
+                // A crossfade, since sliding in a navigation stack makes its large title jump into place.
                 converter()
-                    .transition(.move(edge: .trailing))
+                    .transition(.opacity)
             } else {
                 onboarding {
                     withAnimation {
