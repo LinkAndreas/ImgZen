@@ -45,7 +45,8 @@ struct Onboarding: View {
 
             VStack(spacing: 0) {
                 if isRegular {
-                    // Keep logo, page and controls together in the middle of large screens.
+                    // Center logo and page in the space above the controls, which stay at the bottom
+                    // edge of large screens so they're within thumb reach while holding the iPad.
                     Spacer()
 
                     logo
@@ -67,9 +68,7 @@ struct Onboarding: View {
                 .animation(.easeInOut(duration: 0.25), value: viewModel.currentPage)
                 .frame(maxHeight: isRegular ? 340 : .infinity)
 
-                if !isRegular {
-                    Spacer()
-                }
+                Spacer()
 
                 OnboardingPageIndicator(
                     pages: viewModel.pages,
@@ -97,14 +96,10 @@ struct Onboarding: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.top, 4)
-                .padding(.bottom, 8)
-                    .opacity(viewModel.isLastPage ? 0 : 1)
-                    .disabled(viewModel.isLastPage)
-                    .accessibilityHidden(viewModel.isLastPage)
-
-                if isRegular {
-                    Spacer()
-                }
+                .padding(.bottom, isRegular ? 24 : 8)
+                .opacity(viewModel.isLastPage ? 0 : 1)
+                .disabled(viewModel.isLastPage)
+                .accessibilityHidden(viewModel.isLastPage)
             }
         }
     }
