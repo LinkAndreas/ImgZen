@@ -21,6 +21,12 @@ struct OutputView: View {
     }
     
     @State private var shareItem: ShareItem?
+    /// Images to share; all of them are selected initially.
+    @State private var selectedItemIDs: Set<OutputItem.ID>
+
+    private var areAllItemsSelected: Bool {
+        selectedItemIDs.count == items.count
+    }
     
     private let items: [OutputItem]
     private let imageData: @Sendable @concurrent (ImageSource, ImageResolution) async throws -> ImageData
@@ -37,6 +43,7 @@ struct OutputView: View {
         metadata: @Sendable @concurrent @escaping (ImageSource) async throws -> ImageMetadata
     ) {
         self.items = items
+        self._selectedItemIDs = State(initialValue: Set(items.map(\.id)))
         self.imageData = imageData
         self.metadata = metadata
     }
@@ -58,21 +65,39 @@ struct OutputView: View {
                             destructive: false,
                             execute: { share(item: item) }
                         )
-                    ]
+                    ],
+                    primaryAction: { toggleSelection(of: item) },
+                    isSelected: selectedItemIDs.contains(item.id)
                 )
             }
         )
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+        .safeAreaBar(edge: .bottom) {
+            // Selecting and sharing are the main actions here, so they sit within thumb reach.
+            HStack(spacing: 12) {
                 Button(
-                    "",
-                    systemImage: "square.and.arrow.up",
-                    action: shareAll
+                    String(localized: areAllItemsSelected ? "button.deselectAll" : "button.selectAll"),
+                    action: toggleSelectAll
                 )
+                .buttonStyle(.glass)
+                .controlSize(.large)
+
+                Button(action: shareSelectedItems) {
+                    Label(
+                        String(format: String(localized: "button.shareCount"), selectedItemIDs.count),
+                        systemImage: "square.and.arrow.up"
+                    )
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .disabled(selectedItemIDs.isEmpty)
             }
+            .frame(maxWidth: 560)
+            .padding(20)
         }
         .sheet(item: $shareItem) { item in
             ShareSheet(items: item.fileURLs)
+                .presentationDetents([.medium, .large])
         }
         .navigationTitle(String(localized: "navigation.readyToShare"))
     }
@@ -83,9 +108,26 @@ struct OutputView: View {
         shareItem = ShareItem(fileURL: item.url)
     }
     
-    /// Presents share sheet for all output items.
-    private func shareAll() {
-        let fileURLs: [URL] = items.map(\.url)
+    /// Selects or deselects an output item for sharing.
+    /// - Parameter item: The output item to toggle.
+    private func toggleSelection(of item: OutputItem) {
+        if selectedItemIDs.contains(item.id) {
+            selectedItemIDs.remove(item.id)
+        } else {
+            selectedItemIDs.insert(item.id)
+        }
+    }
+
+    /// Selects all output items, or deselects them if all are selected.
+    private func toggleSelectAll() {
+        selectedItemIDs = areAllItemsSelected ? [] : Set(items.map(\.id))
+    }
+
+    /// Presents share sheet for the selected output items.
+    private func shareSelectedItems() {
+        let fileURLs = items
+            .filter { selectedItemIDs.contains($0.id) }
+            .map(\.url)
         shareItem = ShareItem(fileURLs: fileURLs)
     }
 }

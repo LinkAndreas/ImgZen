@@ -134,6 +134,7 @@ private struct SheetContent: View {
                     }
                 }
             }
+            .contentMargins(.top, 16, for: .scrollContent)
             .navigationTitle(String(localized: "navigation.format"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -142,6 +143,8 @@ private struct SheetContent: View {
             }
         }
         .presentationBackground(Color(.systemBackground))
+        // Opening at half height keeps the formats and the close button within thumb reach.
+        .presentationDetents([.medium, .large])
         .toolbarStaysInTopBar()
     }
 }
