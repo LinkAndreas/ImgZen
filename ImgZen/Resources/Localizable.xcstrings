@@ -28,13 +28,30 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle Bilder wirklich löschen?"
+            "value" : "Alle Bilder entfernen?"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove all images?"
+          }
+        }
+      }
+    },
+    "alert.removeAllImages.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Originale in Fotos und Dateien bleiben unverändert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your originals in Photos and Files stay untouched."
           }
         }
       }
@@ -158,6 +175,23 @@
         }
       }
     },
+    "button.files" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dateien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Files"
+          }
+        }
+      }
+    },
     "button.more" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -191,6 +225,23 @@
         }
       }
     },
+    "button.photos" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos"
+          }
+        }
+      }
+    },
     "button.remove" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -208,19 +259,19 @@
         }
       }
     },
-    "button.removeAll" : {
+    "button.removeAllImages" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle entfernen"
+            "value" : "Alle Bilder entfernen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove All"
+            "value" : "Remove All Images"
           }
         }
       }
@@ -325,6 +376,23 @@
         }
       }
     },
+    "button.startOver" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu beginnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Over"
+          }
+        }
+      }
+    },
     "button.tryAgain" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -348,13 +416,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unkomprimiert, sehr große Dateien"
+            "value" : "Unkomprimiert. Für ältere Software."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uncompressed, very large files"
+            "value" : "Uncompressed. For older software."
           }
         }
       }
@@ -365,13 +433,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modernes, effizientes Format"
+            "value" : "Etwa halb so groß wie JPEG. Ideal für Apple-Geräte."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "High-efficiency, modern format"
+            "value" : "About half the size of JPEG. Best on Apple devices."
           }
         }
       }
@@ -382,13 +450,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gute Qualität bei kleiner Dateigröße"
+            "value" : "Funktioniert überall. Ideal zum Teilen von Fotos."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Good quality, small file size"
+            "value" : "Works everywhere. Best for sharing photos."
           }
         }
       }
@@ -399,13 +467,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verlustfrei, unterstützt Transparenz"
+            "value" : "Scharfe Grafiken und Screenshots. Mit Transparenz."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lossless, supports transparency"
+            "value" : "Sharp graphics and screenshots. Keeps transparency."
           }
         }
       }
@@ -416,13 +484,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal für Druck oder Archivierung"
+            "value" : "Ideal zum Drucken und Archivieren."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal for print or archiving"
+            "value" : "Best for printing and archiving."
           }
         }
       }
@@ -433,13 +501,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleine Dateien, gute Bildqualität"
+            "value" : "Kleine Dateien für Websites."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Smaller files, good image quality"
+            "value" : "Small files for websites."
           }
         }
       }
@@ -457,6 +525,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Image Quality"
+          }
+        }
+      }
+    },
+    "label.compressionQuality.footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höhere Qualität bewahrt mehr Details, erzeugt aber größere Dateien."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Higher quality keeps more detail but makes files larger."
+          }
+        }
+      }
+    },
+    "label.compressionQuality.losslessFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist verlustfrei und behält immer die volle Qualität."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is lossless and always keeps full quality."
           }
         }
       }
@@ -529,6 +631,23 @@
         }
       }
     },
+    "label.startOverSubtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernt alle Bilder"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removes all images"
+          }
+        }
+      }
+    },
     "mail.feedbackBody" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -575,23 +694,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Email is not available on this device."
-          }
-        }
-      }
-    },
-    "navigation.format" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format"
           }
         }
       }
@@ -812,7 +914,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Highest quality"
+            "value" : "Best quality"
           }
         }
       }
@@ -840,13 +942,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max"
+            "value" : "Maximal"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max"
+            "value" : "Maximum"
           }
         }
       }
@@ -863,7 +965,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Med"
+            "value" : "Medium"
           }
         }
       }
@@ -874,13 +976,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max. Komprimierung"
+            "value" : "Kleinere Dateien"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Max. compression"
+            "value" : "Smaller files"
           }
         }
       }
@@ -902,6 +1004,23 @@
         }
       }
     },
+    "section.losslessFormats.footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Details bleiben erhalten, daher sind die Dateien größer."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every detail is kept, so files are larger."
+          }
+        }
+      }
+    },
     "section.lossyFormats" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -915,6 +1034,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lossy formats"
+          }
+        }
+      }
+    },
+    "section.lossyFormats.footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleinere Dateien. Je nach gewählter Qualität gehen Details verloren."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smaller files. Some detail is lost, depending on the quality you choose."
           }
         }
       }

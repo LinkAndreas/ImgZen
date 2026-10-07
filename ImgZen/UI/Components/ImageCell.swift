@@ -1,13 +1,13 @@
 import SwiftUI
 
-/// A cell component for displaying an image with metadata and context menu actions.
-struct ImageCell: View {    
+/// A cell displaying an image with its format and metadata.
+/// Selection, taps and context menus are handled by the gallery tile around it,
+/// so they also work while the image is still loading.
+struct ImageCell: View {
     private let title: String
     private let subtitle: String
     private let badge: String
     private let image: Image?
-    private let contextActions: [ContextAction]
-    private let isSelected: Bool?
 
     /// Creates an image cell.
     /// - Parameters:
@@ -15,117 +15,56 @@ struct ImageCell: View {
     ///   - subtitle: Subtitle text (typically dimensions and file size).
     ///   - badge: Badge text (typically format name).
     ///   - image: Optional SwiftUI Image to display.
-    ///   - contextActions: Actions available in the context menu.
-    ///   - isSelected: The selection state, or nil if the cell isn't selectable.
     init(
         title: String,
         subtitle: String,
         badge: String,
-        image: Image?,
-        contextActions: [ContextAction] = [],
-        isSelected: Bool? = nil
+        image: Image?
     ) {
         self.title = title
         self.subtitle = subtitle
         self.badge = badge
         self.image = image
-        self.contextActions = contextActions
-        self.isSelected = isSelected
     }
 
     var body: some View {
-        ZStack {
-            Color(.secondarySystemGroupedBackground)
-            VStack(spacing: 0) {
-                ZStack {
-                    GeometryReader { geometry in
-                        if let image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: geometry.size.width, height: geometry.size.height)
-                                .clipped()
-                        } else {
-                            Color.clear
-                        }
+        VStack(spacing: 0) {
+            Color.clear
+                .overlay {
+                    if let image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
                     }
+                }
+                .clipped()
+                .overlay(alignment: .bottomTrailing) {
                     Badge(text: badge)
                         .padding(6)
-                        .frame(
-                            maxWidth: .infinity,
-                            maxHeight: .infinity,
-                            alignment: .bottomTrailing
-                        )
                 }
-                VStack(alignment: .leading) {
-                    Text(subtitle)
-                        .lineLimit(2)
-                        .font(.caption)
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 12)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
+
+            Text(subtitle)
+                .font(.caption)
+                .lineLimit(2)
                 .multilineTextAlignment(.leading)
-            }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 10)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .clipShape(
-            RoundedRectangle(
-                cornerRadius: 12,
-                style: .continuous
-            )
-        )
-        .overlay(
-            RoundedRectangle(
-                cornerRadius: 12,
-                style: .continuous
-            )
-            .strokeBorder(
-                isSelected == true ? Color.accentColor : Color.secondary.opacity(0.2),
-                lineWidth: isSelected == true ? 3 : 0.5
-            )
-        )
-        .overlay(alignment: .topTrailing) {
-            if let isSelected {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title2)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.25))
-                    .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.15)).padding(2))
-                    .contentTransition(.symbolEffect(.replace))
-                    .padding(8)
-            }
-        }
-        .opacity(isSelected == false ? 0.7 : 1)
-        .animation(.smooth(duration: 0.15), value: isSelected)
+        .background(Color(.secondarySystemGroupedBackground))
         .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(isSelected == true ? .isSelected : [])
-        .aspectRatio(1.0, contentMode: .fit)
-        .contentShape(.hoverEffect, RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .hoverEffect(.lift)
-        .contextMenu {
-            ForEach(contextActions) { action in
-                Button(role: action.destructive ? .destructive : nil) {
-                    action.execute()
-                } label: {
-                    Label(action.title, systemImage: action.systemImage)
-                }
-            }
-        }
+        .accessibilityLabel(title)
+        .accessibilityValue("\(badge), \(subtitle)")
     }
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    ZStack {
-        ImageCell(
-            title: "Beach.heic",
-            subtitle: "4032 x 3024 px · 22,4 MB",
-            badge: "PNG",
-            image: Image(systemName: ""),
-            contextActions: []
-        )
-        .frame(width: 200, height: 200)
-    }
-    .frame(width: 300, height: 300)
+    ImageCell(
+        title: "Beach.heic",
+        subtitle: "4032 x 3024 px · 22,4 MB",
+        badge: "PNG",
+        image: Image(systemName: "photo")
+    )
+    .frame(width: 200, height: 200)
 }
