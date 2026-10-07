@@ -834,6 +834,23 @@
         }
       }
     },
+    "progress.completed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Bilder konvertiert"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All images converted"
+          }
+        }
+      }
+    },
     "progress.convertingImages" : {
       "extractionState" : "manual",
       "localizations" : {

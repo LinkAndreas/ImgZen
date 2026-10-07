@@ -11,6 +11,7 @@ public struct ProgressBar: View {
 
     private let title: String
     private let subtitle: String?
+    private let completedSubtitle: String?
     private let state: State
     private let onCancel: () -> Void
 
@@ -18,16 +19,19 @@ public struct ProgressBar: View {
     /// - Parameters:
     ///   - title: Title text displayed above the progress indicator.
     ///   - subtitle: Optional subtitle text.
+    ///   - completedSubtitle: Optional subtitle replacing `subtitle` once all work is done.
     ///   - state: The current progress state.
     ///   - onCancel: Action to perform when cancel is tapped.
     public init(
         title: String,
         subtitle: String? = nil,
+        completedSubtitle: String? = nil,
         state: State,
         onCancel: @escaping () -> Void
     ) {
         self.title = title
         self.subtitle = subtitle
+        self.completedSubtitle = completedSubtitle
         self.state = state
         self.onCancel = onCancel
     }
@@ -47,7 +51,7 @@ public struct ProgressBar: View {
     public var body: some View {
         ZStack {
             Color.black
-                .opacity(0.2)
+                .opacity(0.3)
                 .ignoresSafeArea()
 
             VStack(spacing: 20) {
@@ -66,7 +70,7 @@ public struct ProgressBar: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.primary)
 
-                    if let subtitle {
+                    if let subtitle = isComplete ? (completedSubtitle ?? subtitle) : subtitle {
                         Text(subtitle)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -111,15 +115,19 @@ public struct ProgressBar: View {
                     Text(String(localized: "button.cancel"))
                         .frame(maxWidth: .infinity)
                 }
-                // Not glass, since the card already is; glass shouldn't sit on glass.
                 .buttonStyle(.bordered)
                 .controlSize(.large)
+                // Hidden once done, keeping its space so the card doesn't change size as it closes.
+                .opacity(isComplete ? 0 : 1)
                 .disabled(isComplete)
+                .accessibilityHidden(isComplete)
             }
             .animation(.smooth, value: state)
             .frame(maxWidth: 280)
             .padding(24)
-            .glassEffect(.regular, in: .rect(cornerRadius: 32))
+            // An opaque material keeps the text readable over the photos; clear glass let them show through.
+            .background(.thickMaterial, in: .rect(cornerRadius: 32))
+            .shadow(color: .black.opacity(0.2), radius: 24, y: 8)
             .padding(24)
             .accessibilityElement(children: .contain)
         }

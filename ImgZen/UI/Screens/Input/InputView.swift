@@ -186,6 +186,8 @@ struct InputView: View {
             })
         }
         .navigationTitle(String(localized: "app.name"))
+        // An inline title, as in Photos: the grid scrolls under a steady bar instead of collapsing a large title.
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

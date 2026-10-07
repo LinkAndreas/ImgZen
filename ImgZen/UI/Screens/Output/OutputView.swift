@@ -104,6 +104,7 @@ struct OutputView: View {
                 .presentationDetents([.medium, .large])
         }
         .navigationTitle(String(localized: "navigation.readyToShare"))
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     /// Presents share sheet for a single output item.
