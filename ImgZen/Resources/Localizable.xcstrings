@@ -68,7 +68,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select from Files"
+            "value" : "Choose from Files"
           }
         }
       }
@@ -79,13 +79,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus der Fotogalerie auswählen"
+            "value" : "Aus Fotos auswählen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select from Photo Gallery"
+            "value" : "Choose from Photos"
           }
         }
       }
@@ -158,6 +158,23 @@
         }
       }
     },
+    "button.more" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
+    },
     "button.next" : {
       "localizations" : {
         "de" : {
@@ -170,23 +187,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
-          }
-        }
-      }
-    },
-    "button.notReally" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kann besser werden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Needs work"
           }
         }
       }
@@ -238,6 +238,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Select All"
+          }
+        }
+      }
+    },
+    "button.sendFeedback" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feedback senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
           }
         }
       }
@@ -308,19 +325,19 @@
         }
       }
     },
-    "button.yesILoveIt" : {
+    "button.tryAgain" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gefällt mir"
+            "value" : "Erneut versuchen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Love it"
+            "value" : "Try Again"
           }
         }
       }
@@ -461,19 +478,53 @@
         }
       }
     },
+    "label.emptyStateDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle Fotos oder Dateien zum Konvertieren aus oder lege Bilder hier ab."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose photos or files to convert, or drop images here."
+          }
+        }
+      }
+    },
+    "label.imageUnavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bild nicht verfügbar"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can’t Load Image"
+          }
+        }
+      }
+    },
     "label.readyToSelectImages" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle Bilder aus, um zu starten"
+            "value" : "Noch keine Bilder"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select images to get started"
+            "value" : "No Images Yet"
           }
         }
       }
@@ -830,40 +881,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Max. compression"
-          }
-        }
-      }
-    },
-    "rating.enjoyingApp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gefällt dir die App?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enjoying the app?"
-          }
-        }
-      }
-    },
-    "rating.likeUsingApp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Feedback hilft uns weiter."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your feedback helps us improve."
           }
         }
       }

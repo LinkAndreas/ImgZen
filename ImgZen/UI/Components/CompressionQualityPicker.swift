@@ -6,7 +6,7 @@ struct CompressionQualityPicker: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 QualityButton(title: String(localized: "quality.low"), value: 0.60, selectedQuality: $quality)
                 QualityButton(title: String(localized: "quality.med"), value: 0.75, selectedQuality: $quality)
                 QualityButton(title: String(localized: "quality.high"), value: 0.90, selectedQuality: $quality)
@@ -14,27 +14,31 @@ struct CompressionQualityPicker: View {
             }
 
             VStack(spacing: 8) {
-                Slider(value: $quality, in: 0.0...1.0, step: 0.01)
-                    .accentColor(.accent)
+                Slider(value: $quality, in: 0.0...1.0, step: 0.01) {
+                    Text(String(localized: "label.compressionQuality"))
+                }
+                .tint(.accentColor)
 
                 HStack {
                     Text(String(localized: "quality.mostCompression"))
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
 
                     Spacer()
 
-                    Text("\(quality.formatted(.percent.precision(.fractionLength(0))))")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
+                    Text(quality.formatted(.percent.precision(.fractionLength(0))))
+                        .font(.title2.bold())
+                        .monospacedDigit()
+                        .contentTransition(.numericText(value: quality))
+                        .animation(.snappy, value: quality)
 
                     Spacer()
 
                     Text(String(localized: "quality.highestQuality"))
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
+                .accessibilityHidden(true)
             }
         }
     }
@@ -52,24 +56,21 @@ struct QualityButton: View {
 
     var body: some View {
         Button(action: {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.snappy) {
                 selectedQuality = value
             }
         }) {
             Text(title)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? Color.accentColor : Color(uiColor: .systemGray5))
-                )
-                .foregroundColor(isSelected ? .white : .primary)
-                .shadow(color: isSelected ? Color.accentColor.opacity(0.3) : Color.clear,
-                       radius: isSelected ? 4 : 0, x: 0, y: 2)
+                .font(.subheadline.weight(.medium))
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .background(isSelected ? Color.accentColor : Color(.tertiarySystemFill), in: .capsule)
+                .contentShape(.capsule)
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
+        // Ticks when a preset is reached, by tapping it or by dragging the slider across it.
+        .sensoryFeedback(.selection, trigger: isSelected) { _, isSelected in isSelected }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -77,4 +78,5 @@ struct QualityButton: View {
     @Previewable @State var compressionQuality: Double = 0.75
 
     CompressionQualityPicker(quality: $compressionQuality)
+        .padding()
 }

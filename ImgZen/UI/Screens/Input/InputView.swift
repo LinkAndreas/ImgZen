@@ -35,6 +35,7 @@ struct InputView: View {
     private let metadata: @MainActor (ImageSource) throws -> ImageMetadata
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
+    private let onSendFeedback: () -> Void
 
     /// Creates an InputView.
     /// - Parameters:
@@ -42,16 +43,19 @@ struct InputView: View {
     ///   - metadata: Closure to retrieve image metadata.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
+    ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
         imageData: @escaping @MainActor (ImageSource, ImageResolution) async throws -> ImageData,
         metadata: @escaping @MainActor (ImageSource) throws -> ImageMetadata,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
-        onConvert: @escaping ([InputItem], ImageFormat) -> Void
+        onConvert: @escaping ([InputItem], ImageFormat) -> Void,
+        onSendFeedback: @escaping () -> Void
     ) {
         self.imageData = imageData
         self.metadata = metadata
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
+        self.onSendFeedback = onSendFeedback
     }
 
     var body: some View {
@@ -84,7 +88,7 @@ struct InputView: View {
             )
             .opacity(inputService.items.isEmpty ? 1.0 : 0.0)
         }
-        .safeAreaInset(edge: .bottom) {
+        .safeAreaBar(edge: .bottom) {
             if isBottomControlPanelVisible && !isInspectorLayout {
                 BottomControlPanel(
                     selectedImageFormat: $selectedImageFormat,
@@ -128,24 +132,33 @@ struct InputView: View {
                     Button(
                         String(localized: "button.removeAll"),
                         systemImage: "trash",
-                        action: { isDiscardAllConfirmationShown.toggle() }
+                        role: .destructive,
+                        action: { isDiscardAllConfirmationShown = true }
                     )
-                    .alert(
+                    // A confirmation dialog anchored to the button is the system pattern for destructive actions.
+                    .confirmationDialog(
                         String(localized: "alert.removeAllImages"),
                         isPresented: $isDiscardAllConfirmationShown,
-                        actions: {
-                            Button(String(localized: "button.remove"), role: .destructive, action: {
-                                inputService.removeAll()
-                            })
-
-                            Button(String(localized: "button.cancel"), role: .cancel) {
-                                isDiscardAllConfirmationShown = false
-                            }
+                        titleVisibility: .visible
+                    ) {
+                        Button(String(localized: "button.removeAll"), role: .destructive) {
+                            inputService.removeAll()
                         }
+                    }
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu(String(localized: "button.more"), systemImage: "ellipsis") {
+                    Button(
+                        String(localized: "button.sendFeedback"),
+                        systemImage: "envelope",
+                        action: onSendFeedback
                     )
                 }
             }
         }
+        .sensoryFeedback(.impact(weight: .light), trigger: inputService.items.count) { old, new in new > old }
         .imagePicker(
             isPresented: $sheet[isPresented: .photoPicker],
             selectionLimit: 0

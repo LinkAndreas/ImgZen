@@ -44,40 +44,10 @@ struct FormatInspector: View {
     }
 
     private var settings: some View {
-        Form {
-            Section(String(localized: "section.lossyFormats")) {
-                ForEach(LossyImageFormat.allCases) { format in
-                    FormatListEntry(
-                        title: format.title,
-                        subtitle: format.subtitle,
-                        isSelected: selectedImageFormat == .lossy(format),
-                        action: { selectedImageFormat = .lossy(format) }
-                    )
-                }
-            }
-
-            Section(String(localized: "section.losslessFormats")) {
-                ForEach(LosslessImageFormat.allCases) { format in
-                    FormatListEntry(
-                        title: format.title,
-                        subtitle: format.subtitle,
-                        isSelected: selectedImageFormat == .lossless(format),
-                        action: { selectedImageFormat = .lossless(format) }
-                    )
-                }
-            }
-
-            if selectedImageFormat.isLossy {
-                Section(String(localized: "label.compressionQuality")) {
-                    CompressionQualityPicker(quality: $selectedImageCompressionQuality)
-                        .padding(.vertical, 8)
-                }
-            }
-        }
-        .animation(.smooth(duration: 0.2), value: selectedImageFormat.isLossy)
-        .onChange(of: selectedImageFormat) {
-            selectedImageCompressionQuality = 0.9
-        }
+        FormatSettingsForm(
+            selectedImageFormat: $selectedImageFormat,
+            selectedImageCompressionQuality: $selectedImageCompressionQuality
+        )
         .safeAreaBar(edge: .bottom) {
             HStack(spacing: 12) {
                 ImageSourceSelection(
