@@ -7,9 +7,14 @@ struct ImageGallery: View {
         let id: String
         let imageInfo: @Sendable @concurrent () async throws -> (ImageMetadata, ImageData)
         let contextActions: [ContextAction]
+        /// Action performed when the item is tapped, if any.
+        var primaryAction: (() -> Void)? = nil
+        /// The selection state, or nil if the item isn't selectable.
+        var isSelected: Bool? = nil
 
         static func ==(lhs: Self, rhs: Self) -> Bool {
-            return lhs.id == rhs.id
+            // SwiftUI skips redrawing the gallery when its items compare equal, so include everything displayed.
+            return lhs.id == rhs.id && lhs.isSelected == rhs.isSelected
         }
     }
 
@@ -55,13 +60,23 @@ struct ImageGallery: View {
                         },
                         successView: { (image: UIImage?, metadata: ImageMetadata) in
                             let presenter = ImageItemPresenter(metadata: metadata)
-                            ImageCell(
+                            let cell = ImageCell(
                                 title: presenter.title,
                                 subtitle: presenter.subtitle,
                                 badge: presenter.badge,
                                 image: image.map(Image.init(uiImage:)),
-                                contextActions: item.contextActions
+                                contextActions: item.contextActions,
+                                isSelected: item.isSelected
                             )
+
+                            if let primaryAction = item.primaryAction {
+                                Button(action: primaryAction) {
+                                    cell
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                cell
+                            }
                         }
                     )
                 }

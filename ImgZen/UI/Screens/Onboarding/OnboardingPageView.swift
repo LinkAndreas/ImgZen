@@ -1,25 +1,33 @@
 import SwiftUI
 
 struct OnboardingPageView: View {
-    @Environment(\.horizontalSizeClass)
-    private var horizontalSizeClass
-
     let page: OnboardingPage
+    /// Whether the page is the one currently shown, used to animate its symbol when it appears.
+    var isActive: Bool = true
 
     var body: some View {
-        VStack {
-            Spacer(minLength: 0)
+        VStack(spacing: 24) {
+            Image(systemName: page.systemImageName.rawValue)
+                .symbolRenderingMode(.hierarchical)
+                .font(.system(size: 52, weight: .medium))
+                .foregroundStyle(.tint)
+                .symbolEffect(.bounce, value: isActive)
+                .frame(width: 120, height: 120)
+                .background {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [Color.accentColor.opacity(0.18), Color.purple.opacity(0.12)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
+                .accessibilityHidden(true)
 
-            VStack(spacing: 14) {
-                Image(systemName: page.systemImageName.rawValue)
-                    .symbolRenderingMode(.hierarchical)
-                    .font(.system(size: 72, weight: .regular))
-                    .foregroundStyle(.tint)
-                    .padding(.bottom, 6)
-
+            VStack(spacing: 12) {
                 Text(page.title)
-                    .font(.title)
-                    .bold()
+                    .font(.title.bold())
                     .multilineTextAlignment(.center)
 
                 Text(page.subtitle)
@@ -29,17 +37,11 @@ struct OnboardingPageView: View {
                     .lineSpacing(2)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 28)
-            .frame(maxWidth: .infinity)
-            .background(Color.secondarySystemGroupedBackground)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .shadow(color: .black.opacity(0.25), radius: 16, x: 0, y: 8)
-
-            Spacer(minLength: 0)
+            .accessibilityElement(children: .combine)
         }
-        .padding(.horizontal, 20)
-        .frame(maxWidth: horizontalSizeClass == .regular ? 600 : .infinity)
+        .padding(.horizontal, 32)
+        .frame(maxWidth: 520)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

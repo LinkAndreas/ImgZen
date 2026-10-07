@@ -26,69 +26,84 @@ struct Onboarding: View {
         Image("Logo")
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .frame(width: 120)
+            .frame(width: 96)
+            .accessibilityHidden(true)
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.systemBackground
-                    .ignoresSafeArea()
+        ZStack {
+            Color.systemBackground
+                .ignoresSafeArea()
 
-                VStack(spacing: 0) {
-                    if isRegular {
-                        // Keep logo, page and controls together in the middle of large screens.
-                        Spacer()
+            // A soft wash in the logo's colors gives the screen depth without boxing the content in.
+            LinearGradient(
+                colors: [Color.accentColor.opacity(0.14), Color.purple.opacity(0.08), .clear],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .ignoresSafeArea()
 
-                        logo
-                            .padding(.bottom, 12)
-                    } else {
-                        logo
-                            .containerRelativeFrame(.vertical, alignment: .bottom) { length, _ in
-                                length * 0.25
-                            }
-                    }
+            VStack(spacing: 0) {
+                if isRegular {
+                    // Keep logo, page and controls together in the middle of large screens.
+                    Spacer()
 
-                    TabView(selection: $viewModel.currentPage) {
-                        ForEach(Array(viewModel.pages.enumerated()), id: \.offset) { index, page in
-                            OnboardingPageView(page: page)
-                                .tag(index)
+                    logo
+                        .padding(.bottom, 12)
+                } else {
+                    logo
+                        .containerRelativeFrame(.vertical, alignment: .bottom) { length, _ in
+                            length * 0.25
                         }
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .never))
-                    .animation(.easeInOut(duration: 0.25), value: viewModel.currentPage)
-                    .frame(maxHeight: isRegular ? 380 : .infinity)
+                }
 
-                    if !isRegular {
-                        Spacer()
-                    }
-
-                    OnboardingPageIndicator(
-                        pages: viewModel.pages,
-                        currentPage: $viewModel.currentPage
-                    )
-                    .padding(.top, 10)
-
-                    Button(action: viewModel.advance) {
-                        Text(viewModel.bottomButtonTitle)
-                            .frame(maxWidth: isRegular ? 350 : .infinity)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 14)
-                    .padding(.bottom, 24)
-
-                    if isRegular {
-                        Spacer()
+                TabView(selection: $viewModel.currentPage) {
+                    ForEach(Array(viewModel.pages.enumerated()), id: \.offset) { index, page in
+                        OnboardingPageView(page: page, isActive: viewModel.currentPage == index)
+                            .tag(index)
                     }
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("button.skip", action: viewModel.completion)
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.easeInOut(duration: 0.25), value: viewModel.currentPage)
+                .frame(maxHeight: isRegular ? 340 : .infinity)
+
+                if !isRegular {
+                    Spacer()
+                }
+
+                OnboardingPageIndicator(
+                    pages: viewModel.pages,
+                    currentPage: $viewModel.currentPage
+                )
+                .padding(.top, 10)
+
+                Button(action: viewModel.advance) {
+                    Text(viewModel.bottomButtonTitle)
+                        .frame(maxWidth: isRegular ? 350 : .infinity)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .padding(.horizontal, 20)
+                .padding(.top, 14)
+
+                // Skip sits below the main button instead of in the top corner, so both stay within thumb reach.
+                // It keeps its space on the last page so the main button doesn't move.
+                Button(action: viewModel.completion) {
+                    Text(String(localized: "button.skip"))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.secondary)
+                        .frame(minWidth: 88, minHeight: 44)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+                .padding(.bottom, 8)
+                    .opacity(viewModel.isLastPage ? 0 : 1)
+                    .disabled(viewModel.isLastPage)
+                    .accessibilityHidden(viewModel.isLastPage)
+
+                if isRegular {
+                    Spacer()
                 }
             }
         }
