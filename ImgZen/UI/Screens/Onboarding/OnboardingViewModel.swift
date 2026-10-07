@@ -3,8 +3,12 @@ import Observation
 
 @Observable
 final class OnboardingViewModel {
+    var isLastPage: Bool {
+        currentPage == pages.count - 1
+    }
+
     var bottomButtonTitle: String {
-        if currentPage == pages.count - 1 {
+        if isLastPage {
             String(localized: "button.startConverting")
         } else {
             String(localized: "button.next")
