@@ -109,6 +109,7 @@ struct Converter: View {
             .fullScreenProgressBar(
                 title: String(localized: "progress.imageConversion"),
                 subtitle: String(localized: "progress.convertingImages"),
+                completedSubtitle: String(localized: "progress.completed"),
                 progress: progress,
                 onCancel: {
                     conversion?.cancel()

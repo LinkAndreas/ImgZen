@@ -85,6 +85,8 @@ struct FormatSettingsForm: View {
                 Text(qualityFooter)
             }
         }
+        // Content scrolls softly under the sheet's title bar instead of being cut off at a hard edge.
+        .scrollEdgeEffectStyle(.soft, for: .top)
         .sensoryFeedback(.selection, trigger: selectedImageFormat)
         .onChange(of: selectedImageFormat) {
             selectedImageCompressionQuality = 0.9
@@ -143,11 +145,12 @@ struct FormatListEntry: View {
         Button(action: action) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
+                    // Explicit label colors: inside a button, the hierarchical styles resolve to the tint color.
                     Text(title)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color(.label))
                     Text(subtitle)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color(.secondaryLabel))
                 }
                 Spacer()
                 Image(systemName: "checkmark")

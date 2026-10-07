@@ -6,12 +6,14 @@ extension View {
     /// - Parameters:
     ///   - title: Title text displayed above the progress indicator.
     ///   - subtitle: Optional subtitle text.
+    ///   - completedSubtitle: Optional subtitle replacing `subtitle` once all work is done.
     ///   - progress: Optional progress state. When nil, the overlay is hidden.
     ///   - onCancel: Action to perform when cancel is tapped.
     /// - Returns: A view with the progress bar overlay modifier applied.
     public func fullScreenProgressBar(
         title: String,
         subtitle: String? = nil,
+        completedSubtitle: String? = nil,
         progress: ProgressBar.State? = nil,
         onCancel: @escaping () -> Void
     ) -> some View {
@@ -21,6 +23,7 @@ extension View {
                     ProgressBar(
                         title: title,
                         subtitle: subtitle,
+                        completedSubtitle: completedSubtitle,
                         state: progress,
                         onCancel: onCancel
                     )

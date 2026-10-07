@@ -32,7 +32,9 @@ struct CompressionQualityPicker: View {
 
             VStack(spacing: 6) {
                 HStack(spacing: 12) {
-                    Slider(value: roundedQuality, in: 0.0...1.0, step: 0.01) {
+                    // No step: a stepped slider draws tick marks, which at 100 steps look like a second track.
+                    // The binding rounds to whole percents instead.
+                    Slider(value: roundedQuality, in: 0.0...1.0) {
                         Text(String(localized: "label.compressionQuality"))
                     }
 
