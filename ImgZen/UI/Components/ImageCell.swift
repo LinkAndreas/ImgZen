@@ -76,12 +76,6 @@ struct ImageCell: View {
                 style: .continuous
             )
         )
-        .shadow(
-            color: .black.opacity(0.15),
-            radius: 8,
-            x: 0,
-            y: 4
-        )
         .overlay(
             RoundedRectangle(
                 cornerRadius: 12,
@@ -112,7 +106,7 @@ struct ImageCell: View {
         .hoverEffect(.lift)
         .contextMenu {
             ForEach(contextActions) { action in
-                Button(role: action.destructive ? .destructive : .confirm) {
+                Button(role: action.destructive ? .destructive : nil) {
                     action.execute()
                 } label: {
                     Label(action.title, systemImage: action.systemImage)

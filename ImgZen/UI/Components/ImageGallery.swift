@@ -49,14 +49,31 @@ struct ImageGallery: View {
                             }.value
                             return (image, metadata)
                         },
+                        notRequestedView: { load in
+                            PlaceholderTile()
+                                .onFirstAppear(perform: load)
+                        },
                         loadingView: {
-                            ZStack {
-                                Color.clear
+                            PlaceholderTile {
                                 ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .controlSize(.large)
                             }
-                            .aspectRatio(1.0, contentMode: .fit)
+                        },
+                        failureView: { _, retry in
+                            PlaceholderTile {
+                                VStack(spacing: 8) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .font(.title2)
+                                        .foregroundStyle(.secondary)
+                                    Text(String(localized: "label.imageUnavailable"))
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.center)
+                                    Button(String(localized: "button.tryAgain"), action: retry)
+                                        .buttonStyle(.bordered)
+                                        .controlSize(.small)
+                                }
+                                .padding(8)
+                            }
                         },
                         successView: { (image: UIImage?, metadata: ImageMetadata) in
                             let presenter = ImageItemPresenter(metadata: metadata)
@@ -84,5 +101,27 @@ struct ImageGallery: View {
             .animation(.smooth, value: items)
             .padding(.horizontal)
         }
+    }
+}
+
+/// A square tile in the style of a cell, shown until an image has loaded, so the grid keeps its shape.
+private struct PlaceholderTile<Content: View>: View {
+    private let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(Color(.secondarySystemGroupedBackground))
+            .aspectRatio(1.0, contentMode: .fit)
+            .overlay { content }
+    }
+}
+
+private extension PlaceholderTile where Content == SwiftUI.EmptyView {
+    init() {
+        self.init { SwiftUI.EmptyView() }
     }
 }

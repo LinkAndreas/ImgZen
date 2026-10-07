@@ -32,70 +32,96 @@ public struct ProgressBar: View {
         self.onCancel = onCancel
     }
 
+    /// Whether all work is done, so the card can confirm it before it disappears.
+    private var isComplete: Bool {
+        switch state {
+        case .indeterminate:
+            return false
+        case let .percentage(value):
+            return value >= 1
+        case let .amount(current, total):
+            return total > 0 && current >= total
+        }
+    }
+
     public var body: some View {
         ZStack {
             Color.black
                 .opacity(0.2)
                 .ignoresSafeArea()
-            
+
             VStack(spacing: 20) {
+                Image(systemName: isComplete ? "checkmark.circle.fill" : "photo.stack")
+                    .font(.system(size: 44, weight: .medium))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(isComplete ? Color.green : Color.accentColor)
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.pulse, isActive: !isComplete)
+                    .frame(height: 52)
+                    .accessibilityHidden(true)
+
                 VStack(spacing: 6) {
                     Text(title)
-                        .font(.title2.weight(.bold))
+                        .font(.title3.weight(.semibold))
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(Color(.label))
-                    
+                        .foregroundStyle(.primary)
+
                     if let subtitle {
                         Text(subtitle)
                             .font(.subheadline)
-                            .foregroundStyle(Color(.secondaryLabel))
+                            .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
                 }
-                
+
                 switch state {
                 case .indeterminate:
                     ProgressView()
                         .progressViewStyle(.circular)
-                        .controlSize(.regular)
-                        .scaleEffect(1.4)
+                        .controlSize(.large)
                 case let .percentage(value):
-                    VStack(spacing: 12) {
+                    VStack(spacing: 8) {
                         ProgressView(value: value, total: 1.0)
                             .animation(.smooth, value: state)
                             .progressViewStyle(.linear)
-                            .frame(maxWidth: 150)
                             .tint(.accentColor)
-                        
+
                         Text(String(format: String(localized: "progress.percentage", defaultValue: "%lld%%"), Int((max(0, min(1, value))) * 100)))
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(Color(.secondaryLabel))
+                            .font(.subheadline.weight(.medium))
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                            .contentTransition(.numericText())
                     }
                 case let .amount(current, total):
-                    VStack(spacing: 12) {
-                        ProgressView(value: Double(current), total: Double(total))
+                    VStack(spacing: 8) {
+                        ProgressView(value: Double(current), total: Double(max(total, 1)))
                             .animation(.smooth, value: state)
                             .progressViewStyle(.linear)
-                            .frame(maxWidth: 150)
                             .tint(.accentColor)
-                        
+
                         Text(String(format: String(localized: "progress.amount", defaultValue: "%lld of %lld"), current, total))
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(Color(.secondaryLabel))
+                            .font(.subheadline.weight(.medium))
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                            .contentTransition(.numericText(value: Double(current)))
                     }
                 }
 
-                Button(String(localized: "button.cancel"), action: onCancel)
-                    .buttonStyle(.plain)
+                Button(action: onCancel) {
+                    Text(String(localized: "button.cancel"))
+                        .frame(maxWidth: .infinity)
+                }
+                // Not glass, since the card already is; glass shouldn't sit on glass.
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .disabled(isComplete)
             }
+            .animation(.smooth, value: state)
+            .frame(maxWidth: 280)
             .padding(24)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color(.separator), lineWidth: 0.5)
-            )
-            .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
+            .glassEffect(.regular, in: .rect(cornerRadius: 32))
             .padding(24)
+            .accessibilityElement(children: .contain)
         }
     }
 }

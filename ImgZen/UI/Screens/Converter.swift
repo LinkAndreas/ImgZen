@@ -4,7 +4,7 @@ import StoreKit
 import PhotosUI
 
 /// The main entry point for the app.
-/// Manages conversion flow, navigation, and feedback prompts.
+/// Manages conversion flow, navigation, and review requests.
 struct Converter: View {
     /// Enum representing navigation destinations for the main navigation stack.
     enum Destination: Hashable {
@@ -20,7 +20,6 @@ struct Converter: View {
     @State private var conversion: Task<Void, Error>?
     @State private var path: [Destination] = []
     @State private var sheet: Sheet?
-    @State private var isRatingPromptVisible = false
     @Environment(\.requestReview) private var requestReview
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
 
@@ -80,14 +79,15 @@ struct Converter: View {
                                     try await Task.sleep(for: .seconds(0.3))
                                     progress = nil
                                     try await Task.sleep(for: .seconds(0.75))
-                                    showInAppRatingIfNeeded()
+                                    requestReviewIfNeeded()
                                 }
                             }
 
                             // Hide the progress if the stream ended without completing (e.g. cancellation).
                             progress = nil
                         }
-                    }
+                    },
+                    onSendFeedback: { sheet = .mailComposer }
                 )
                 .navigationDestination(for: Destination.self) { destination in
                     switch destination {
@@ -115,41 +115,20 @@ struct Converter: View {
                     progress = nil
                 }
             )
-            .overlay {
-                // Presented inside this scene, so it follows the window when it resizes or another window is open.
-                if isRatingPromptVisible {
-                    InAppRatingWindowContent(
-                        likeButtonAction: {
-                            isRatingPromptVisible = false
-                            requestReview()
-                        },
-                        dislikeButtonAction: {
-                            isRatingPromptVisible = false
-                            sheet = .mailComposer
-                        }
-                    )
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-                }
-            }
-            .animation(.smooth(duration: 0.25), value: isRatingPromptVisible)
+            // Confirms a finished conversion as the results slide in.
+            .sensoryFeedback(.success, trigger: path.count) { old, new in new > old }
         }
     }
 
-    /// Triggers in-app rating prompt or increments process count after each conversion.
-    private func showInAppRatingIfNeeded() {
-        if completedConversionsCount < 3 {
-            completedConversionsCount += 1
-        }
+    /// Asks for a review with the system prompt after the third conversion, once the user has seen the app's value.
+    /// The system decides whether to show it and limits how often it appears.
+    private func requestReviewIfNeeded() {
+        guard completedConversionsCount < 3 else { return }
 
+        completedConversionsCount += 1
         if completedConversionsCount == 3 {
-            completedConversionsCount += 1
-            requestFeedback()
+            requestReview()
         }
-    }
-
-    /// Presents the feedback prompt for the user to send feedback email or rate positively.
-    private func requestFeedback() {
-        isRatingPromptVisible = true
     }
 }
 

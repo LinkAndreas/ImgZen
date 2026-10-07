@@ -1,6 +1,9 @@
 import SwiftUI
 
+/// Floating controls at the bottom of compact screens, where they're easiest to reach:
+/// add images, pick the output format and convert.
 struct BottomControlPanel: View {
+    @State private var isFormatSheetPresented = false
     @Binding private var selectedImageFormat: FormatSelection
     @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
     private let addFromPhotosAction: () -> Void
@@ -29,31 +32,58 @@ struct BottomControlPanel: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            FormatPicker(
-                selectedImageFormat: $selectedImageFormat,
-                selectedImageCompressionQuality: $selectedImageCompressionQuality
-            )
-
-            // The main actions sit at the bottom edge, where they're easiest to reach.
+        GlassEffectContainer(spacing: 12) {
             HStack(spacing: 12) {
                 ImageSourceSelection(
                     addFromPhotosAction: addFromPhotosAction,
                     addFromFilesAction: addFromFilesAction
                 )
+
+                formatButton
+
                 ConvertButton(action: onConvert)
             }
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color.secondarySystemBackground)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .strokeBorder(Color(.separator), lineWidth: 0.4)
-        )
-        .padding(20)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
         .frame(maxWidth: 600)
+        .sheet(isPresented: $isFormatSheetPresented) {
+            FormatSheet(
+                selectedImageFormat: $selectedImageFormat,
+                selectedImageCompressionQuality: $selectedImageCompressionQuality
+            )
+        }
+    }
+
+    /// Shows the chosen format, and its quality for lossy formats, so the settings are visible at a glance.
+    private var formatButton: some View {
+        Button(action: { isFormatSheetPresented = true }) {
+            HStack(spacing: 6) {
+                Text(selectedImageFormat.title)
+                    .fontWeight(.semibold)
+
+                if selectedImageFormat.isLossy {
+                    Text(selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0))))
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                }
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .lineLimit(1)
+            .fixedSize()
+        }
+        .buttonStyle(.glass)
+        .controlSize(.large)
+        .animation(.smooth(duration: 0.2), value: selectedImageCompressionQuality)
+        .accessibilityLabel(String(localized: "label.destinationFormat"))
+        .accessibilityValue(
+            selectedImageFormat.isLossy
+                ? "\(selectedImageFormat.title), \(selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0))))"
+                : selectedImageFormat.title
+        )
     }
 }
