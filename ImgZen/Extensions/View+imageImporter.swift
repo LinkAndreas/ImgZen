@@ -20,6 +20,8 @@ extension View {
                 selectionLimit: selectionLimit,
                 completion: completion
             )
+            .ignoresSafeArea()
+            .toolbarStaysInTopBar()
         }
     }
 }
