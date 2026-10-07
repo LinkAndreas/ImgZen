@@ -39,6 +39,7 @@ struct EmptyView: View {
             }
             .frame(maxWidth: .infinity)
             .buttonStyle(.bordered)
+            .controlSize(.large)
         }
     }
 }

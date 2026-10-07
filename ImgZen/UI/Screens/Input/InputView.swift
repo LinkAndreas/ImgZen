@@ -84,14 +84,13 @@ struct InputView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if isBottomControlPanelVisible && !isSidePanelLayout {
-                bottomControlPanel
+                controlPanel(fillsHeight: false)
             }
         }
         .safeAreaInset(edge: .trailing) {
             if isBottomControlPanelVisible && isSidePanelLayout {
-                bottomControlPanel
+                controlPanel(fillsHeight: true)
                     .frame(width: 400)
-                    .frame(maxHeight: .infinity, alignment: .top)
             }
         }
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
@@ -120,7 +119,7 @@ struct InputView: View {
             if !inputService.items.isEmpty {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(
-                        "",
+                        String(localized: "button.removeAll"),
                         systemImage: "trash",
                         action: { isDiscardAllConfirmationShown.toggle() }
                     )
@@ -136,15 +135,6 @@ struct InputView: View {
                                 isDiscardAllConfirmationShown = false
                             }
                         }
-                    )
-                }
-            }
-
-            if !inputService.items.isEmpty {
-                ToolbarItem(placement: .primaryAction) {
-                    ImageSourceSelection(
-                        addFromPhotosAction: { sheet = .photoPicker },
-                        addFromFilesAction: { sheet = .filePicker }
                     )
                 }
             }
@@ -177,10 +167,13 @@ struct InputView: View {
 }
 
 extension InputView {
-    private var bottomControlPanel: some View {
+    private func controlPanel(fillsHeight: Bool) -> some View {
         BottomControlPanel(
             selectedImageFormat: $selectedImageFormat,
             selectedImageCompressionQuality: $selectedImageCompressionQuality,
+            fillsHeight: fillsHeight,
+            addFromPhotosAction: { sheet = .photoPicker },
+            addFromFilesAction: { sheet = .filePicker },
             onConvert: {
                 let outputFormat = ImageFormat(
                     imageFormatSelection: selectedImageFormat,

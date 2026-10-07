@@ -31,12 +31,13 @@ struct ImageSourceSelection: View {
                 action: addFromFilesAction
             )
         } label: {
-            Label("", systemImage: "plus")
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
+            Label(String(localized: "button.addImages"), systemImage: "plus")
+                .labelStyle(.iconOnly)
+                .font(.title3.weight(.semibold))
+                .frame(minWidth: 20, minHeight: 20)
         }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .controlSize(.large)
     }
 }
