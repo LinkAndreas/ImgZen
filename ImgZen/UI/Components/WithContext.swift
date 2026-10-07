@@ -1,11 +1,14 @@
 import SwiftUI
 
-/// A view that provides a context object to its content, built once on initialization.
+/// A view that provides a context object to its content, built once for the lifetime of the view.
 /// Useful for dependency injection in SwiftUI views.
 struct WithContext<Object, ContentView: View>: View {
     typealias Content = (Object) -> ContentView
 
-    @State private var object: Object
+    /// `State(wrappedValue:)` evaluates its argument on every initialization of the view,
+    /// so the object is built lazily from the storage that SwiftUI keeps alive instead.
+    @State private var storage = Storage()
+    private let objectBuilder: () -> Object
     private let content: Content
 
     /// Creates a WithContext view.
@@ -16,11 +19,29 @@ struct WithContext<Object, ContentView: View>: View {
         _ objectBuilder: @escaping () -> Object,
         @ViewBuilder content: @escaping Content
     ) {
-        self._object = State(wrappedValue: objectBuilder())
+        self.objectBuilder = objectBuilder
         self.content = content
     }
 
     var body: some View {
-        content(object)
+        content(storage.object(orBuild: objectBuilder))
+    }
+}
+
+extension WithContext {
+    /// Holds the lazily built context object.
+    final class Storage {
+        private var object: Object?
+
+        /// Returns the stored object, building it on first access.
+        func object(orBuild build: () -> Object) -> Object {
+            if let object {
+                return object
+            }
+
+            let object = build()
+            self.object = object
+            return object
+        }
     }
 }

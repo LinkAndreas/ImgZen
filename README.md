@@ -99,8 +99,7 @@ ImgZen/
 │   └── ImageFormat+*.swift   # Format presentation extensions
 ├── UI/                       # User interface
 │   ├── Components/           # Reusable UI components
-│   ├── Screens/              # Main app screens
-│   └── WindowManager/        # Window management utilities
+│   └── Screens/              # Main app screens
 ├── Extensions/               # SwiftUI extensions
 ├── Logging/                  # Logging utilities
 └── Resources/                # Assets and localization

@@ -23,12 +23,12 @@ struct InputItemTests {
         
         let item = InputItem(source: .fileURLHandler { callback in
             handlerCalled = true
-            callback(expectedURL)
+            callback(.success(expectedURL))
         })
         
         if case .fileURLHandler(let handler) = item.source {
-            handler { url in
-                #expect(url == expectedURL)
+            handler { result in
+                #expect((try? result.get()) == expectedURL)
             }
             #expect(handlerCalled)
         } else {

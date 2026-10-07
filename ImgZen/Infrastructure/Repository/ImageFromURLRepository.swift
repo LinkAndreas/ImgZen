@@ -37,7 +37,7 @@ struct ImageFromURLRepository: ImageRepository {
         let contentType = resourceValues.typeIdentifier ?? "public.image"
         let dimensions = getImageDimensions(from: source)
 
-        let (filename, fileExtension) = extractFilenameAndExtension(from: filePath) ?? ("", "")
+        let (filename, fileExtension) = extractFilenameAndExtension(from: filePath)
         return ImageMetadata(
             filename: filename,
             fileExtension: fileExtension,
@@ -49,15 +49,15 @@ struct ImageFromURLRepository: ImageRepository {
     
     /// Extracts filename and extension from a file path.
     /// - Parameter path: The file path string.
-    /// - Returns: A tuple of (filename, fileExtension), or nil if extraction fails.
+    /// - Returns: A tuple of (filename, fileExtension). The extension is empty if the path has none.
     private func extractFilenameAndExtension(
         from path: String
-    ) -> (filename: String, fileExtension: String)? {
+    ) -> (filename: String, fileExtension: String) {
         let url = URL(fileURLWithPath: path)
         let filename = url.deletingPathExtension().lastPathComponent
         let fileExtension = url.pathExtension
         
-        return fileExtension.isEmpty ? nil : (filename, fileExtension)
+        return (filename, fileExtension)
     }
 
     /// Loads image data from a file URL at the specified resolution.
@@ -78,7 +78,7 @@ struct ImageFromURLRepository: ImageRepository {
 
             return imageData
         case .thumbnail:
-            guard let imageData = createThumbnail(from: url, maxSize: 400) else {
+            guard let imageData = createThumbnail(from: url) else {
                 throw ImageRepositoryError.dataCorrupted(atURL: url)
             }
 
@@ -89,7 +89,7 @@ struct ImageFromURLRepository: ImageRepository {
 
 /// Retrieves image dimensions from a file URL using ImageIO.
 /// - Parameter url: The file URL of the image.
-/// - Returns: Image dimensions as CGSize, or nil if dimensions cannot be determined.
+/// - Returns: Image dimensions as displayed (respecting EXIF orientation), or nil if dimensions cannot be determined.
 private func getImageDimensions(from url: URL) -> CGSize? {
     guard
         let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
@@ -98,6 +98,12 @@ private func getImageDimensions(from url: URL) -> CGSize? {
         let height = properties[kCGImagePropertyPixelHeight as String] as? CGFloat
     else {
         return nil
+    }
+
+    // Orientations 5...8 (leftMirrored, right, rightMirrored, left) rotate the image by 90°.
+    let orientation = properties[kCGImagePropertyOrientation as String] as? UInt32 ?? 1
+    if (5...8).contains(orientation) {
+        return CGSize(width: height, height: width)
     }
 
     return CGSize(width: width, height: height)
@@ -122,16 +128,9 @@ private func createImage(from url: URL) -> ImageData? {
 }
 
 /// Creates a thumbnail image from a file URL using ImageIO.
-/// - Parameters:
-///   - url: The file URL of the source image.
-///   - maxSize: Maximum pixel dimension for the thumbnail.
-///   - scale: Display scale factor. Defaults to current display scale.
+/// - Parameter url: The file URL of the source image.
 /// - Returns: Thumbnail image data as PNG, or nil if creation fails.
-private func createThumbnail(
-    from url: URL,
-    maxSize: CGFloat,
-    scale: CGFloat = UITraitCollection.current.displayScale
-) -> ImageData? {
+private func createThumbnail(from url: URL) -> ImageData? {
     let didStartAccess = url.startAccessingSecurityScopedResource()
     defer {
         if didStartAccess {
@@ -145,8 +144,13 @@ private func createThumbnail(
         kCGImageSourceThumbnailMaxPixelSize: Constants.thumbnailSize
     ] as CFDictionary
 
-    let source = CGImageSourceCreateWithURL(url as CFURL, nil)!
-    let imageReference = CGImageSourceCreateThumbnailAtIndex(source, 0, options)!
+    guard
+        let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+        let imageReference = CGImageSourceCreateThumbnailAtIndex(source, 0, options)
+    else {
+        return nil
+    }
+
     let thumbnail = UIImage(cgImage: imageReference)
     return thumbnail.pngData()
 }
