@@ -59,8 +59,6 @@ fileprivate struct PHPicker: UIViewControllerRepresentable {
 /// Coordinator that handles PHPickerViewController delegate callbacks.
 fileprivate final class PhotoPickerCoordinator: PHPickerViewControllerDelegate {
     let completion: ([InputItem]) -> Void
-    let destination = URL.applicationSupportDirectory
-        .appending(path: "imports", directoryHint: .isDirectory)
 
     init(completion: @escaping ([InputItem]) -> Void) {
         self.completion = completion
@@ -80,7 +78,9 @@ fileprivate final class PhotoPickerCoordinator: PHPickerViewControllerDelegate {
                         forTypeIdentifier: UTType.image.identifier
                     ) { url, error in
                         if let url {
-                            action(url)
+                            action(.success(url))
+                        } else {
+                            action(.failure(error ?? CocoaError(.fileReadUnknown)))
                         }
                     }
                 })
