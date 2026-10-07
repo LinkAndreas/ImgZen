@@ -20,6 +20,7 @@ struct Converter: View {
     @State private var conversion: Task<Void, Error>?
     @State private var path: [Destination] = []
     @State private var sheet: Sheet?
+    @State private var isRatingPromptVisible = false
     @Environment(\.requestReview) private var requestReview
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
 
@@ -116,6 +117,23 @@ struct Converter: View {
                     progress = nil
                 }
             )
+            .overlay {
+                // Presented inside this scene, so it follows the window when it resizes or another window is open.
+                if isRatingPromptVisible {
+                    InAppRatingWindowContent(
+                        likeButtonAction: {
+                            isRatingPromptVisible = false
+                            requestReview()
+                        },
+                        dislikeButtonAction: {
+                            isRatingPromptVisible = false
+                            sheet = .mailComposer
+                        }
+                    )
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
+            }
+            .animation(.smooth(duration: 0.25), value: isRatingPromptVisible)
         }
     }
 
@@ -131,22 +149,9 @@ struct Converter: View {
         }
     }
 
-    /// Presents the feedback window for the user to send feedback email or rate positively.
+    /// Presents the feedback prompt for the user to send feedback email or rate positively.
     private func requestFeedback() {
-        WindowManager.shared.present(
-            InAppRatingWindowContent(
-                likeButtonAction: {
-                    WindowManager.shared.dismiss {
-                        requestReview()
-                    }
-                },
-                dislikeButtonAction: {
-                    WindowManager.shared.dismiss {
-                        sheet = .mailComposer
-                    }
-                }
-            )
-        )
+        isRatingPromptVisible = true
     }
 }
 
