@@ -7,8 +7,9 @@ struct InputItem: Identifiable, Sendable {
     enum Source: Sendable {
         /// Input is directly provided as a file URL.
         case fileURL(URL)
-        /// Input is provided asynchronously via a handler/callback supplying the file URL.
-        case fileURLHandler(handler: (@Sendable @escaping (URL) -> Void) -> Void)
+        /// Input is provided asynchronously via a handler/callback supplying the file URL, or the error that prevented loading it.
+        /// The supplied URL is only guaranteed to be valid for the duration of the callback.
+        case fileURLHandler(handler: (@Sendable @escaping (Result<URL, Error>) -> Void) -> Void)
     }
 
     /// Unique identifier for this input item.

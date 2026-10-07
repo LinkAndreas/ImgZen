@@ -56,7 +56,7 @@ private func convertImageDataUsingImageIO(
     // Create CGImageSource from input data (no UIImage needed)
     guard
         let imageSource = CGImageSourceCreateWithData(imageData as CFData, nil),
-        let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
+        var cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
     else {
         return nil
     }
@@ -82,8 +82,27 @@ private func convertImageDataUsingImageIO(
         properties[kCGImageDestinationLossyCompressionQuality] = compressionQuality
     }
 
+    // Formats without EXIF support (e.g. BMP) drop the orientation, so rotate the pixels instead.
+    let orientation = properties[kCGImagePropertyOrientation] as? UInt32 ?? 1
+    if orientation != 1, !utType.supportsOrientationMetadata,
+       let uprightImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, [
+           kCGImageSourceCreateThumbnailFromImageAlways: true,
+           kCGImageSourceCreateThumbnailWithTransform: true,
+           kCGImageSourceThumbnailMaxPixelSize: max(cgImage.width, cgImage.height)
+       ] as CFDictionary) {
+        cgImage = uprightImage
+        properties[kCGImagePropertyOrientation] = 1
+    }
+
     CGImageDestinationAddImage(destination, cgImage, properties as CFDictionary)
     CGImageDestinationFinalize(destination)
 
     return outputData as ImageData
+}
+
+private extension UTType {
+    /// Whether ImageIO can store the EXIF orientation in files of this type.
+    nonisolated var supportsOrientationMetadata: Bool {
+        [UTType.jpeg, .heic, .png, .tiff].contains { conforms(to: $0) }
+    }
 }
