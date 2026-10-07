@@ -96,6 +96,8 @@ jobs:
           sed -i '' "s|{{PROVISIONING_PROFILE_NAME}}|$PROVISIONING_PROFILE_NAME|g" exportOptions.plist
 
       # CURRENT_PROJECT_VERSION is set on the command line so the run number becomes the build number.
+      # PROFILE_<target> gives only the ImgZen target a profile; Swift package targets such as
+      # SDWebImage's resource bundle resolve to an empty value, since they don't support profiles.
       - name: Build, Sign and Archive
         env:
           TEAM_ID: ${{ vars.TEAM_ID }}
@@ -112,7 +114,8 @@ jobs:
             DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
-            PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" | xcbeautify
+            PROFILE_ImgZen="$PROVISIONING_PROFILE_NAME" \
+            'PROVISIONING_PROFILE_SPECIFIER=$(PROFILE_$(TARGET_NAME))' | xcbeautify
 
       - name: Export archive
         run: |
