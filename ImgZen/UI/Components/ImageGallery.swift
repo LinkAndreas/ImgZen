@@ -47,8 +47,11 @@ struct ImageGallery: View {
         // so the first and last rows keep their spacing instead of touching the bars.
         .contentMargins(.horizontal, 16, for: .scrollContent)
         .contentMargins(.vertical, 12, for: .scrollContent)
-        // Grouped background, so the cells stand out from it in light and dark mode.
-        .background(Color(.systemGroupedBackground))
+        // Content that fits on screen doesn't bounce, so an empty or short gallery doesn't drag the bars around.
+        .scrollBounceBehavior(.basedOnSize)
+        // The grouped background goes on the navigation container rather than the scroll view,
+        // so it doesn't interfere with the navigation bar's scroll edge effect.
+        .containerBackground(Color(.systemGroupedBackground), for: .navigation)
     }
 }
 
