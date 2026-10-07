@@ -58,7 +58,7 @@ struct InputView: View {
         self.onSendFeedback = onSendFeedback
     }
 
-    var body: some View {
+    private var content: some View {
         // The gallery is the root view, so the navigation bar tracks its scrolling and collapses the title smoothly.
         ImageGallery(
             items: inputService.items.map { item in
@@ -107,16 +107,6 @@ struct InputView: View {
                     onConvert: convert
                 )
             }
-        }
-        .inspector(isPresented: .constant(isBottomControlPanelVisible && isInspectorLayout)) {
-            FormatInspector(
-                selectedImageFormat: $selectedImageFormat,
-                selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                addFromPhotosAction: { sheet = .photoPicker },
-                addFromFilesAction: { sheet = .filePicker },
-                onConvert: convert
-            )
-            .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
         }
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
             let items = providers
@@ -186,8 +176,26 @@ struct InputView: View {
             })
         }
         .navigationTitle(String(localized: "app.name"))
-        // An inline title, as in Photos: the grid scrolls under a steady bar instead of collapsing a large title.
-        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    var body: some View {
+        // The inspector is only attached on wide screens. On iPhone it would never show, but it still wraps
+        // the navigation stack's content in a container that disturbs the large title's collapse on scroll.
+        if isInspectorLayout {
+            content
+                .inspector(isPresented: .constant(isBottomControlPanelVisible)) {
+                    FormatInspector(
+                        selectedImageFormat: $selectedImageFormat,
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                        addFromPhotosAction: { sheet = .photoPicker },
+                        addFromFilesAction: { sheet = .filePicker },
+                        onConvert: convert
+                    )
+                    .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
+                }
+        } else {
+            content
+        }
     }
 }
 
