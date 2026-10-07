@@ -152,22 +152,14 @@ struct InputView: View {
         ) { items in
             inputService.didAdd(items: items)
         }
-        .fileImporter(
+        .documentPicker(
             isPresented: $sheet[isPresented: .filePicker],
-            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png],
-            allowsMultipleSelection: true,
-            onCompletion: { result in
-                switch result {
-                case let .success(urls):
-                    inputService.didAdd(items: urls.map { url in
-                        InputItem(source: .fileURL(url))
-                    })
-                case let .failure(error):
-                    logger.error("Failed to load data: \(error)")
-                    return
-                }
-            }
-        )
+            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png]
+        ) { urls in
+            inputService.didAdd(items: urls.map { url in
+                InputItem(source: .fileURL(url))
+            })
+        }
         .backgroundStyle(Color(.systemGroupedBackground))
         .navigationTitle(String(localized: "app.name"))
     }
