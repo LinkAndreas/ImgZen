@@ -12,12 +12,6 @@ struct OutputView: View {
         init(fileURL: URL) {
             self.fileURLs = [fileURL]
         }
-        
-        /// Creates a ShareItem with multiple file URLs.
-        /// - Parameter fileURLs: The file URLs to share.
-        init(fileURLs: [URL]) {
-            self.fileURLs = fileURLs
-        }
     }
     
     @State private var shareItem: ShareItem?
@@ -81,7 +75,8 @@ struct OutputView: View {
                 .buttonStyle(.glass)
                 .controlSize(.large)
 
-                Button(action: shareSelectedItems) {
+                // ShareLink presents the system share sheet, anchored to the button as a popover on iPad.
+                ShareLink(items: selectedFileURLs) {
                     Label(
                         String(format: String(localized: "button.shareCount"), selectedItemIDs.count),
                         systemImage: "square.and.arrow.up"
@@ -95,6 +90,7 @@ struct OutputView: View {
             .frame(maxWidth: 560)
             .padding(20)
         }
+        .sensoryFeedback(.selection, trigger: selectedItemIDs)
         .sheet(item: $shareItem) { item in
             ShareSheet(items: item.fileURLs)
                 .presentationDetents([.medium, .large])
@@ -123,11 +119,10 @@ struct OutputView: View {
         selectedItemIDs = areAllItemsSelected ? [] : Set(items.map(\.id))
     }
 
-    /// Presents share sheet for the selected output items.
-    private func shareSelectedItems() {
-        let fileURLs = items
+    /// The files of the selected output items, in gallery order.
+    private var selectedFileURLs: [URL] {
+        items
             .filter { selectedItemIDs.contains($0.id) }
             .map(\.url)
-        shareItem = ShareItem(fileURLs: fileURLs)
     }
 }
