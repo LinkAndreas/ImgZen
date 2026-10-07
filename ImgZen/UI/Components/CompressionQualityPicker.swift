@@ -63,10 +63,10 @@ struct QualityButton: View {
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isSelected ? Color.red : Color(uiColor: .systemGray5))
+                        .fill(isSelected ? Color.accentColor : Color(uiColor: .systemGray5))
                 )
                 .foregroundColor(isSelected ? .white : .primary)
-                .shadow(color: isSelected ? Color.red.opacity(0.3) : Color.clear,
+                .shadow(color: isSelected ? Color.accentColor.opacity(0.3) : Color.clear,
                        radius: isSelected ? 4 : 0, x: 0, y: 2)
         }
         .buttonStyle(PlainButtonStyle())
