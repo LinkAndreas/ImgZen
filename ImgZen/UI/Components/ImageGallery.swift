@@ -13,22 +13,10 @@ struct ImageGallery: View {
         }
     }
 
-    @Environment(\.horizontalSizeClass)
-    private var horizontalSizeClass: UserInterfaceSizeClass?
-
-    private var columns: [GridItem] {
-        switch horizontalSizeClass {
-        case .regular:
-            return [
-                GridItem(.adaptive(minimum: 180), spacing: 12)
-            ]
-        default:
-            return [
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ]
-        }
-    }
+    /// Adaptive columns reflow continuously as the window resizes (e.g. folding or unfolding iPhone Duo).
+    private let columns = [
+        GridItem(.adaptive(minimum: 160), spacing: 12)
+    ]
 
     private var items: [Item]
 
