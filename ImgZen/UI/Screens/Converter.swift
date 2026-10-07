@@ -1,3 +1,4 @@
+import OSLog
 import SwiftUI
 import StoreKit
 import PhotosUI
@@ -26,6 +27,9 @@ struct Converter: View {
     var body: some View {
         WithContext {
             let fileURLResolver = FileURLResolver()
+            fileURLResolver.removeCachedFiles()
+            // Picked photos were copied here before 1.1.0 and never cleaned up.
+            try? FileManager.default.removeItem(at: .applicationSupportDirectory.appending(path: "input"))
             let imageService = ImageService(
                 imageRepository: ImageFromURLRepository()
             )
@@ -54,25 +58,35 @@ struct Converter: View {
                     fileURLFor: fileURLResolver.fileURL(for:),
                     onConvert: { items, imageFormat in
                         conversion = Task {
-                            for await event in try conversionService.convert(
-                                items: items,
-                                imageFormat: imageFormat
-                            ) {
+                            let events: AsyncStream<ImageConversionService.Event>
+                            do {
+                                events = try conversionService.convert(
+                                    items: items,
+                                    imageFormat: imageFormat
+                                )
+                            } catch {
+                                logger.error("Failed to start conversion: \(error)")
+                                return
+                            }
+
+                            for await event in events {
                                 switch event {
                                 case .started:
                                     progress = .amount(current: 0, total: items.count)
                                 case let .converting(completed, total):
                                     progress = .amount(current: completed, total: total)
-                                case let .completed(items):
-                                    progress = .amount(current: items.count, total: items.count)
+                                case let .completed(outputItems):
                                     try await Task.sleep(for: .seconds(1.0))
-                                    path.append(.output(items))
+                                    path.append(.output(outputItems))
                                     try await Task.sleep(for: .seconds(0.3))
                                     progress = nil
                                     try await Task.sleep(for: .seconds(0.75))
                                     showInAppRatingIfNeeded()
                                 }
                             }
+
+                            // Hide the progress if the stream ended without completing (e.g. cancellation).
+                            progress = nil
                         }
                     }
                 )

@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 
 /// Service that orchestrates image conversion from input items to a target format.
 /// Emits events during conversion for progress tracking.
@@ -54,10 +55,11 @@ final class ImageConversionService {
     }
     
     /// Converts a list of input items to the specified image format.
+    /// Items that fail to load or convert are skipped, so the stream always completes unless it is cancelled.
     /// - Parameters:
     ///   - items: The input items to convert.
     ///   - imageFormat: The target format for conversion.
-    /// - Returns: An AsyncStream that emits conversion events.
+    /// - Returns: An AsyncStream that emits conversion events. Cancelling its consumer stops the conversion.
     /// - Throws: Errors if output directory preparation fails.
     func convert(
         items: [InputItem],
@@ -65,30 +67,67 @@ final class ImageConversionService {
     ) throws -> AsyncStream<Event> {
         try prepareOutputDirectory()
         return AsyncStream { continuation in
-            Task {
+            let task = Task {
                 continuation.yield(.started)
 
                 var result: [OutputItem] = []
+                var usedFilenames: Set<FileName> = []
                 var completed = 0
                 let total = items.count
 
                 for item in items {
-                    let url = try await fileURLFor(item)
-                    let metadata = try await metadata(url)
-                    let inputData = try await imageData(url, .full)
-                    if let outputData = await convert(inputData, imageFormat) {
-                        let filename = "\(metadata.filename).\(imageFormat.fileExtension)"
-                        let url = try await writeData(outputData, filename)
-                        result += [OutputItem(url: url)]
+                    guard !Task.isCancelled else { break }
+
+                    do {
+                        let url = try await fileURLFor(item)
+                        let metadata = try await metadata(url)
+                        let inputData = try await imageData(url, .full)
+                        if let outputData = await convert(inputData, imageFormat) {
+                            let filename = Self.uniqueFilename(
+                                baseName: metadata.filename,
+                                fileExtension: imageFormat.fileExtension,
+                                usedFilenames: &usedFilenames
+                            )
+                            let url = try await writeData(outputData, filename)
+                            result += [OutputItem(url: url)]
+                        }
+                    } catch {
+                        logger.error("Failed to convert item \(item.id): \(error)")
                     }
 
                     completed += 1
                     continuation.yield(.converting(completed: completed, total: total))
                 }
 
-                continuation.yield(.completed(result))
+                if !Task.isCancelled {
+                    continuation.yield(.completed(result))
+                }
                 continuation.finish()
             }
+
+            continuation.onTermination = { _ in
+                task.cancel()
+            }
         }
+    }
+
+    /// Returns a filename that has not been used yet in this conversion, appending a counter if needed
+    /// (e.g. `IMG_0001.jpg`, `IMG_0001 2.jpg`), so inputs with the same name don't overwrite each other.
+    static func uniqueFilename(
+        baseName: String,
+        fileExtension: String,
+        usedFilenames: inout Set<FileName>
+    ) -> FileName {
+        let baseName = baseName.isEmpty ? "image" : baseName
+        var filename = "\(baseName).\(fileExtension)"
+        var counter = 2
+
+        while usedFilenames.contains(filename.lowercased()) {
+            filename = "\(baseName) \(counter).\(fileExtension)"
+            counter += 1
+        }
+
+        usedFilenames.insert(filename.lowercased())
+        return filename
     }
 }

@@ -214,6 +214,152 @@ struct ImageConversionServiceTests {
         #expect(prepareCalled)
     }
     
+    @Test("ImageConversionService should skip items that fail to load and still complete")
+    func testFailingItemIsSkipped() async throws {
+        let failingItem = InputItem(source: .fileURLHandler { callback in
+            callback(.failure(CocoaError(.fileReadNoSuchFile)))
+        })
+        let service = ImageConversionService(
+            metadata: { url in
+                ImageMetadata(
+                    filename: url.deletingPathExtension().lastPathComponent,
+                    fileExtension: url.pathExtension,
+                    fileSize: 100,
+                    dimensions: CGSize(width: 100, height: 100),
+                    contentType: "public.jpeg"
+                )
+            },
+            imageData: { _, _ in Data("test".utf8) },
+            fileURLFor: { item in
+                switch item.source {
+                case let .fileURL(url):
+                    return url
+                case .fileURLHandler:
+                    throw CocoaError(.fileReadNoSuchFile)
+                }
+            },
+            prepareOutputDirectory: {},
+            writeData: { data, filename in
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("output-\(UUID().uuidString)-\(filename)")
+                try data.write(to: url)
+                return url
+            },
+            convert: { data, _ in data }
+        )
+
+        let stream = try service.convert(items: [failingItem, createInputItem()], imageFormat: .lossless(.png))
+
+        var events: [ImageConversionService.Event] = []
+        for await event in stream {
+            events.append(event)
+        }
+
+        #expect(events.contains(.converting(completed: 2, total: 2)))
+        if case .completed(let outputItems) = events.last {
+            #expect(outputItems.count == 1)
+        } else {
+            Issue.record("Expected completed event")
+        }
+    }
+
+    @Test("ImageConversionService should give inputs with the same name distinct output filenames")
+    func testDuplicateFilenames() async throws {
+        let service = ImageConversionService(
+            metadata: { _ in
+                ImageMetadata(
+                    filename: "IMG_0001",
+                    fileExtension: "heic",
+                    fileSize: 100,
+                    dimensions: CGSize(width: 100, height: 100),
+                    contentType: "public.heic"
+                )
+            },
+            imageData: { _, _ in Data("test".utf8) },
+            fileURLFor: { item in
+                if case .fileURL(let url) = item.source {
+                    return url
+                }
+                throw NSError(domain: "Test", code: 1)
+            },
+            prepareOutputDirectory: {},
+            writeData: { _, filename in
+                URL(fileURLWithPath: "/output").appendingPathComponent(filename)
+            },
+            convert: { data, _ in data }
+        )
+
+        let stream = try service.convert(
+            items: [createInputItem(), createInputItem(), createInputItem()],
+            imageFormat: .lossy(.jpeg)
+        )
+
+        var outputItems: [OutputItem] = []
+        for await event in stream {
+            if case .completed(let items) = event {
+                outputItems = items
+            }
+        }
+
+        #expect(outputItems.map(\.url.lastPathComponent) == ["IMG_0001.jpg", "IMG_0001 2.jpg", "IMG_0001 3.jpg"])
+    }
+
+    @Test("uniqueFilename should fall back to a default name for empty base names")
+    func testUniqueFilenameEmptyBaseName() {
+        var usedFilenames: Set<String> = []
+        let filename = ImageConversionService.uniqueFilename(
+            baseName: "",
+            fileExtension: "png",
+            usedFilenames: &usedFilenames
+        )
+
+        #expect(filename == "image.png")
+    }
+
+    @Test("ImageConversionService should stop converting when the consumer is cancelled")
+    func testCancellation() async throws {
+        let counter = Counter()
+        let service = ImageConversionService(
+            metadata: { url in
+                ImageMetadata(
+                    filename: url.deletingPathExtension().lastPathComponent,
+                    fileExtension: url.pathExtension,
+                    fileSize: 100,
+                    dimensions: CGSize(width: 100, height: 100),
+                    contentType: "public.jpeg"
+                )
+            },
+            imageData: { _, _ in Data("test".utf8) },
+            fileURLFor: { item in
+                if case .fileURL(let url) = item.source {
+                    return url
+                }
+                throw NSError(domain: "Test", code: 1)
+            },
+            prepareOutputDirectory: {},
+            writeData: { _, filename in
+                URL(fileURLWithPath: "/output").appendingPathComponent(filename)
+            },
+            convert: { data, _ in
+                await counter.increment()
+                try? await Task.sleep(for: .milliseconds(50))
+                return data
+            }
+        )
+
+        let items = (0..<20).map { _ in createInputItem() }
+        let consumer = Task {
+            for await event in try service.convert(items: items, imageFormat: .lossless(.png)) {
+                if case .converting(completed: 1, total: _) = event {
+                    withUnsafeCurrentTask { $0?.cancel() }
+                }
+            }
+        }
+        _ = await consumer.result
+        try await Task.sleep(for: .milliseconds(300))
+
+        #expect(await counter.value < items.count)
+    }
+
     // MARK: - Helper Methods
     
     private func createService() -> ImageConversionService {
@@ -282,3 +428,11 @@ extension ImageConversionService.Event: @retroactive Equatable {
     }
 }
 
+
+private actor Counter {
+    private(set) var value = 0
+
+    func increment() {
+        value += 1
+    }
+}
