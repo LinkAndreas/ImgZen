@@ -46,10 +46,9 @@ struct InputView: View {
         isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible
     }
 
-    /// On iPad, the inspector shows once there are images to convert. On iPhone it's always shown,
-    /// so the settings don't come and go in landscape.
+    /// The inspector shows once there are images to convert; the empty state has the whole screen.
     private var isInspectorVisible: Bool {
-        UIDevice.current.userInterfaceIdiom == .phone || !inputService.items.isEmpty
+        !inputService.items.isEmpty
     }
     
     private let previewLoader: ImagePreviewLoader
