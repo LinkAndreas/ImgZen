@@ -96,7 +96,7 @@ struct OutputView: View {
             }
         }
         .sensoryFeedback(.selection, trigger: selectedItemIDs)
-        .navigationTitle(String(localized: "navigation.readyToShare"))
+        .adaptiveNavigationTitle(String(localized: "navigation.readyToShare"))
     }
     
     /// Selects or deselects an output item for sharing.
