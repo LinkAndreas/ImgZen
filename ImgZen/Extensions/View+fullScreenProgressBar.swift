@@ -27,8 +27,8 @@ extension View {
                         state: progress,
                         onCancel: onCancel
                     )
-                    .transition(.opacity)
-                    .animation(.easeInOut(duration: 0.2), value: progress)
+                    // Fades out unhurried, so closing reads as finishing rather than vanishing.
+                    .transition(.opacity.animation(.easeInOut(duration: 0.4)))
                 }
             }
     }
