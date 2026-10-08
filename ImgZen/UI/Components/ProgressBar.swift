@@ -48,71 +48,86 @@ public struct ProgressBar: View {
         }
     }
 
+    /// How far the work is, from 0 to 1; nothing yet while preparing.
+    private var fraction: Double {
+        switch state {
+        case .indeterminate:
+            return 0
+        case let .percentage(value):
+            return max(0, min(1, value))
+        case let .amount(current, total):
+            return total > 0 ? Double(current) / Double(total) : 0
+        }
+    }
+
+    /// The count or percentage under the bar; empty while preparing, keeping its line so the card doesn't resize.
+    private var detail: String {
+        switch state {
+        case .indeterminate:
+            return " "
+        case let .percentage(value):
+            return String(format: String(localized: "progress.percentage", defaultValue: "%lld%%"), Int(max(0, min(1, value)) * 100))
+        case let .amount(current, total):
+            return String(format: String(localized: "progress.amount", defaultValue: "%lld of %lld"), current, total)
+        }
+    }
+
+    private var currentSubtitle: String? {
+        isComplete ? (completedSubtitle ?? subtitle) : subtitle
+    }
+
     public var body: some View {
         ZStack {
             Color.black
                 .opacity(0.3)
                 .ignoresSafeArea()
 
+            // One layout for every stage: only values change in place, so nothing shifts or overlaps
+            // as the card goes from preparing to converting to done.
             VStack(spacing: 20) {
                 Image(systemName: isComplete ? "checkmark.circle.fill" : "photo.stack")
-                    .font(.system(size: 44, weight: .medium))
+                    .font(.system(size: 52, weight: .medium))
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(isComplete ? Color.green : Color.accentColor)
                     .contentTransition(.symbolEffect(.replace))
                     .symbolEffect(.pulse, isActive: !isComplete)
-                    .frame(height: 52)
+                    .frame(height: 60)
                     .accessibilityHidden(true)
 
                 VStack(spacing: 6) {
                     Text(title)
-                        .font(.title3.weight(.semibold))
-                        .multilineTextAlignment(.center)
+                        .font(.title2.weight(.bold))
                         .foregroundStyle(.primary)
 
-                    if let subtitle = isComplete ? (completedSubtitle ?? subtitle) : subtitle {
-                        Text(subtitle)
-                            .font(.subheadline)
+                    if let currentSubtitle {
+                        Text(currentSubtitle)
+                            .font(.body)
                             .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
+                            .contentTransition(.opacity)
                     }
                 }
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
 
-                switch state {
-                case .indeterminate:
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .controlSize(.large)
-                case let .percentage(value):
-                    VStack(spacing: 8) {
-                        ProgressView(value: value, total: 1.0)
-                            .animation(.smooth, value: state)
-                            .progressViewStyle(.linear)
-                            .tint(.accentColor)
+                VStack(spacing: 10) {
+                    ProgressView(value: fraction)
+                        .progressViewStyle(.linear)
+                        .tint(isComplete ? .green : .accentColor)
+                        .scaleEffect(x: 1, y: 1.5)
 
-                        Text(String(format: String(localized: "progress.percentage", defaultValue: "%lld%%"), Int((max(0, min(1, value))) * 100)))
-                            .font(.subheadline.weight(.medium))
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                            .contentTransition(.numericText())
-                    }
-                case let .amount(current, total):
-                    VStack(spacing: 8) {
-                        ProgressView(value: Double(current), total: Double(max(total, 1)))
-                            .animation(.smooth, value: state)
-                            .progressViewStyle(.linear)
-                            .tint(.accentColor)
-
-                        Text(String(format: String(localized: "progress.amount", defaultValue: "%lld of %lld"), current, total))
-                            .font(.subheadline.weight(.medium))
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                            .contentTransition(.numericText(value: Double(current)))
-                    }
+                    Text(detail)
+                        .font(.headline)
+                        .monospacedDigit()
+                        .foregroundStyle(.primary)
+                        .contentTransition(.numericText(value: fraction))
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(currentSubtitle ?? title)
+                .accessibilityValue(detail)
 
                 Button(action: onCancel) {
                     Text(String(localized: "button.cancel"))
+                        .font(.body.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
@@ -122,9 +137,9 @@ public struct ProgressBar: View {
                 .disabled(isComplete)
                 .accessibilityHidden(isComplete)
             }
-            .animation(.smooth, value: state)
-            .frame(maxWidth: 280)
-            .padding(24)
+            .animation(.smooth(duration: 0.35), value: state)
+            .frame(maxWidth: 320)
+            .padding(28)
             // An opaque material keeps the text readable over the photos; clear glass let them show through.
             .background(.thickMaterial, in: .rect(cornerRadius: 32))
             .shadow(color: .black.opacity(0.2), radius: 24, y: 8)
