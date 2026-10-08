@@ -114,13 +114,11 @@ struct InputView: View {
         }
         .animation(.smooth(duration: 0.2), value: isDropTargeted)
         // Convert is the screen's confirming action, so it takes the prominent trailing spot, as Send does
-        // in Mail; on iPhone Duo it stays at the top of the vertical bar. It's always there, just disabled
-        // without images, so the bar never shifts.
-        .toolbar {
-            ToolbarItem(placement: .prominentTrailing) {
-                ConvertToolbarButton(action: convert)
-                    .disabled(inputService.items.isEmpty)
-            }
+        // in Mail; on iPhone Duo it's pinned to the top of the vertical bar, so it never scrolls away.
+        // It's always there, just disabled without images, so the bar never shifts.
+        .toolbarProminentAction {
+            ConvertToolbarButton(action: convert)
+                .disabled(inputService.items.isEmpty)
         }
         // Real toolbar items rather than a custom bar, so they move into the vertical bar on iPhone Duo.
         // Once there are images, adding more is a single prominent button in the trailing corner, within
