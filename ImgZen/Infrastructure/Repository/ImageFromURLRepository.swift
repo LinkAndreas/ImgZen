@@ -15,11 +15,13 @@ nonisolated struct ImageFromURLRepository: ImageRepository, Sendable {
         self.fileManager = fileManager
     }
 
+    // Explicitly nonisolated: as a requirement of the main actor-isolated ImageRepository,
+    // it would otherwise inherit the protocol's isolation despite the type being nonisolated.
     /// Retrieves metadata for an image at the given file URL.
     /// - Parameter source: The file URL of the image.
     /// - Returns: Image metadata including dimensions, size, and format.
     /// - Throws: Errors if metadata cannot be retrieved.
-    func metadata(
+    nonisolated func metadata(
         for source: URL
     ) throws -> ImageMetadata {
         let didStartAccess = source.startAccessingSecurityScopedResource()
