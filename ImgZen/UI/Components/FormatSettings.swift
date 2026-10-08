@@ -152,6 +152,8 @@ struct FormatSheet: View {
     @Binding var selectedImageCompressionQuality: ImageCompressionQuality
     var estimateFileSize: FileSizeEstimation? = nil
     var estimationSubject: String? = nil
+    /// Whether the sheet opens at full height only, for when bars are vertical (iPhone Duo).
+    var prefersFullHeight: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -170,8 +172,9 @@ struct FormatSheet: View {
             }
         }
         // Opening at half height keeps the formats and the done button within thumb reach.
-        .presentationDetents([.medium, .large])
-        .toolbarStaysInTopBar()
+        // With vertical bars, the sheet only gets its vertical bar at full height, so it opens there:
+        // the done button then stays in the vertical bar instead of moving into it as the sheet grows.
+        .presentationDetents(prefersFullHeight ? [.large] : [.medium, .large])
     }
 }
 

@@ -21,13 +21,17 @@ struct InputView: View {
     @State private var inputService = InputService()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isDropTargeted = false
+    @State private var isFormatSheetPresented = false
+    /// Whether the bars are vertical (iPhone Duo), where the format sheet opens at full height.
+    @State private var usesVerticalBars = false
 
-    /// Regular width windows (iPad) show the settings in an inspector column instead of a bottom panel.
+    /// Regular width windows (iPad) show the settings in an inspector column instead of the format button.
     private var isInspectorLayout: Bool {
         horizontalSizeClass == .regular
     }
 
-    private var isBottomControlPanelVisible: Bool {
+    /// The inspector shows once there are images to convert.
+    private var isInspectorVisible: Bool {
         !inputService.items.isEmpty
     }
     
@@ -91,22 +95,6 @@ struct InputView: View {
                 .transition(.opacity)
             }
         }
-        .safeAreaBar(edge: .bottom) {
-            // Once there are images, adding more is a single prominent button in the trailing corner,
-            // within reach of the right thumb; the format sits opposite it on iPhone.
-            if !inputService.items.isEmpty {
-                BottomControlPanel(
-                    selectedImageFormat: $selectedImageFormat,
-                    selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                    showsFormatButton: !isInspectorLayout,
-                    estimateFileSize: estimateFileSize(for:quality:),
-                    estimationSubject: inputService.items.first?.id.uuidString,
-                    addFromPhotosAction: { sheet = .photoPicker },
-                    addFromFilesAction: { sheet = .filePicker }
-                )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
         .animation(.smooth(duration: 0.25), value: inputService.items.isEmpty)
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
             let items = providers
@@ -125,51 +113,80 @@ struct InputView: View {
             }
         }
         .animation(.smooth(duration: 0.2), value: isDropTargeted)
+        // Convert is the screen's confirming action, so it takes the prominent trailing spot, as Send does
+        // in Mail; on iPhone Duo it stays at the top of the vertical bar. It's always there, just disabled
+        // without images, so the bar never shifts.
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu(String(localized: "button.more"), systemImage: "ellipsis") {
-                    Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
-                        Label {
-                            Text(String(localized: "button.startOver"))
-                            Text(String(localized: "label.startOverSubtitle"))
-                        } icon: {
-                            Image(systemName: "arrow.counterclockwise")
-                        }
-                    }
-                    .disabled(inputService.items.isEmpty)
-
-                    Divider()
-
-                    Button(
-                        String(localized: "button.sendFeedback"),
-                        systemImage: "envelope",
-                        action: onSendFeedback
-                    )
-                }
-                // Anchored to the menu button, so iPad shows it as a popover pointing at it.
-                .confirmationDialog(
-                    String(localized: "alert.removeAllImages"),
-                    isPresented: $isStartOverConfirmationShown,
-                    titleVisibility: .visible
-                ) {
-                    Button(String(localized: "button.removeAllImages"), role: .destructive) {
-                        inputService.removeAll()
-                    }
-                } message: {
-                    Text(String(localized: "alert.removeAllImages.message"))
-                }
-            }
-
-            ToolbarSpacer(.fixed, placement: .topBarTrailing)
-
-            // Convert is the screen's confirming action, so it takes the prominent trailing spot,
-            // as Send does in Mail. It's always there, just disabled without images, so the bar never shifts.
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(String(localized: "button.convert"), role: .confirm, action: convert)
-                    .keyboardShortcut(.return, modifiers: .command)
+            ToolbarItem(placement: .prominentTrailing) {
+                ConvertToolbarButton(action: convert)
                     .disabled(inputService.items.isEmpty)
             }
         }
+        // Real toolbar items rather than a custom bar, so they move into the vertical bar on iPhone Duo.
+        // Once there are images, adding more is a single prominent button in the trailing corner, within
+        // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
+        .toolbarPreferringVerticalBar {
+            if !inputService.items.isEmpty {
+                if !isInspectorLayout {
+                    ToolbarItem(placement: .bottomBar) {
+                        FormatToolbarButton(
+                            selectedImageFormat: selectedImageFormat,
+                            selectedImageCompressionQuality: selectedImageCompressionQuality,
+                            action: { isFormatSheetPresented = true }
+                        )
+                    }
+                }
+
+                ToolbarSpacer(.flexible, placement: .bottomBar)
+
+                ToolbarItem(placement: .bottomBar) {
+                    ImageSourceSelection(
+                        addFromPhotosAction: { sheet = .photoPicker },
+                        addFromFilesAction: { sheet = .filePicker }
+                    )
+                }
+            }
+        }
+        .toolbarOverflowMenu(title: String(localized: "button.more")) {
+            Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
+                Label {
+                    Text(String(localized: "button.startOver"))
+                    Text(String(localized: "label.startOverSubtitle"))
+                } icon: {
+                    Image(systemName: "arrow.counterclockwise")
+                }
+            }
+            .disabled(inputService.items.isEmpty)
+
+            Divider()
+
+            Button(
+                String(localized: "button.sendFeedback"),
+                systemImage: "envelope",
+                action: onSendFeedback
+            )
+        }
+        .confirmationDialog(
+            String(localized: "alert.removeAllImages"),
+            isPresented: $isStartOverConfirmationShown,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "button.removeAllImages"), role: .destructive) {
+                inputService.removeAll()
+            }
+        } message: {
+            Text(String(localized: "alert.removeAllImages.message"))
+        }
+        .sheet(isPresented: $isFormatSheetPresented) {
+            FormatSheet(
+                selectedImageFormat: $selectedImageFormat,
+                selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                estimateFileSize: estimateFileSize(for:quality:),
+                estimationSubject: inputService.items.first?.id.uuidString,
+                prefersFullHeight: usesVerticalBars
+            )
+        }
+        .onVerticalBarChange { usesVerticalBars = $0 }
         .sensoryFeedback(.impact(weight: .light), trigger: inputService.items.count) { old, new in new > old }
         .imagePicker(
             isPresented: $sheet[isPresented: .photoPicker],
@@ -177,10 +194,13 @@ struct InputView: View {
         ) { items in
             inputService.didAdd(items: items)
         }
-        .documentPicker(
+        // The system file importer, which adapts to every device, including the vertical bar of iPhone Duo.
+        .fileImporter(
             isPresented: $sheet[isPresented: .filePicker],
-            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png]
-        ) { urls in
+            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png],
+            allowsMultipleSelection: true
+        ) { result in
+            guard case let .success(urls) = result else { return }
             inputService.didAdd(items: urls.map { url in
                 InputItem(source: .fileURL(url))
             })
@@ -193,7 +213,7 @@ struct InputView: View {
         // the navigation stack's content in a container that disturbs the large title's collapse on scroll.
         if isInspectorLayout {
             content
-                .inspector(isPresented: .constant(isBottomControlPanelVisible)) {
+                .inspector(isPresented: .constant(isInspectorVisible)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
                         selectedImageCompressionQuality: $selectedImageCompressionQuality,
