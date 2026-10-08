@@ -597,6 +597,23 @@
         }
       }
     },
+    "label.compressionQuality.losslessFooter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist verlustfrei und behält immer die volle Qualität."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is lossless and always keeps full quality."
+          }
+        }
+      }
+    },
     "label.destinationFormat" : {
       "extractionState" : "manual",
       "localizations" : {
