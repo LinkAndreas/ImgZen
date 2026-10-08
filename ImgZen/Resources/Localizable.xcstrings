@@ -597,23 +597,6 @@
         }
       }
     },
-    "label.compressionQuality.losslessFooter" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ ist verlustfrei und behält immer die volle Qualität."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ is lossless and always keeps full quality."
-          }
-        }
-      }
-    },
     "label.destinationFormat" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -644,74 +627,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose photos or files to convert, or drop images here."
-          }
-        }
-      }
-    },
-    "label.estimate" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwa %@ pro Bild"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "About %@ per image"
-          }
-        }
-      }
-    },
-    "label.estimate.larger" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwa %1$@ pro Bild · %2$@ größer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "About %1$@ per image · %2$@ larger"
-          }
-        }
-      }
-    },
-    "label.estimate.similar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwa %@ pro Bild · etwa so groß wie das Original"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "About %@ per image · about the same as the original"
-          }
-        }
-      }
-    },
-    "label.estimate.smaller" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etwa %1$@ pro Bild · %2$@ kleiner"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "About %1$@ per image · %2$@ smaller"
           }
         }
       }
@@ -1021,6 +936,40 @@
         }
       }
     },
+    "quality.custom" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom"
+          }
+        }
+      }
+    },
+    "quality.custom.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine genaue Qualität"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose an exact quality"
+          }
+        }
+      }
+    },
     "quality.high" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1034,6 +983,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "High"
+          }
+        }
+      }
+    },
+    "quality.high.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empfohlen. Wirkt wie das Original, bei einem Bruchteil der Größe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommended. Looks like the original, at a fraction of the size"
           }
         }
       }
@@ -1072,6 +1038,23 @@
         }
       }
     },
+    "quality.low.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleinste Dateien, mit sichtbaren Artefakten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smallest files, with visible artifacts"
+          }
+        }
+      }
+    },
     "quality.max" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1089,6 +1072,23 @@
         }
       }
     },
+    "quality.max.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Details, größte Dateien"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every detail, largest files"
+          }
+        }
+      }
+    },
     "quality.med" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1102,6 +1102,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Medium"
+          }
+        }
+      }
+    },
+    "quality.med.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gut für Websites und Nachrichten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Good for websites and messages"
           }
         }
       }
