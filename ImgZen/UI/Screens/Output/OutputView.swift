@@ -64,6 +64,8 @@ struct OutputView: View {
                                 Text(String(localized: "button.deselectAll")).hidden()
                                 Text(String(localized: areAllItemsSelected ? "button.deselectAll" : "button.selectAll"))
                             }
+                            // Room around the title, so the button doesn't look squeezed next to Share.
+                            .padding(.horizontal, 8)
                         }
                     }
                 }
@@ -85,6 +87,7 @@ struct OutputView: View {
                                 Text(title)
                                     .monospacedDigit()
                             }
+                            .padding(.horizontal, 8)
                             .accessibilityElement(children: .combine)
                             .accessibilityLabel(title)
                         }
