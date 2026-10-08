@@ -136,15 +136,13 @@ struct InputView: View {
         // Once there are images, adding more is a single prominent button in the trailing corner, within
         // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
         .toolbarPreferringVerticalBar {
-            if !inputService.items.isEmpty {
-                if !areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
-                    ToolbarItem(placement: .bottomBar) {
-                        FormatToolbarButton(
-                            selectedImageFormat: selectedImageFormat,
-                            selectedImageCompressionQuality: selectedImageCompressionQuality,
-                            action: { isFormatSheetPresented = true }
-                        )
-                    }
+            if !inputService.items.isEmpty && !areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
+                ToolbarItem(placement: .bottomBar) {
+                    FormatToolbarButton(
+                        selectedImageFormat: selectedImageFormat,
+                        selectedImageCompressionQuality: selectedImageCompressionQuality,
+                        action: { isFormatSheetPresented = true }
+                    )
                 }
 
                 ToolbarSpacer(.flexible, placement: .bottomBar)
@@ -155,6 +153,23 @@ struct InputView: View {
                         addFromFilesAction: { sheet = .filePicker }
                     )
                 }
+            }
+        }
+        // Next to the inspector, the toolbar's bottom bar sits under the inspector column, so Add floats
+        // in the gallery's trailing corner instead, by the images it adds to.
+        .safeAreaBar(edge: .bottom) {
+            if !inputService.items.isEmpty && areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
+                HStack {
+                    Spacer()
+                    ImageSourceSelection(
+                        style: .floating,
+                        addFromPhotosAction: { sheet = .photoPicker },
+                        addFromFilesAction: { sheet = .filePicker }
+                    )
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+                .transition(.opacity)
             }
         }
         .toolbarOverflowMenu(title: String(localized: "button.more")) {
