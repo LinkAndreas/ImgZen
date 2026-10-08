@@ -3,18 +3,24 @@ import SwiftUI
 // Helpers for the vertical bars of iPhone Duo (iOS 27.1), where navigation and toolbar items move
 // into a bar along the side of the display. They fall back to regular bars on earlier systems.
 
-extension ToolbarItemPlacement {
-    /// The placement for a screen's prominent action, which the vertical bar keeps near its top.
-    static var prominentTrailing: ToolbarItemPlacement {
+extension View {
+    /// Adds a screen's prominent action, e.g. Done or Send, in the pinned trailing placement:
+    /// on iPhone Duo it stays at the top of the vertical bar instead of scrolling away with the title,
+    /// and with a high visibility priority, it's the last item to move into the overflow menu.
+    @ViewBuilder
+    func toolbarProminentAction<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
         if #available(iOS 27.1, *) {
-            .topBarPinnedTrailing
+            toolbar {
+                ToolbarItem(placement: .topBarPinnedTrailing, content: content)
+                    .visibilityPriority(.high)
+            }
         } else {
-            .topBarTrailing
+            toolbar {
+                ToolbarItem(placement: .topBarTrailing, content: content)
+            }
         }
     }
-}
 
-extension View {
     /// Adds toolbar items whose content adapts to the vertical bar, so they join it instead of
     /// staying in a horizontal bar. Use it for items with custom labels that read `VerticalBarReader`.
     @ViewBuilder
