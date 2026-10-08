@@ -1,7 +1,7 @@
 import PhotosUI
 import SwiftUI
 
-/// A prominent round button with a menu for adding images from Photos or Files.
+/// A prominent toolbar button with a menu for adding images from Photos or Files.
 struct ImageSourceSelection: View {
     private let addFromPhotosAction: () -> Void
     private let addFromFilesAction: () -> Void
@@ -31,14 +31,11 @@ struct ImageSourceSelection: View {
                 action: addFromFilesAction
             )
         } label: {
+            // Icon and title, so the system can show either, depending on the bar.
             Label(String(localized: "button.addImages"), systemImage: "plus")
-                .labelStyle(.iconOnly)
-                .font(.title2.weight(.semibold))
-                .frame(minWidth: 28, minHeight: 28)
         }
-        // The one prominent button of the bar, as adding images is what the screen is for.
-        .buttonStyle(.glassProminent)
-        .buttonBorderShape(.circle)
-        .controlSize(.large)
+        // The one prominent item of the bottom bar, as adding images is what the screen is for.
+        .buttonStyle(.borderedProminent)
+        .tint(.accentColor)
     }
 }

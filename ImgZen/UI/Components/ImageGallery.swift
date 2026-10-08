@@ -11,6 +11,8 @@ struct ImageGallery: View {
         /// Returns the item's preview if it's already in memory, so the cell can show it without a spinner.
         let cachedPreview: @Sendable () -> ImagePreview?
         let contextActions: [ContextAction]
+        /// The file offered by a Share item in the context menu, if any.
+        var shareURL: URL? = nil
         /// Action performed when the item is tapped, if any.
         var primaryAction: (() -> Void)? = nil
         /// The selection state, or nil if the item isn't selectable.
@@ -94,6 +96,13 @@ private struct GalleryTile: View {
         .contentShape(.hoverEffect, Self.shape)
         .hoverEffect(.lift)
         .contextMenu {
+            // ShareLink presents the system share sheet, which adapts to every device by itself.
+            if let shareURL = item.shareURL {
+                ShareLink(item: shareURL) {
+                    Label(String(localized: "button.share"), systemImage: "square.and.arrow.up")
+                }
+            }
+
             ForEach(item.contextActions) { action in
                 Button(role: action.destructive ? .destructive : nil) {
                     action.execute()
