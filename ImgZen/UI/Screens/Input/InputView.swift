@@ -22,31 +22,28 @@ struct InputView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isDropTargeted = false
     @State private var isFormatSheetPresented = false
-    /// Whether the bars are vertical (iPhone Duo), where the format sheet opens at full height.
-    @State private var usesVerticalBars = false
-    /// The size of the screen's content, to tell landscape from portrait on iPhone Duo unfolded.
-    @State private var contentSize: CGSize = .zero
 
     /// Whether the settings show in an inspector column next to the gallery instead of behind the format button:
-    /// on iPad in regular width, and on iPhone in regular width when the display is wider than tall,
-    /// e.g. iPhone Duo unfolded in landscape. In portrait there's no room for a column beside the gallery,
-    /// so the format button and its sheet are used there.
-    private var isInspectorLayout: Bool {
+    /// on iPad in regular width, and on iPhone in regular width with vertical bars, which is iPhone Duo unfolded
+    /// in landscape. In portrait, the unfolded display uses horizontal bars and has no room for a column beside
+    /// the gallery, so the format button and its sheet are used there.
+    /// - Parameter usesVerticalBars: Whether the system shows the bars vertically (iPhone Duo).
+    private func isInspectorLayout(usesVerticalBars: Bool) -> Bool {
         guard horizontalSizeClass == .regular else { return false }
 
         switch UIDevice.current.userInterfaceIdiom {
         case .pad:
             return true
         case .phone:
-            return contentSize.width > contentSize.height
+            return usesVerticalBars
         default:
             return false
         }
     }
 
     /// Whether the settings are already on screen, so the format button isn't needed.
-    private var areSettingsShownInline: Bool {
-        isInspectorLayout && isInspectorVisible
+    private func areSettingsShownInline(usesVerticalBars: Bool) -> Bool {
+        isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible
     }
 
     /// On iPad, the inspector shows once there are images to convert. On iPhone it's always shown,
@@ -78,7 +75,7 @@ struct InputView: View {
         self.onSendFeedback = onSendFeedback
     }
 
-    private var content: some View {
+    private func content(usesVerticalBars: Bool) -> some View {
         // The gallery is the root view, so the navigation bar tracks its scrolling and collapses the title smoothly.
         ImageGallery(
             items: inputService.items.map { item in
@@ -141,7 +138,7 @@ struct InputView: View {
         // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
         .toolbarPreferringVerticalBar {
             if !inputService.items.isEmpty {
-                if !areSettingsShownInline {
+                if !areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
                     ToolbarItem(placement: .bottomBar) {
                         FormatToolbarButton(
                             selectedImageFormat: selectedImageFormat,
@@ -198,7 +195,6 @@ struct InputView: View {
                 prefersFullHeight: usesVerticalBars
             )
         }
-        .onVerticalBarChange { usesVerticalBars = $0 }
         .sensoryFeedback(.impact(weight: .light), trigger: inputService.items.count) { old, new in new > old }
         .imagePicker(
             isPresented: $sheet[isPresented: .photoPicker],
@@ -221,20 +217,19 @@ struct InputView: View {
     }
 
     var body: some View {
-        layout
-            .onGeometryChange(for: CGSize.self) { proxy in
-                proxy.size
-            } action: { size in
-                contentSize = size
-            }
+        // Whether bars are vertical comes from the environment (iPhone Duo), and decides both
+        // where the settings go and how the format sheet opens.
+        VerticalBarReader { usesVerticalBars in
+            layout(usesVerticalBars: usesVerticalBars)
+        }
     }
 
     @ViewBuilder
-    private var layout: some View {
+    private func layout(usesVerticalBars: Bool) -> some View {
         // The inspector is only attached where it shows as a column. Elsewhere it would still wrap the
         // navigation stack's content in a container that disturbs the large title's collapse on scroll.
-        if isInspectorLayout {
-            content
+        if isInspectorLayout(usesVerticalBars: usesVerticalBars) {
+            content(usesVerticalBars: usesVerticalBars)
                 .inspector(isPresented: .constant(isInspectorVisible)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
@@ -243,7 +238,7 @@ struct InputView: View {
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
         } else {
-            content
+            content(usesVerticalBars: usesVerticalBars)
         }
     }
 }
