@@ -16,41 +16,23 @@ struct InputView: View {
 
     @State private var isStartOverConfirmationShown: Bool = false
     @State private var sheet: Sheet?
-    @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
-    @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
-    @State private var inputService = InputService()
+    @Binding private var selectedImageFormat: FormatSelection
+    @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isDropTargeted = false
     @State private var isFormatSheetPresented = false
 
-    /// Whether the settings show in an inspector column next to the gallery instead of behind the format button:
-    /// on iPad in regular width, and on iPhone in regular width with vertical bars, which is iPhone Duo unfolded
-    /// in landscape. In portrait, the unfolded display uses horizontal bars and has no room for a column beside
-    /// the gallery, so the format button and its sheet are used there.
-    /// - Parameter usesVerticalBars: Whether the system shows the bars vertically (iPhone Duo).
-    private func isInspectorLayout(usesVerticalBars: Bool) -> Bool {
-        guard horizontalSizeClass == .regular else { return false }
-
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            return true
-        case .phone:
-            return usesVerticalBars
-        default:
-            return false
-        }
+    /// On iPad, Convert floats next to Add in the gallery, where the images are, rather than at the top
+    /// of the inspector column. Elsewhere it's the prominent action at the top, pinned to the vertical bar
+    /// on iPhone Duo.
+    private var showsConvertNextToAdd: Bool {
+        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
     }
 
-    /// Whether the settings are already on screen, so the format button isn't needed.
-    private func areSettingsShownInline(usesVerticalBars: Bool) -> Bool {
-        isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible
-    }
-
-    /// The inspector shows once there are images to convert; the empty state has the whole screen.
-    private var isInspectorVisible: Bool {
-        !inputService.items.isEmpty
-    }
-    
+    private let inputService: InputService
+    /// Whether the settings are already on screen in the inspector next to the navigation stack,
+    /// so the format button isn't needed.
+    private let areSettingsShownInline: Bool
     private let previewLoader: ImagePreviewLoader
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
@@ -58,16 +40,28 @@ struct InputView: View {
 
     /// Creates an InputView.
     /// - Parameters:
+    ///   - inputService: The images to convert.
+    ///   - selectedImageFormat: Binding to the selected image format.
+    ///   - selectedImageCompressionQuality: Binding to the compression quality value.
+    ///   - areSettingsShownInline: Whether the format inspector shows next to the gallery.
     ///   - previewLoader: Loads the previews shown in the gallery.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
     ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
+        inputService: InputService,
+        selectedImageFormat: Binding<FormatSelection>,
+        selectedImageCompressionQuality: Binding<ImageCompressionQuality>,
+        areSettingsShownInline: Bool,
         previewLoader: ImagePreviewLoader,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
         onSendFeedback: @escaping () -> Void
     ) {
+        self.inputService = inputService
+        self._selectedImageFormat = selectedImageFormat
+        self._selectedImageCompressionQuality = selectedImageCompressionQuality
+        self.areSettingsShownInline = areSettingsShownInline
         self.previewLoader = previewLoader
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
@@ -128,7 +122,7 @@ struct InputView: View {
         // Convert is the screen's confirming action, so it takes the prominent trailing spot, as Send does
         // in Mail; on iPhone Duo it's pinned to the top of the vertical bar, so it never scrolls away.
         // It's always there, just disabled without images, so the bar never shifts.
-        .toolbarProminentAction {
+        .toolbarProminentAction(isShown: !showsConvertNextToAdd) {
             ConvertToolbarButton(action: convert)
                 .disabled(inputService.items.isEmpty)
         }
@@ -136,15 +130,13 @@ struct InputView: View {
         // Once there are images, adding more is a single prominent button in the trailing corner, within
         // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
         .toolbarPreferringVerticalBar {
-            if !inputService.items.isEmpty {
-                if !areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
-                    ToolbarItem(placement: .bottomBar) {
-                        FormatToolbarButton(
-                            selectedImageFormat: selectedImageFormat,
-                            selectedImageCompressionQuality: selectedImageCompressionQuality,
-                            action: { isFormatSheetPresented = true }
-                        )
-                    }
+            if !inputService.items.isEmpty && !areSettingsShownInline {
+                ToolbarItem(placement: .bottomBar) {
+                    FormatToolbarButton(
+                        selectedImageFormat: selectedImageFormat,
+                        selectedImageCompressionQuality: selectedImageCompressionQuality,
+                        action: { isFormatSheetPresented = true }
+                    )
                 }
 
                 ToolbarSpacer(.flexible, placement: .bottomBar)
@@ -155,6 +147,34 @@ struct InputView: View {
                         addFromFilesAction: { sheet = .filePicker }
                     )
                 }
+            }
+        }
+        // Next to the inspector, the toolbar's bottom bar sits under the inspector column, so Add floats
+        // in the gallery's trailing corner instead, by the images it adds to. On iPad, Convert joins it
+        // as the prominent button, so the main action sits with the images too.
+        .safeAreaBar(edge: .bottom) {
+            if !inputService.items.isEmpty && areSettingsShownInline {
+                GlassEffectContainer(spacing: 12) {
+                    HStack(spacing: 12) {
+                        Spacer()
+
+                        if showsConvertNextToAdd {
+                            Button(String(localized: "button.convert"), action: convert)
+                                .buttonStyle(.glassProminent)
+                                .controlSize(.large)
+                                .keyboardShortcut(.return, modifiers: .command)
+                        }
+
+                        ImageSourceSelection(
+                            style: showsConvertNextToAdd ? .floatingSecondary : .floating,
+                            addFromPhotosAction: { sheet = .photoPicker },
+                            addFromFilesAction: { sheet = .filePicker }
+                        )
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+                .transition(.opacity)
             }
         }
         .toolbarOverflowMenu(title: String(localized: "button.more")) {
@@ -216,27 +236,8 @@ struct InputView: View {
     }
 
     var body: some View {
-        // Whether bars are vertical comes from the environment (iPhone Duo), and decides both
-        // where the settings go and how the format sheet opens.
+        // Whether bars are vertical comes from the environment (iPhone Duo), and decides how the format sheet opens.
         VerticalBarReader { usesVerticalBars in
-            layout(usesVerticalBars: usesVerticalBars)
-        }
-    }
-
-    @ViewBuilder
-    private func layout(usesVerticalBars: Bool) -> some View {
-        // The inspector is only attached where it shows as a column. Elsewhere it would still wrap the
-        // navigation stack's content in a container that disturbs the large title's collapse on scroll.
-        if isInspectorLayout(usesVerticalBars: usesVerticalBars) {
-            content(usesVerticalBars: usesVerticalBars)
-                .inspector(isPresented: .constant(isInspectorVisible)) {
-                    FormatInspector(
-                        selectedImageFormat: $selectedImageFormat,
-                        selectedImageCompressionQuality: $selectedImageCompressionQuality
-                    )
-                    .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
-                }
-        } else {
             content(usesVerticalBars: usesVerticalBars)
         }
     }

@@ -44,8 +44,10 @@ struct OutputView: View {
             }
         )
         // Real toolbar items rather than a custom bar, so they move into the vertical bar on iPhone Duo.
-        // Selecting and sharing are the main actions here, so they sit within thumb reach.
+        // Selecting and sharing are the main actions here, so they sit together within reach of the right thumb.
         .toolbarPreferringVerticalBar {
+            ToolbarSpacer(.flexible, placement: .bottomBar)
+
             ToolbarItem(placement: .bottomBar) {
                 Button(action: toggleSelectAll) {
                     VerticalBarReader { isVertical in
@@ -67,8 +69,6 @@ struct OutputView: View {
                 }
             }
 
-            ToolbarSpacer(.flexible, placement: .bottomBar)
-
             ToolbarItem(placement: .bottomBar) {
                 // ShareLink presents the system share sheet, anchored to the button as a popover on iPad.
                 ShareLink(items: selectedFileURLs) {
@@ -78,8 +78,15 @@ struct OutputView: View {
                             Label(title, systemImage: "square.and.arrow.up")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label(title, systemImage: "square.and.arrow.up")
-                                .labelStyle(.titleAndIcon)
+                            // Icon and title as separate views: toolbars show a Label as its icon only,
+                            // but sharing is the main action here, so its title stays visible.
+                            HStack(spacing: 6) {
+                                Image(systemName: "square.and.arrow.up")
+                                Text(title)
+                                    .monospacedDigit()
+                            }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel(title)
                         }
                     }
                 }

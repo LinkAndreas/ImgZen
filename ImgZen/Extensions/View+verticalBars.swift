@@ -7,16 +7,26 @@ extension View {
     /// Adds a screen's prominent action, e.g. Done or Send, in the pinned trailing placement:
     /// on iPhone Duo it stays at the top of the vertical bar instead of scrolling away with the title,
     /// and with a high visibility priority, it's the last item to move into the overflow menu.
+    /// - Parameters:
+    ///   - isShown: Whether to add the action, for screens that place it elsewhere in some layouts.
+    ///   - content: The action's button.
     @ViewBuilder
-    func toolbarProminentAction<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+    func toolbarProminentAction<Content: View>(
+        isShown: Bool = true,
+        @ViewBuilder _ content: () -> Content
+    ) -> some View {
         if #available(iOS 27.1, *) {
             toolbar {
-                ToolbarItem(placement: .topBarPinnedTrailing, content: content)
-                    .visibilityPriority(.high)
+                if isShown {
+                    ToolbarItem(placement: .topBarPinnedTrailing, content: content)
+                        .visibilityPriority(.high)
+                }
             }
         } else {
             toolbar {
-                ToolbarItem(placement: .topBarTrailing, content: content)
+                if isShown {
+                    ToolbarItem(placement: .topBarTrailing, content: content)
+                }
             }
         }
     }

@@ -6,9 +6,10 @@ import PhotosUI
 /// The main entry point for the app.
 /// Manages conversion flow, navigation, and review requests.
 struct Converter: View {
-    /// Enum representing navigation destinations for the main navigation stack.
-    enum Destination: Hashable {
-        case output([OutputItem])
+    /// The images of a finished conversion, shown in a sheet to review and share.
+    struct Results: Identifiable {
+        let id = UUID()
+        let items: [OutputItem]
     }
 
     /// Enum representing currently presented sheets (modals).
@@ -28,9 +29,13 @@ struct Converter: View {
 
     @State private var progress: ProgressBar.State?
     @State private var conversion: Task<Void, Error>?
-    @State private var path: [Destination] = []
+    @State private var results: Results?
     @State private var sheet: Sheet?
     @State private var conversionFailure: ConversionFailure?
+    @State private var inputService = InputService()
+    @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
+    @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.requestReview) private var requestReview
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
 
@@ -65,73 +70,88 @@ struct Converter: View {
             let previewLoader = ImagePreviewLoader(repository: imageRepository)
             return (fileURLResolver, conversionService, previewLoader)
         } content: { fileURLResolver, conversionService, previewLoader in
-            NavigationStack(path: $path) {
-                InputView(
-                    previewLoader: previewLoader,
-                    fileURLFor: fileURLResolver.fileURL(for:),
-                    onConvert: { items, imageFormat in
-                        // Only one conversion at a time: the keyboard shortcut still works behind the progress card.
-                        guard progress == nil else { return }
-                        progress = .indeterminate
+            // Whether bars are vertical comes from the environment (iPhone Duo), and decides where the settings go.
+            VerticalBarReader { usesVerticalBars in
+                let isInspectorShown = isInspectorLayout(usesVerticalBars: usesVerticalBars)
+                    && !inputService.items.isEmpty
+                NavigationStack {
+                    InputView(
+                        inputService: inputService,
+                        selectedImageFormat: $selectedImageFormat,
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                        areSettingsShownInline: isInspectorShown,
+                        previewLoader: previewLoader,
+                        fileURLFor: fileURLResolver.fileURL(for:),
+                        onConvert: { items, imageFormat in
+                            // Only one conversion at a time: the keyboard shortcut still works behind the progress card.
+                            guard progress == nil else { return }
+                            progress = .indeterminate
+                            let startedAt = ContinuousClock.now
 
-                        conversion = Task {
-                            let events: AsyncStream<ImageConversionService.Event>
-                            do {
-                                events = try conversionService.convert(
-                                    items: items,
-                                    imageFormat: imageFormat
-                                )
-                            } catch {
-                                logger.error("Failed to start conversion: \(error)")
-                                progress = nil
-                                conversionFailure = ConversionFailure(failedCount: items.count, totalCount: items.count)
-                                return
-                            }
-
-                            for await event in events {
-                                switch event {
-                                case .started:
-                                    progress = .amount(current: 0, total: items.count)
-                                case let .converting(completed, total):
-                                    progress = .amount(current: completed, total: total)
-                                case let .completed(outputItems):
-                                    try await Task.sleep(for: .seconds(1.0))
-                                    let failedCount = items.count - outputItems.count
-
-                                    // Without any converted image there's nothing to share, so stay and explain instead.
-                                    guard !outputItems.isEmpty else {
-                                        progress = nil
-                                        conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
-                                        return
-                                    }
-
-                                    path.append(.output(outputItems))
-                                    try await Task.sleep(for: .seconds(0.3))
+                            conversion = Task {
+                                let events: AsyncStream<ImageConversionService.Event>
+                                do {
+                                    events = try conversionService.convert(
+                                        items: items,
+                                        imageFormat: imageFormat
+                                    )
+                                } catch {
+                                    logger.error("Failed to start conversion: \(error)")
                                     progress = nil
+                                    conversionFailure = ConversionFailure(failedCount: items.count, totalCount: items.count)
+                                    return
+                                }
 
-                                    if failedCount > 0 {
-                                        conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
-                                    } else {
-                                        try await Task.sleep(for: .seconds(0.75))
-                                        requestReviewIfNeeded()
+                                for await event in events {
+                                    switch event {
+                                    case .started:
+                                        progress = .amount(current: 0, total: items.count)
+                                    case let .converting(completed, total):
+                                        progress = .amount(current: completed, total: total)
+                                    case let .completed(outputItems):
+                                        // The card stays long enough to follow, even when converting is quick,
+                                        // and then confirms it's done before the results open.
+                                        try await Task.sleep(until: startedAt + .seconds(1.2), clock: .continuous)
+                                        progress = .amount(current: items.count, total: items.count)
+                                        try await Task.sleep(for: .seconds(1.5))
+                                        let failedCount = items.count - outputItems.count
+
+                                        // Without any converted image there's nothing to share, so stay and explain instead.
+                                        guard !outputItems.isEmpty else {
+                                            progress = nil
+                                            conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
+                                            return
+                                        }
+
+                                        // The card fades as the results slide up over the images they came from.
+                                        progress = nil
+                                        results = Results(items: outputItems)
+
+                                        if failedCount > 0 {
+                                            conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
+                                        } else {
+                                            try await Task.sleep(for: .seconds(0.75))
+                                            requestReviewIfNeeded()
+                                        }
                                     }
                                 }
-                            }
 
-                            // Hide the progress if the stream ended without completing (e.g. cancellation).
-                            progress = nil
-                        }
-                    },
-                    onSendFeedback: { sheet = .mailComposer }
-                )
-                .navigationDestination(for: Destination.self) { destination in
-                    switch destination {
-                    case let .output(items):
-                        OutputView(
-                            items: items,
-                            previewLoader: previewLoader
-                        )
-                    }
+                                // Hide the progress if the stream ended without completing (e.g. cancellation).
+                                progress = nil
+                            }
+                        },
+                        onSendFeedback: { sheet = .mailComposer }
+                    )
+                }
+                // The inspector is a column next to the navigation stack rather than inside it, so the stack's
+                // navigation bar, and the title it shows when the large title collapses, spans only the gallery.
+                // It shows once there are images to convert.
+                .formatInspector(isShown: isInspectorShown) {
+                    FormatInspector(
+                        selectedImageFormat: $selectedImageFormat,
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality
+                    )
+                    .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
             }
             .mailComposer(
@@ -150,8 +170,27 @@ struct Converter: View {
                     progress = nil
                 }
             )
+            // The results are a self-contained task on top of the images: reviewed, shared, and closed,
+            // returning to the images and settings as they were.
+            .sheet(item: $results) { results in
+                NavigationStack {
+                    OutputView(
+                        items: results.items,
+                        previewLoader: previewLoader
+                    )
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(role: .close) {
+                                self.results = nil
+                            }
+                        }
+                    }
+                }
+                // Room for the gallery on iPad; full height on iPhone.
+                .presentationSizing(.page)
+            }
             // Confirms a finished conversion as the results slide in.
-            .sensoryFeedback(.success, trigger: path.count) { old, new in new > old }
+            .sensoryFeedback(.success, trigger: results?.id) { _, new in new != nil }
             .alert(
                 conversionFailure.map(Self.alertTitle(for:)) ?? "",
                 isPresented: Binding(
@@ -164,6 +203,24 @@ struct Converter: View {
             } message: { failure in
                 Text(Self.alertMessage(for: failure))
             }
+        }
+    }
+
+    /// Whether the settings show in an inspector column next to the gallery instead of behind the format button:
+    /// on iPad in regular width, and on iPhone in regular width with vertical bars, which is iPhone Duo unfolded
+    /// in landscape. In portrait, the unfolded display uses horizontal bars and has no room for a column beside
+    /// the gallery, so the format button and its sheet are used there.
+    /// - Parameter usesVerticalBars: Whether the system shows the bars vertically (iPhone Duo).
+    private func isInspectorLayout(usesVerticalBars: Bool) -> Bool {
+        guard horizontalSizeClass == .regular else { return false }
+
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            return true
+        case .phone:
+            return usesVerticalBars
+        default:
+            return false
         }
     }
 
@@ -207,6 +264,22 @@ extension Converter.Sheet? {
             if !newValue {
                 self = nil
             }
+        }
+    }
+}
+
+private extension View {
+    /// Adds the format inspector only while `isShown`: attached while hidden, its column showed for a moment
+    /// at launch before it collapsed for the empty state.
+    @ViewBuilder
+    func formatInspector<Content: View>(
+        isShown: Bool,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        if isShown {
+            inspector(isPresented: .constant(true), content: content)
+        } else {
+            self
         }
     }
 }
