@@ -242,9 +242,11 @@ struct InputView: View {
     private func layout(usesVerticalBars: Bool) -> some View {
         // The inspector is only attached where it shows as a column. Elsewhere it would still wrap the
         // navigation stack's content in a container that disturbs the large title's collapse on scroll.
-        if isInspectorLayout(usesVerticalBars: usesVerticalBars) {
+        // It's also only attached once there are images: attached while hidden, its column showed for
+        // a moment at launch before it collapsed for the empty state.
+        if isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible {
             content(usesVerticalBars: usesVerticalBars)
-                .inspector(isPresented: .constant(isInspectorVisible)) {
+                .inspector(isPresented: .constant(true)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
                         selectedImageCompressionQuality: $selectedImageCompressionQuality
