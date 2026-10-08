@@ -78,8 +78,15 @@ struct OutputView: View {
                             Label(title, systemImage: "square.and.arrow.up")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label(title, systemImage: "square.and.arrow.up")
-                                .labelStyle(.titleAndIcon)
+                            // Icon and title as separate views: toolbars show a Label as its icon only,
+                            // but sharing is the main action here, so its title stays visible.
+                            HStack(spacing: 6) {
+                                Image(systemName: "square.and.arrow.up")
+                                Text(title)
+                                    .monospacedDigit()
+                            }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel(title)
                         }
                     }
                 }
