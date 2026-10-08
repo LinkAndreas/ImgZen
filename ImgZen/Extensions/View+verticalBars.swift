@@ -58,19 +58,10 @@ extension View {
             }
         }
     }
-
-    /// Calls the action with whether the bars of the view are shown vertically, initially and on changes.
-    func onVerticalBarChange(_ action: @escaping (Bool) -> Void) -> some View {
-        background {
-            if #available(iOS 27.1, *) {
-                VerticalBarObserver(action: action)
-            }
-        }
-    }
 }
 
-/// Gives its content whether the bar it's in is vertical, so a toolbar item can arrange
-/// its label for the fixed width of a vertical bar.
+/// Gives its content whether the bars are vertical, from the `toolbarVerticalEdge` environment value:
+/// in a toolbar item, to arrange its label for the fixed width of the bar; in a screen, to adapt its layout.
 struct VerticalBarReader<Content: View>: View {
     private let content: (Bool) -> Content
 
@@ -94,18 +85,5 @@ private struct VerticalBarEdgeReader<Content: View>: View {
 
     var body: some View {
         content(verticalEdge != nil)
-    }
-}
-
-@available(iOS 27.1, *)
-private struct VerticalBarObserver: View {
-    @Environment(\.toolbarVerticalEdge) private var verticalEdge
-    let action: (Bool) -> Void
-
-    var body: some View {
-        Color.clear
-            .onChange(of: verticalEdge != nil, initial: true) { _, isVertical in
-                action(isVertical)
-            }
     }
 }
