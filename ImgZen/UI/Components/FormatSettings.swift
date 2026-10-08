@@ -37,33 +37,30 @@ enum FormatSelection: Equatable {
     }
 }
 
-/// Estimates the size of a converted image for a format and quality.
-typealias FileSizeEstimation = @MainActor (FormatSelection, ImageCompressionQuality) async -> FileSizeEstimate?
-
 /// The conversion settings: the formats to convert to and, for lossy formats, the image quality.
 /// Shared by the iPad inspector and the iPhone format sheet, so both offer the same options.
 struct FormatSettingsForm: View {
     @Binding var selectedImageFormat: FormatSelection
     @Binding var selectedImageCompressionQuality: ImageCompressionQuality
-    /// Estimates the file size shown with the quality, if available.
-    var estimateFileSize: FileSizeEstimation? = nil
-    /// Changes when the images change, so the estimate is made again for the new first image.
-    var estimationSubject: String? = nil
 
-    @State private var estimate: FileSizeEstimate?
+    /// Whether the user chose to set an exact quality, which shows the slider.
+    /// Kept apart from the value, so a custom quality that happens to match a level stays custom.
+    @State private var isCustomQuality: Bool
 
-    /// What the estimate depends on; a change makes a new estimate.
-    private struct EstimateRequest: Equatable {
-        let format: FormatSelection
-        let quality: ImageCompressionQuality
-        let subject: String?
+    init(
+        selectedImageFormat: Binding<FormatSelection>,
+        selectedImageCompressionQuality: Binding<ImageCompressionQuality>
+    ) {
+        _selectedImageFormat = selectedImageFormat
+        _selectedImageCompressionQuality = selectedImageCompressionQuality
+        _isCustomQuality = State(initialValue: QualityLevel(quality: selectedImageCompressionQuality.wrappedValue) == nil)
     }
 
     var body: some View {
         Form {
             Section {
                 ForEach(LossyImageFormat.allCases) { format in
-                    FormatListEntry(
+                    OptionRow(
                         title: format.title,
                         subtitle: format.subtitle,
                         isSelected: selectedImageFormat == .lossy(format),
@@ -76,9 +73,14 @@ struct FormatSettingsForm: View {
                 Text(String(localized: "section.lossyFormats.footer"))
             }
 
+            // Right below the lossy formats it applies to. It stays in place, just disabled, for lossless
+            // formats, so the lossless rows below never move while choosing.
+            qualitySection
+                .disabled(selectedImageFormat.isLossless)
+
             Section {
                 ForEach(LosslessImageFormat.allCases) { format in
-                    FormatListEntry(
+                    OptionRow(
                         title: format.title,
                         subtitle: format.subtitle,
                         isSelected: selectedImageFormat == .lossless(format),
@@ -90,56 +92,79 @@ struct FormatSettingsForm: View {
             } footer: {
                 Text(String(localized: "section.losslessFormats.footer"))
             }
-
-            // Always shown, and only disabled for lossless formats, so the rows above never move while choosing.
-            Section {
-                CompressionQualityPicker(
-                    quality: qualityBinding,
-                    estimate: selectedImageFormat.isLossy ? estimate : nil
-                )
-                .disabled(selectedImageFormat.isLossless)
-            } header: {
-                Text(String(localized: "label.compressionQuality"))
-            } footer: {
-                Text(qualityFooter)
-            }
         }
         // Content scrolls softly under the sheet's title bar instead of being cut off at a hard edge.
         .scrollEdgeEffectStyle(.soft, for: .top)
+        .animation(.smooth(duration: 0.25), value: isCustomQuality)
         // The quality is kept when choosing another format, so trying JPEG, HEIC and WebP
         // doesn't throw away the quality the user picked.
         .sensoryFeedback(.selection, trigger: selectedImageFormat)
-        .task(id: EstimateRequest(
-            format: selectedImageFormat,
-            quality: selectedImageCompressionQuality,
-            subject: estimationSubject
-        )) {
-            guard let estimateFileSize, selectedImageFormat.isLossy else {
-                estimate = nil
-                return
+        .sensoryFeedback(.selection, trigger: isCustomQuality)
+        .sensoryFeedback(.selection, trigger: QualityLevel(quality: selectedImageCompressionQuality))
+    }
+
+    /// A choice in the quality menu: a named level, or an exact value set with the slider.
+    private enum QualityChoice: Hashable {
+        case level(QualityLevel)
+        case custom
+    }
+
+    private var qualityChoice: Binding<QualityChoice> {
+        Binding(
+            get: {
+                guard !isCustomQuality, let level = QualityLevel(quality: selectedImageCompressionQuality) else {
+                    return .custom
+                }
+                return .level(level)
+            },
+            set: { choice in
+                switch choice {
+                case let .level(level):
+                    isCustomQuality = false
+                    selectedImageCompressionQuality = level.quality
+                case .custom:
+                    isCustomQuality = true
+                }
             }
+        )
+    }
 
-            // Waits for the slider to settle, so dragging doesn't encode at every step.
-            // The previous estimate stays meanwhile, and the new one replaces it.
-            try? await Task.sleep(for: .milliseconds(250))
-            guard !Task.isCancelled else { return }
+    /// One row with a menu of the levels, as Settings does for secondary choices; the footer explains
+    /// only the chosen level, so the section stays short. Custom adds a slider for an exact value.
+    private var qualitySection: some View {
+        Section {
+            Picker(String(localized: "label.compressionQuality"), selection: qualityChoice) {
+                ForEach(QualityLevel.allCases) { level in
+                    Text(level.title)
+                        .tag(QualityChoice.level(level))
+                }
 
-            let newEstimate = await estimateFileSize(selectedImageFormat, selectedImageCompressionQuality)
-            guard !Task.isCancelled else { return }
-            estimate = newEstimate
+                Divider()
+
+                Text(String(localized: "quality.custom"))
+                    .tag(QualityChoice.custom)
+            }
+            .pickerStyle(.menu)
+
+            if isCustomQuality {
+                CompressionQualitySlider(quality: $selectedImageCompressionQuality)
+            }
+        } footer: {
+            Text(qualityFooter)
+                .contentTransition(.opacity)
         }
     }
+}
 
-    /// Lossless formats always keep every detail, so their quality reads as 100%.
-    private var qualityBinding: Binding<ImageCompressionQuality> {
-        selectedImageFormat.isLossy ? $selectedImageCompressionQuality : .constant(1.0)
-    }
-
+extension FormatSettingsForm {
+    /// Explains the chosen level, a custom quality, or why the quality doesn't apply to a lossless format.
     private var qualityFooter: String {
-        if selectedImageFormat.isLossy {
-            String(localized: "label.compressionQuality.footer")
-        } else {
+        if selectedImageFormat.isLossless {
             String(format: String(localized: "label.compressionQuality.losslessFooter"), selectedImageFormat.title)
+        } else if !isCustomQuality, let level = QualityLevel(quality: selectedImageCompressionQuality) {
+            level.subtitle
+        } else {
+            String(localized: "label.compressionQuality.footer")
         }
     }
 }
@@ -150,16 +175,14 @@ struct FormatSheet: View {
 
     @Binding var selectedImageFormat: FormatSelection
     @Binding var selectedImageCompressionQuality: ImageCompressionQuality
-    var estimateFileSize: FileSizeEstimation? = nil
-    var estimationSubject: String? = nil
+    /// Whether the sheet opens at full height only, for when bars are vertical (iPhone Duo).
+    var prefersFullHeight: Bool = false
 
     var body: some View {
         NavigationStack {
             FormatSettingsForm(
                 selectedImageFormat: $selectedImageFormat,
-                selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                estimateFileSize: estimateFileSize,
-                estimationSubject: estimationSubject
+                selectedImageCompressionQuality: $selectedImageCompressionQuality
             )
             .navigationTitle(String(localized: "label.destinationFormat"))
             .navigationBarTitleDisplayMode(.inline)
@@ -170,13 +193,16 @@ struct FormatSheet: View {
             }
         }
         // Opening at half height keeps the formats and the done button within thumb reach.
-        .presentationDetents([.medium, .large])
-        .toolbarStaysInTopBar()
+        // With vertical bars, the sheet only gets its vertical bar at full height, so it opens there:
+        // the done button then stays in the vertical bar instead of moving into it as the sheet grows.
+        .presentationDetents(prefersFullHeight ? [.large] : [.medium, .large])
     }
 }
 
-/// A list entry for selecting an image format.
-struct FormatListEntry: View {
+/// A row for choosing one of several options, with a checkmark on the chosen one.
+struct OptionRow: View {
+    @Environment(\.isEnabled) private var isEnabled
+
     let title: String
     let subtitle: String
     let isSelected: Bool
@@ -184,16 +210,19 @@ struct FormatListEntry: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     // Explicit label colors: inside a button, the hierarchical styles resolve to the tint color.
+                    // Disabled rows dim themselves, since explicit colors don't follow the disabled state.
                     Text(title)
-                        .foregroundStyle(Color(.label))
+                        .foregroundStyle(isEnabled ? Color(.label) : Color(.tertiaryLabel))
                     Text(subtitle)
                         .font(.subheadline)
-                        .foregroundStyle(Color(.secondaryLabel))
+                        .foregroundStyle(isEnabled ? Color(.secondaryLabel) : Color(.tertiaryLabel))
                 }
-                Spacer()
+
+                Spacer(minLength: 0)
+
                 Image(systemName: "checkmark")
                     .font(.body.weight(.semibold))
                     .foregroundStyle(.tint)

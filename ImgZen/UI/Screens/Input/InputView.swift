@@ -21,18 +21,37 @@ struct InputView: View {
     @State private var inputService = InputService()
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isDropTargeted = false
+    @State private var isFormatSheetPresented = false
 
-    /// Regular width windows (iPad) show the settings in an inspector column instead of a bottom panel.
-    private var isInspectorLayout: Bool {
-        horizontalSizeClass == .regular
+    /// Whether the settings show in an inspector column next to the gallery instead of behind the format button:
+    /// on iPad in regular width, and on iPhone in regular width with vertical bars, which is iPhone Duo unfolded
+    /// in landscape. In portrait, the unfolded display uses horizontal bars and has no room for a column beside
+    /// the gallery, so the format button and its sheet are used there.
+    /// - Parameter usesVerticalBars: Whether the system shows the bars vertically (iPhone Duo).
+    private func isInspectorLayout(usesVerticalBars: Bool) -> Bool {
+        guard horizontalSizeClass == .regular else { return false }
+
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            return true
+        case .phone:
+            return usesVerticalBars
+        default:
+            return false
+        }
     }
 
-    private var isBottomControlPanelVisible: Bool {
+    /// Whether the settings are already on screen, so the format button isn't needed.
+    private func areSettingsShownInline(usesVerticalBars: Bool) -> Bool {
+        isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible
+    }
+
+    /// The inspector shows once there are images to convert; the empty state has the whole screen.
+    private var isInspectorVisible: Bool {
         !inputService.items.isEmpty
     }
     
     private let previewLoader: ImagePreviewLoader
-    private let fileSizeEstimator: FileSizeEstimator
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
     private let onSendFeedback: () -> Void
@@ -40,25 +59,22 @@ struct InputView: View {
     /// Creates an InputView.
     /// - Parameters:
     ///   - previewLoader: Loads the previews shown in the gallery.
-    ///   - fileSizeEstimator: Estimates the size of converted images for the quality settings.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
     ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
         previewLoader: ImagePreviewLoader,
-        fileSizeEstimator: FileSizeEstimator,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
         onSendFeedback: @escaping () -> Void
     ) {
         self.previewLoader = previewLoader
-        self.fileSizeEstimator = fileSizeEstimator
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
         self.onSendFeedback = onSendFeedback
     }
 
-    private var content: some View {
+    private func content(usesVerticalBars: Bool) -> some View {
         // The gallery is the root view, so the navigation bar tracks its scrolling and collapses the title smoothly.
         ImageGallery(
             items: inputService.items.map { item in
@@ -91,22 +107,6 @@ struct InputView: View {
                 .transition(.opacity)
             }
         }
-        .safeAreaBar(edge: .bottom) {
-            // Once there are images, adding more is a single prominent button in the trailing corner,
-            // within reach of the right thumb; the format sits opposite it on iPhone.
-            if !inputService.items.isEmpty {
-                BottomControlPanel(
-                    selectedImageFormat: $selectedImageFormat,
-                    selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                    showsFormatButton: !isInspectorLayout,
-                    estimateFileSize: estimateFileSize(for:quality:),
-                    estimationSubject: inputService.items.first?.id.uuidString,
-                    addFromPhotosAction: { sheet = .photoPicker },
-                    addFromFilesAction: { sheet = .filePicker }
-                )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
         .animation(.smooth(duration: 0.25), value: inputService.items.isEmpty)
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
             let items = providers
@@ -125,50 +125,74 @@ struct InputView: View {
             }
         }
         .animation(.smooth(duration: 0.2), value: isDropTargeted)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu(String(localized: "button.more"), systemImage: "ellipsis") {
-                    Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
-                        Label {
-                            Text(String(localized: "button.startOver"))
-                            Text(String(localized: "label.startOverSubtitle"))
-                        } icon: {
-                            Image(systemName: "arrow.counterclockwise")
-                        }
+        // Convert is the screen's confirming action, so it takes the prominent trailing spot, as Send does
+        // in Mail; on iPhone Duo it's pinned to the top of the vertical bar, so it never scrolls away.
+        // It's always there, just disabled without images, so the bar never shifts.
+        .toolbarProminentAction {
+            ConvertToolbarButton(action: convert)
+                .disabled(inputService.items.isEmpty)
+        }
+        // Real toolbar items rather than a custom bar, so they move into the vertical bar on iPhone Duo.
+        // Once there are images, adding more is a single prominent button in the trailing corner, within
+        // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
+        .toolbarPreferringVerticalBar {
+            if !inputService.items.isEmpty {
+                if !areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
+                    ToolbarItem(placement: .bottomBar) {
+                        FormatToolbarButton(
+                            selectedImageFormat: selectedImageFormat,
+                            selectedImageCompressionQuality: selectedImageCompressionQuality,
+                            action: { isFormatSheetPresented = true }
+                        )
                     }
-                    .disabled(inputService.items.isEmpty)
+                }
 
-                    Divider()
+                ToolbarSpacer(.flexible, placement: .bottomBar)
 
-                    Button(
-                        String(localized: "button.sendFeedback"),
-                        systemImage: "envelope",
-                        action: onSendFeedback
+                ToolbarItem(placement: .bottomBar) {
+                    ImageSourceSelection(
+                        addFromPhotosAction: { sheet = .photoPicker },
+                        addFromFilesAction: { sheet = .filePicker }
                     )
                 }
-                // Anchored to the menu button, so iPad shows it as a popover pointing at it.
-                .confirmationDialog(
-                    String(localized: "alert.removeAllImages"),
-                    isPresented: $isStartOverConfirmationShown,
-                    titleVisibility: .visible
-                ) {
-                    Button(String(localized: "button.removeAllImages"), role: .destructive) {
-                        inputService.removeAll()
-                    }
-                } message: {
-                    Text(String(localized: "alert.removeAllImages.message"))
+            }
+        }
+        .toolbarOverflowMenu(title: String(localized: "button.more")) {
+            Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
+                Label {
+                    Text(String(localized: "button.startOver"))
+                    Text(String(localized: "label.startOverSubtitle"))
+                } icon: {
+                    Image(systemName: "arrow.counterclockwise")
                 }
             }
+            .disabled(inputService.items.isEmpty)
 
-            ToolbarSpacer(.fixed, placement: .topBarTrailing)
+            Divider()
 
-            // Convert is the screen's confirming action, so it takes the prominent trailing spot,
-            // as Send does in Mail. It's always there, just disabled without images, so the bar never shifts.
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(String(localized: "button.convert"), role: .confirm, action: convert)
-                    .keyboardShortcut(.return, modifiers: .command)
-                    .disabled(inputService.items.isEmpty)
+            Button(
+                String(localized: "button.sendFeedback"),
+                systemImage: "envelope",
+                action: onSendFeedback
+            )
+        }
+        .confirmationDialog(
+            String(localized: "alert.removeAllImages"),
+            isPresented: $isStartOverConfirmationShown,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "button.removeAllImages"), role: .destructive) {
+                inputService.removeAll()
             }
+        } message: {
+            Text(String(localized: "alert.removeAllImages.message"))
+        }
+        .sheet(isPresented: $isFormatSheetPresented) {
+            FormatSheet(
+                selectedImageFormat: $selectedImageFormat,
+                selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                prefersFullHeight: usesVerticalBars
+            )
         }
         .sensoryFeedback(.impact(weight: .light), trigger: inputService.items.count) { old, new in new > old }
         .imagePicker(
@@ -177,10 +201,13 @@ struct InputView: View {
         ) { items in
             inputService.didAdd(items: items)
         }
-        .documentPicker(
+        // The system file importer, which adapts to every device, including the vertical bar of iPhone Duo.
+        .fileImporter(
             isPresented: $sheet[isPresented: .filePicker],
-            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png]
-        ) { urls in
+            allowedContentTypes: [.tiff, .bmp, .heic, .webP, .jpeg, .png],
+            allowsMultipleSelection: true
+        ) { result in
+            guard case let .success(urls) = result else { return }
             inputService.didAdd(items: urls.map { url in
                 InputItem(source: .fileURL(url))
             })
@@ -189,48 +216,33 @@ struct InputView: View {
     }
 
     var body: some View {
-        // The inspector is only attached on wide screens. On iPhone it would never show, but it still wraps
-        // the navigation stack's content in a container that disturbs the large title's collapse on scroll.
-        if isInspectorLayout {
-            content
-                .inspector(isPresented: .constant(isBottomControlPanelVisible)) {
+        // Whether bars are vertical comes from the environment (iPhone Duo), and decides both
+        // where the settings go and how the format sheet opens.
+        VerticalBarReader { usesVerticalBars in
+            layout(usesVerticalBars: usesVerticalBars)
+        }
+    }
+
+    @ViewBuilder
+    private func layout(usesVerticalBars: Bool) -> some View {
+        // The inspector is only attached where it shows as a column. Elsewhere it would still wrap the
+        // navigation stack's content in a container that disturbs the large title's collapse on scroll.
+        if isInspectorLayout(usesVerticalBars: usesVerticalBars) {
+            content(usesVerticalBars: usesVerticalBars)
+                .inspector(isPresented: .constant(isInspectorVisible)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
-                        selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                        estimateFileSize: estimateFileSize(for:quality:),
-                        estimationSubject: inputService.items.first?.id.uuidString
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality
                     )
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
         } else {
-            content
+            content(usesVerticalBars: usesVerticalBars)
         }
     }
 }
 
 extension InputView {
-    /// Estimates the size of the first image converted with the given settings, as a guide for the quality.
-    private func estimateFileSize(
-        for format: FormatSelection,
-        quality: ImageCompressionQuality
-    ) async -> FileSizeEstimate? {
-        guard
-            let item = inputService.items.first,
-            let lossyFormat = format.lossyImageFormat,
-            let typeIdentifier = lossyFormat.utType?.identifier,
-            let url = try? await fileURLFor(item)
-        else {
-            return nil
-        }
-
-        return await fileSizeEstimator.estimate(
-            for: url,
-            typeIdentifier: typeIdentifier,
-            usesWebPEncoder: lossyFormat == .webp,
-            quality: quality
-        )
-    }
-
     private func convert() {
         let outputFormat = ImageFormat(
             imageFormatSelection: selectedImageFormat,

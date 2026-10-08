@@ -26,7 +26,6 @@ extension View {
                 }
             )
             .ignoresSafeArea()
-            .toolbarStaysInTopBar()
         }
     }
 }
