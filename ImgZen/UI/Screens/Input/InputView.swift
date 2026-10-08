@@ -24,29 +24,35 @@ struct InputView: View {
     @State private var isFormatSheetPresented = false
     /// Whether the bars are vertical (iPhone Duo), where the format sheet opens at full height.
     @State private var usesVerticalBars = false
-    /// Whether the settings are shown next to or below the gallery in a split arrangement (iPhone Duo).
-    @State private var isSplitArrangementShown = false
+    /// The size of the screen's content, to tell landscape from portrait on iPhone Duo unfolded.
+    @State private var contentSize: CGSize = .zero
 
-    /// Regular width windows on iPad show the settings in an inspector column instead of the format button.
+    /// Whether the settings show in an inspector column next to the gallery instead of behind the format button:
+    /// on iPad in regular width, and on iPhone in regular width when the display is wider than tall,
+    /// e.g. iPhone Duo unfolded in landscape. In portrait there's no room for a column beside the gallery,
+    /// so the format button and its sheet are used there.
     private var isInspectorLayout: Bool {
-        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
-    }
+        guard horizontalSizeClass == .regular else { return false }
 
-    /// Regular width on iPhone, e.g. iPhone Duo unfolded, shows the settings in a split arrangement:
-    /// iPhone doesn't show the inspector as a column, but an arrangement keeps both views visible in
-    /// either orientation, beside each other when the display is wide and above each other when it's tall.
-    private var isSplitArrangementLayout: Bool {
-        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .phone
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            return true
+        case .phone:
+            return contentSize.width > contentSize.height
+        default:
+            return false
+        }
     }
 
     /// Whether the settings are already on screen, so the format button isn't needed.
     private var areSettingsShownInline: Bool {
-        (isInspectorLayout && isInspectorVisible) || isSplitArrangementShown
+        isInspectorLayout && isInspectorVisible
     }
 
-    /// The inspector shows once there are images to convert.
+    /// On iPad, the inspector shows once there are images to convert. On iPhone it's always shown,
+    /// so the settings don't come and go in landscape.
     private var isInspectorVisible: Bool {
-        !inputService.items.isEmpty
+        UIDevice.current.userInterfaceIdiom == .phone || !inputService.items.isEmpty
     }
     
     private let previewLoader: ImagePreviewLoader
@@ -215,7 +221,17 @@ struct InputView: View {
     }
 
     var body: some View {
-        // The inspector is only attached on iPad. Where it doesn't show as a column, it still wraps the
+        layout
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
+            } action: { size in
+                contentSize = size
+            }
+    }
+
+    @ViewBuilder
+    private var layout: some View {
+        // The inspector is only attached where it shows as a column. Elsewhere it would still wrap the
         // navigation stack's content in a container that disturbs the large title's collapse on scroll.
         if isInspectorLayout {
             content
@@ -226,27 +242,8 @@ struct InputView: View {
                     )
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
-        } else if isSplitArrangementLayout {
-            if #available(iOS 27.1, *) {
-                ArrangementView {
-                    content
-                        // The arrangement may show only one view when space runs short; the format button
-                        // then comes back, so the settings always stay within reach.
-                        .onSplitArrangementChange { isSplitArrangementShown = $0 }
-                } secondary: {
-                    // Shown even before images are added, so the format can be chosen first.
-                    FormatInspector(
-                        selectedImageFormat: $selectedImageFormat,
-                        selectedImageCompressionQuality: $selectedImageCompressionQuality
-                    )
-                }
-                .arrangementViewStyle(.split)
-            } else {
-                content
-            }
         } else {
             content
-                .onAppear { isSplitArrangementShown = false }
         }
     }
 }
