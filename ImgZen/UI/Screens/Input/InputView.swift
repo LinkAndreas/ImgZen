@@ -14,7 +14,7 @@ struct InputView: View {
         case filePicker
     }
 
-    @State private var isStartOverConfirmationShown: Bool = false
+    @State private var isClearAllConfirmationShown: Bool = false
     @State private var sheet: Sheet?
     @Binding private var selectedImageFormat: FormatSelection
     @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
@@ -130,6 +130,15 @@ struct InputView: View {
         // Once there are images, adding more is a single prominent button in the trailing corner, within
         // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
         .toolbarPreferringVerticalBar {
+            // Clearing is visible in the top bar once there's something to clear, opposite Convert, so it's
+            // clear how to get back to an empty screen without searching a menu. "Clear All" says what it does,
+            // where "Start Over" left open whether settings reset or files were deleted.
+            if !inputService.items.isEmpty {
+                ToolbarItem(placement: .topBarLeading) {
+                    clearAllButton
+                }
+            }
+
             if !inputService.items.isEmpty && !areSettingsShownInline {
                 ToolbarItem(placement: .bottomBar) {
                     FormatToolbarButton(
@@ -178,34 +187,11 @@ struct InputView: View {
             }
         }
         .toolbarOverflowMenu(title: String(localized: "button.more")) {
-            Button(role: .destructive, action: { isStartOverConfirmationShown = true }) {
-                Label {
-                    Text(String(localized: "button.startOver"))
-                    Text(String(localized: "label.startOverSubtitle"))
-                } icon: {
-                    Image(systemName: "arrow.counterclockwise")
-                }
-            }
-            .disabled(inputService.items.isEmpty)
-
-            Divider()
-
             Button(
                 String(localized: "button.sendFeedback"),
                 systemImage: "envelope",
                 action: onSendFeedback
             )
-        }
-        .confirmationDialog(
-            String(localized: "alert.removeAllImages"),
-            isPresented: $isStartOverConfirmationShown,
-            titleVisibility: .visible
-        ) {
-            Button(String(localized: "button.removeAllImages"), role: .destructive) {
-                inputService.removeAll()
-            }
-        } message: {
-            Text(String(localized: "alert.removeAllImages.message"))
         }
         .sheet(isPresented: $isFormatSheetPresented) {
             FormatSheet(
@@ -233,6 +219,32 @@ struct InputView: View {
             })
         }
         .navigationTitle(String(localized: "app.name"))
+    }
+
+    /// Clears all images after confirming; the title on horizontal bars, the icon in the vertical bar.
+    /// The confirmation is attached to the button, so on iPad it points at the button that asked for it.
+    private var clearAllButton: some View {
+        Button(action: { isClearAllConfirmationShown = true }) {
+            VerticalBarReader { isVertical in
+                if isVertical {
+                    Label(String(localized: "button.clearAll"), systemImage: "xmark.circle")
+                        .labelStyle(.iconOnly)
+                } else {
+                    Text(String(localized: "button.clearAll"))
+                }
+            }
+        }
+        .confirmationDialog(
+            String(localized: "alert.removeAllImages"),
+            isPresented: $isClearAllConfirmationShown,
+            titleVisibility: .visible
+        ) {
+            Button(String(localized: "button.removeAllImages"), role: .destructive) {
+                inputService.removeAll()
+            }
+        } message: {
+            Text(String(localized: "alert.removeAllImages.message"))
+        }
     }
 
     var body: some View {

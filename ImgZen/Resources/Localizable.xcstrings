@@ -222,6 +222,23 @@
         }
       }
     },
+    "button.clearAll" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle entfernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear All"
+          }
+        }
+      }
+    },
     "button.convert" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -436,23 +453,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start Converting"
-          }
-        }
-      }
-    },
-    "button.startOver" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neu beginnen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Over"
           }
         }
       }
@@ -691,23 +691,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Images Yet"
-          }
-        }
-      }
-    },
-    "label.startOverSubtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entfernt alle Bilder"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Removes all images"
           }
         }
       }
