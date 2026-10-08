@@ -1,32 +1,37 @@
 import SwiftUI
 
 /// The toolbar button showing what the images become, e.g. "JPEG High", which opens the format settings.
-/// In the vertical bar of iPhone Duo, the same details stack within the bar's width.
+/// In the vertical bar of iPhone Duo, the format and the percentage stack in two short lines,
+/// which fit the round button of the bar's fixed width.
 struct FormatToolbarButton: View {
     let selectedImageFormat: FormatSelection
     let selectedImageCompressionQuality: ImageCompressionQuality
     let action: () -> Void
 
+    private var formattedPercentage: String {
+        selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0)))
+    }
+
     /// The quality level's name, or the percentage of a custom quality.
     private var formattedQuality: String {
-        QualityLevel(quality: selectedImageCompressionQuality)?.title
-            ?? selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0)))
+        QualityLevel(quality: selectedImageCompressionQuality)?.title ?? formattedPercentage
     }
 
     var body: some View {
         Button(action: action) {
             VerticalBarReader { isVertical in
                 if isVertical {
-                    VStack(spacing: 2) {
-                        Image(systemName: "photo")
+                    // No symbol and no level name: three lines or a word like "Maximum" don't fit the button.
+                    VStack(spacing: 0) {
                         Text(selectedImageFormat.title)
-                            .font(.caption2.weight(.semibold))
+                            .font(.caption.weight(.semibold))
                         if selectedImageFormat.isLossy {
-                            Text(formattedQuality)
+                            Text(formattedPercentage)
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
                     }
+                    .minimumScaleFactor(0.7)
                 } else {
                     HStack(spacing: 6) {
                         Text(selectedImageFormat.title)
