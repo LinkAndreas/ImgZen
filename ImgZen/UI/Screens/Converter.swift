@@ -186,23 +186,19 @@ struct Converter: View {
                         }
                     }
                 }
+                // Images that couldn't be converted are reported on the results: an alert from the screen
+                // behind the sheet wouldn't show while the sheet is open.
+                .conversionFailureAlert($conversionFailure)
                 // Room for the gallery on iPad; full height on iPhone.
                 .presentationSizing(.page)
             }
             // Confirms a finished conversion as the results slide in.
             .sensoryFeedback(.success, trigger: results?.id) { _, new in new != nil }
-            .alert(
-                conversionFailure.map(Self.alertTitle(for:)) ?? "",
-                isPresented: Binding(
-                    get: { conversionFailure != nil },
-                    set: { if !$0 { conversionFailure = nil } }
-                ),
-                presenting: conversionFailure
-            ) { _ in
-                Button(String(localized: "button.ok"), role: .cancel) {}
-            } message: { failure in
-                Text(Self.alertMessage(for: failure))
-            }
+            // A conversion without any converted image has no results, so it's reported here instead.
+            .conversionFailureAlert(Binding(
+                get: { results == nil ? conversionFailure : nil },
+                set: { conversionFailure = $0 }
+            ))
         }
     }
 
@@ -224,13 +220,13 @@ struct Converter: View {
         }
     }
 
-    private static func alertTitle(for failure: ConversionFailure) -> String {
+    fileprivate static func alertTitle(for failure: ConversionFailure) -> String {
         failure.isComplete
             ? String(localized: "alert.conversionFailed.title")
             : String(localized: "alert.conversionPartiallyFailed.title")
     }
 
-    private static func alertMessage(for failure: ConversionFailure) -> String {
+    fileprivate static func alertMessage(for failure: ConversionFailure) -> String {
         failure.isComplete
             ? String(localized: "alert.conversionFailed.message")
             : String(format: String(localized: "alert.conversionPartiallyFailed.message"), failure.failedCount, failure.totalCount)
@@ -280,6 +276,24 @@ private extension View {
             inspector(isPresented: .constant(true), content: content)
         } else {
             self
+        }
+    }
+}
+
+private extension View {
+    /// Explains images of a finished conversion that couldn't be converted.
+    func conversionFailureAlert(_ failure: Binding<Converter.ConversionFailure?>) -> some View {
+        alert(
+            failure.wrappedValue.map(Converter.alertTitle(for:)) ?? "",
+            isPresented: Binding(
+                get: { failure.wrappedValue != nil },
+                set: { if !$0 { failure.wrappedValue = nil } }
+            ),
+            presenting: failure.wrappedValue
+        ) { _ in
+            Button(String(localized: "button.ok"), role: .cancel) {}
+        } message: { failure in
+            Text(Converter.alertMessage(for: failure))
         }
     }
 }
