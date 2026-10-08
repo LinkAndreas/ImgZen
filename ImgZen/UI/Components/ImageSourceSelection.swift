@@ -6,8 +6,10 @@ struct ImageSourceSelection: View {
     enum Style {
         /// An item in a toolbar, which the toolbar renders.
         case toolbar
-        /// A round button floating over content.
+        /// A prominent round button floating over content.
         case floating
+        /// A round button floating over content next to a more prominent one.
+        case floatingSecondary
     }
 
     private let style: Style
@@ -41,6 +43,11 @@ struct ImageSourceSelection: View {
                 .buttonStyle(.glassProminent)
                 .buttonBorderShape(.circle)
                 .controlSize(.large)
+        case .floatingSecondary:
+            menu
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .controlSize(.large)
         }
     }
 
@@ -61,7 +68,7 @@ struct ImageSourceSelection: View {
             switch style {
             case .toolbar:
                 Label(String(localized: "button.addImages"), systemImage: "plus")
-            case .floating:
+            case .floating, .floatingSecondary:
                 Label(String(localized: "button.addImages"), systemImage: "plus")
                     .labelStyle(.iconOnly)
                     .font(.title2.weight(.semibold))

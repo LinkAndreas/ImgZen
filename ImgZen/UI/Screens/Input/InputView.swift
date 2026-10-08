@@ -41,6 +41,13 @@ struct InputView: View {
         }
     }
 
+    /// On iPad, Convert floats next to Add in the gallery, where the images are, rather than at the top
+    /// of the inspector column. Elsewhere it's the prominent action at the top, pinned to the vertical bar
+    /// on iPhone Duo.
+    private var showsConvertNextToAdd: Bool {
+        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
+    }
+
     /// Whether the settings are already on screen, so the format button isn't needed.
     private func areSettingsShownInline(usesVerticalBars: Bool) -> Bool {
         isInspectorLayout(usesVerticalBars: usesVerticalBars) && isInspectorVisible
@@ -128,7 +135,7 @@ struct InputView: View {
         // Convert is the screen's confirming action, so it takes the prominent trailing spot, as Send does
         // in Mail; on iPhone Duo it's pinned to the top of the vertical bar, so it never scrolls away.
         // It's always there, just disabled without images, so the bar never shifts.
-        .toolbarProminentAction {
+        .toolbarProminentAction(isShown: !showsConvertNextToAdd) {
             ConvertToolbarButton(action: convert)
                 .disabled(inputService.items.isEmpty)
         }
@@ -156,16 +163,27 @@ struct InputView: View {
             }
         }
         // Next to the inspector, the toolbar's bottom bar sits under the inspector column, so Add floats
-        // in the gallery's trailing corner instead, by the images it adds to.
+        // in the gallery's trailing corner instead, by the images it adds to. On iPad, Convert joins it
+        // as the prominent button, so the main action sits with the images too.
         .safeAreaBar(edge: .bottom) {
             if !inputService.items.isEmpty && areSettingsShownInline(usesVerticalBars: usesVerticalBars) {
-                HStack {
-                    Spacer()
-                    ImageSourceSelection(
-                        style: .floating,
-                        addFromPhotosAction: { sheet = .photoPicker },
-                        addFromFilesAction: { sheet = .filePicker }
-                    )
+                GlassEffectContainer(spacing: 12) {
+                    HStack(spacing: 12) {
+                        Spacer()
+
+                        if showsConvertNextToAdd {
+                            Button(String(localized: "button.convert"), action: convert)
+                                .buttonStyle(.glassProminent)
+                                .controlSize(.large)
+                                .keyboardShortcut(.return, modifiers: .command)
+                        }
+
+                        ImageSourceSelection(
+                            style: showsConvertNextToAdd ? .floatingSecondary : .floating,
+                            addFromPhotosAction: { sheet = .photoPicker },
+                            addFromFilesAction: { sheet = .filePicker }
+                        )
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
