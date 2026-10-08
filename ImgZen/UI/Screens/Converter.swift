@@ -27,17 +27,20 @@ struct Converter: View {
     var body: some View {
         WithContext {
             let fileURLResolver = FileURLResolver()
-            let imageService = ImageService(
-                imageRepository: ImageFromURLRepository()
-            )
+            // Reads files off the main actor, for previews and conversions alike.
+            let imageRepository = ImageFromURLRepository()
             // Each window converts into its own folder, so windows don't delete each other's results.
             let storageService = StorageService(
                 baseDirectory: Constants.outputDirectory,
                 subdirectoryName: UUID().uuidString
             )
             let conversionService = ImageConversionService(
-                metadata: imageService.metadata(for:),
-                imageData: imageService.imageData(for:resolution:),
+                metadata: { @concurrent url in
+                    try imageRepository.metadata(for: url)
+                },
+                imageData: { @concurrent url, resolution in
+                    try await imageRepository.image(for: url, resolution: resolution)
+                },
                 fileURLFor: fileURLResolver.fileURL(for:),
                 prepareOutputDirectory: {
                     try storageService.prepareDirectory()
@@ -47,12 +50,13 @@ struct Converter: View {
                 },
                 convert: ImageConverter.convertImageData(_:to:)
             )
-            return (fileURLResolver, imageService, conversionService)
-        } content: { fileURLResolver, imageService, conversionService in
+            // Shared by both galleries, so previews of converted images stay cached when going back and forth.
+            let previewLoader = ImagePreviewLoader(repository: imageRepository)
+            return (fileURLResolver, conversionService, previewLoader)
+        } content: { fileURLResolver, conversionService, previewLoader in
             NavigationStack(path: $path) {
                 InputView(
-                    imageData: imageService.imageData(for:resolution:),
-                    metadata: imageService.metadata(for:),
+                    previewLoader: previewLoader,
                     fileURLFor: fileURLResolver.fileURL(for:),
                     onConvert: { items, imageFormat in
                         conversion = Task {
@@ -94,8 +98,7 @@ struct Converter: View {
                     case let .output(items):
                         OutputView(
                             items: items,
-                            imageData: imageService.imageData(for:resolution:),
-                            metadata: imageService.metadata(for:)
+                            previewLoader: previewLoader
                         )
                     }
                 }

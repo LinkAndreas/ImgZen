@@ -1,53 +1,52 @@
 import SwiftUI
 
-/// Floating controls at the bottom of compact screens, where they're easiest to reach:
-/// pick the output format, convert, and add more images.
+/// The floating controls at the bottom of the input screen once images are added:
+/// the output format on the leading side (iPhone only; iPad shows it in the inspector),
+/// and one prominent button for adding more images in the trailing corner, where the thumb rests.
 struct BottomControlPanel: View {
     @State private var isFormatSheetPresented = false
     @Binding private var selectedImageFormat: FormatSelection
     @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
+    private let showsFormatButton: Bool
     private let addFromPhotosAction: () -> Void
     private let addFromFilesAction: () -> Void
-    private let onConvert: () -> Void
 
     /// Creates a bottom control panel.
     /// - Parameters:
     ///   - selectedImageFormat: Binding to the selected image format.
     ///   - selectedImageCompressionQuality: Binding to the compression quality value.
+    ///   - showsFormatButton: Whether to show the format button, for screens without an inspector.
     ///   - addFromPhotosAction: Action to open photo picker.
     ///   - addFromFilesAction: Action to open file picker.
-    ///   - onConvert: Action to perform when convert button is tapped.
     init(
         selectedImageFormat: Binding<FormatSelection>,
         selectedImageCompressionQuality: Binding<ImageCompressionQuality>,
+        showsFormatButton: Bool,
         addFromPhotosAction: @escaping () -> Void,
-        addFromFilesAction: @escaping () -> Void,
-        onConvert: @escaping () -> Void
+        addFromFilesAction: @escaping () -> Void
     ) {
         self._selectedImageFormat = selectedImageFormat
         self._selectedImageCompressionQuality = selectedImageCompressionQuality
+        self.showsFormatButton = showsFormatButton
         self.addFromPhotosAction = addFromPhotosAction
         self.addFromFilesAction = addFromFilesAction
-        self.onConvert = onConvert
     }
 
     var body: some View {
-        GlassEffectContainer(spacing: 12) {
-            // Add sits in the trailing corner, the easiest spot to reach with the right thumb.
-            HStack(spacing: 12) {
+        HStack(spacing: 12) {
+            if showsFormatButton {
                 formatButton
-
-                ConvertButton(action: onConvert)
-
-                ImageSourceSelection(
-                    addFromPhotosAction: addFromPhotosAction,
-                    addFromFilesAction: addFromFilesAction
-                )
             }
+
+            Spacer(minLength: 0)
+
+            ImageSourceSelection(
+                addFromPhotosAction: addFromPhotosAction,
+                addFromFilesAction: addFromFilesAction
+            )
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
-        .frame(maxWidth: 600)
         .sheet(isPresented: $isFormatSheetPresented) {
             FormatSheet(
                 selectedImageFormat: $selectedImageFormat,
@@ -56,10 +55,14 @@ struct BottomControlPanel: View {
         }
     }
 
-    /// Shows the chosen format, and its quality for lossy formats, so the settings are visible at a glance.
+    /// Shows what the images become, e.g. "JPEG · 90%", and opens the format settings.
     private var formatButton: some View {
         Button(action: { isFormatSheetPresented = true }) {
-            HStack(spacing: 6) {
+            HStack(spacing: 8) {
+                Image(systemName: "photo")
+                    .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
+
                 Text(selectedImageFormat.title)
                     .fontWeight(.semibold)
 
@@ -67,12 +70,13 @@ struct BottomControlPanel: View {
                     Text(selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0))))
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
-                        .contentTransition(.numericText())
+                        .contentTransition(.numericText(value: selectedImageCompressionQuality))
                 }
 
                 Image(systemName: "chevron.up.chevron.down")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
             }
             .lineLimit(1)
             .fixedSize()
