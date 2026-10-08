@@ -245,7 +245,7 @@ struct InputView: View {
                 InputItem(source: .fileURL(url))
             })
         }
-        .navigationTitle(String(localized: "app.name"))
+        .adaptiveNavigationTitle(String(localized: "app.name"))
     }
 
     var body: some View {
