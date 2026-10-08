@@ -1,179 +1,114 @@
-# ImgZen
+<p align="center">
+  <img src="ImgZen/Resources/app_icon_rounded_light.png" width="128" height="128" alt="ImgZen app icon">
+</p>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com/LinkAndreas/ImgZen/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Deploy](https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml/badge.svg)](https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml)
-![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
-![Xcode](https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white)
+<h1 align="center">ImgZen</h1>
 
-A modern, native image conversion application built with SwiftUI. Convert images between various formats with support for both lossless and lossy compression, batch processing, and an intuitive user interface.
+<p align="center">
+  The image converter for iPhone and iPad: JPEG, HEIC, WebP, PNG, TIFF and BMP, converted on your device.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platforms-iOS%20%7C%20iPadOS-blue" alt="Platforms: iOS, iPadOS">
+  <img src="https://img.shields.io/badge/iOS-26%2B-blue" alt="iOS 26 or later">
+  <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&amp;logoColor=white" alt="Swift 6">
+  <img src="https://img.shields.io/badge/Xcode-27%2B-147EFB?logo=xcode&amp;logoColor=white" alt="Xcode 27 or later">
+  <img src="https://img.shields.io/badge/UI-SwiftUI-0D96F6" alt="SwiftUI">
+  <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
+  <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE-8E8E93" alt="Localized in English and German">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow" alt="License: MIT"></a>
+  <a href="https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml"><img src="https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml/badge.svg" alt="Deploy to App Store Connect"></a>
+</p>
+
+<p align="center">
+  <a href="https://apps.apple.com/app/id6757331137">App Store</a> ·
+  <a href="https://imgzen.linkandreas.de">Website</a> ·
+  <a href="https://imgzen.linkandreas.de/privacy/en/">Privacy Policy</a>
+</p>
 
 ## Features
 
-- 🖼️ **Multiple Format Support** - Convert between PNG, JPEG, TIFF, BMP, HEIC, and WebP formats
-- 📦 **Batch Processing** - Convert multiple images at once with progress tracking
-- 🎨 **Lossless & Lossy Formats** - Choose between preserving quality or reducing file size
-- ⚙️ **Compression Quality Control** - Adjustable compression quality for lossy formats
-- 📱 **Native User Experience** - Built with SwiftUI for a modern, responsive interface
-- 🔄 **Multiple Input Sources** - Import images from Photos library or file system
-- 📤 **Easy Sharing** - Share converted images directly from the app
-- 🔒 **Privacy First** - No photo library permissions required, all processing done locally
-- 🎯 **Clean Architecture** - Well-structured codebase following domain-driven design principles
+- 🖼️ **Six formats** — convert between JPEG, HEIC and WebP (lossy) and PNG, TIFF and BMP (lossless).
+- 🎚️ **Four quality levels** for lossy formats — Low, Medium, High (recommended) and Maximum — each explained in
+  the app.
+- 📦 **Batch conversion** — convert many images at once, with a progress card you can cancel.
+- 📥 **Photos and Files** — pick from your photo library or the Files app; drag and drop on iPad.
+- 📤 **Review and share** — the results open in a sheet: choose which images to share and send them anywhere.
+- 📱 **iPhone, iPad and iPhone Duo** — the output format sits in an inspector beside the images on iPad, and the
+  toolbar moves into the vertical bar on iPhone Duo.
+- 🔒 **Private** — no photo library permission, no account, no analytics; everything happens on the device.
+- ❤️ **Free** — with optional tips and support subscriptions that unlock nothing
+  ([setup](Docs/AppStoreConnect-Support.md)).
 
 ## Privacy
 
-ImgZen is designed with privacy as a core principle:
+- **No photo library permission** — the system photo picker only gives ImgZen the images you select.
+- **On-device processing** — conversions happen entirely on the device; nothing is uploaded.
+- **No data collection** — no personal data, analytics or tracking. Copies of the picked images and the converted
+  files are temporary and removed at the next launch.
 
-- **No Photo Library Permission Required** - The app uses the modern PHPicker API, which means you only grant access to the specific images you select. The app never has access to your entire photo library.
+See the [Privacy Policy](https://imgzen.linkandreas.de/privacy/en/).
 
-- **100% Local Processing** - All image conversions happen entirely on your device. Your images are never sent to any server or cloud service.
+## Building from source
 
-- **No Data Collection** - The app doesn't collect, store, or transmit any personal data or usage analytics.
-
-Your images stay on your device, under your control, at all times.
-
-## Supported Formats
-
-### Lossless Formats
-- **PNG** - Portable Network Graphics
-- **TIFF** - Tagged Image File Format
-- **BMP** - Bitmap Image File
-
-### Lossy Formats
-- **JPEG** - Joint Photographic Experts Group
-- **HEIC** - High Efficiency Image Container
-- **WebP** - Modern web image format
-
-## Installation
-
-### Building from Source
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ImgZen.git
+git clone https://github.com/LinkAndreas/ImgZen.git
 cd ImgZen
-```
-
-2. Open the project in Xcode:
-```bash
 open ImgZen.xcodeproj
 ```
 
-3. Build and run the project (⌘R) or use Product → Run in Xcode
+Build and run with ⌘R. Swift Package Manager resolves the one dependency,
+[SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder), for WebP support.
 
-### Dependencies
+The shared `ImgZen` scheme runs with `Config/ImgZen.storekit`, so Support the Developer can be tried without App
+Store Connect — see [Docs/AppStoreConnect-Support.md](Docs/AppStoreConnect-Support.md).
 
-The project uses Swift Package Manager for dependencies:
-- SDWebImageWebPCoder (for WebP format support)
-
-Dependencies are automatically resolved when opening the project in Xcode.
-
-## Usage
-
-1. **Select Images**
-   - Click "Add Images" to import from Photos library or file system
-   - Select multiple images for batch conversion
-
-2. **Choose Format**
-   - Select your desired output format from the format picker
-   - For lossy formats (JPEG, HEIC, WebP), adjust compression quality if needed
-
-3. **Convert**
-   - Click the "Convert" button to start the conversion process
-   - Monitor progress in real-time
-
-4. **Share**
-   - View converted images in the output screen
-   - Share individual images or all images at once using the share sheet
-
-## Project Structure
+## Project structure
 
 ```
 ImgZen/
-├── Domain/                    # Core business logic
-│   ├── ImageConversion/       # Image format definitions and conversion logic
-│   └── Services/             # Domain services (conversion, storage, etc.)
-├── Infrastructure/           # Infrastructure layer
-│   └── Repository/           # Data repositories
-├── Presentation/             # Presentation layer
-│   └── ImageFormat+*.swift   # Format presentation extensions
-├── UI/                       # User interface
-│   ├── Components/           # Reusable UI components
-│   └── Screens/              # Main app screens
-├── Extensions/               # SwiftUI extensions
-├── Logging/                  # Logging utilities
-└── Resources/                # Assets and localization
+├── App.swift                 # Entry point, Support the Developer store
+├── Domain/                   # Models and services
+│   ├── ImageConversion/      # Formats and conversion
+│   ├── Services/             # Conversion, storage, input, Support the Developer store
+│   └── Support/              # Support product IDs and the store service protocol
+├── Infrastructure/           # Repositories, StoreKit, launch cleanup
+├── Presentation/             # Format titles and subtitles
+├── UI/
+│   ├── Components/           # Gallery, format settings, progress, celebration
+│   └── Screens/              # Onboarding, input, results, Support the Developer
+├── Extensions/               # SwiftUI helpers (vertical bars, progress overlay, mail)
+├── Logging/
+└── Resources/                # Assets, localization, launch screen, settings bundle
+Config/ImgZen.storekit        # Local StoreKit testing
+Docs/                         # App Store Connect setup
 ```
-
-## Architecture
-
-The project follows a clean architecture pattern with clear separation of concerns:
-
-- **Domain Layer**: Core business logic, models, and services
-- **Infrastructure Layer**: Data access, repositories, and external dependencies
-- **Presentation Layer**: View models and presentation logic
-- **UI Layer**: SwiftUI views and components
 
 ## Testing
 
-The project includes comprehensive unit tests using Swift Testing framework. Run tests using:
+Unit tests use Swift Testing. Run them with ⌘U in Xcode, or:
 
-- **Xcode**: Press `⌘U` or select Product → Test
-- **Command Line**: `xcodebuild test -scheme ImgZen`
+```bash
+xcodebuild test -project ImgZen.xcodeproj -scheme ImgZen -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
+```
 
-Test coverage includes:
-- Domain models and business logic
-- Image conversion functionality
-- Service layer components
-- UI components and presentation logic
+See [ImgZenTests/README.md](ImgZenTests/README.md).
 
-See [ImgZenTests/README.md](ImgZenTests/README.md) for detailed test documentation.
+## Releasing
 
-## Development
+Every merge into `main` builds the app on a self-hosted Mac and uploads it to App Store Connect
+(`.github/workflows/deploy.yml`).
 
-### Git Flow
+- **Git Flow**: `feature/*` → `develop`, then `release/<version>` (bumps `MARKETING_VERSION`) → `main`, tagged with
+  the version and merged back into `develop`.
+- **Commits** follow [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `chore:`,
+  `test:`, `docs:`.
 
-This project follows Git Flow workflow:
-- `main` - Production-ready code
-- `develop` - Integration branch for features
-- `feature/*` - Feature development branches
-- `release/*` - Release branches
+## Licenses
 
-### Commit Convention
-
-This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification:
-- `feat:` - New features
-- `fix:` - Bug fixes
-- `chore:` - Maintenance tasks
-- `test:` - Test additions or changes
-- `docs:` - Documentation updates
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes following the project's code style
-4. Add tests for new functionality
-5. Commit your changes using conventional commits
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built with SwiftUI and native macOS frameworks
-- WebP support powered by [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder)
-- Licenses generated using [LicensePlist](https://github.com/mono0926/LicensePlist)
+The code is available under the [MIT License](LICENSE). The licenses of the dependencies shown in the app's
+Settings are generated with [LicensePlist](https://github.com/mono0926/LicensePlist):
 
 ```bash
 license-plist --output-path ./Settings.bundle --add-version-numbers
 ```
----
-
-Made with ❤️ using Swift and SwiftUI
-

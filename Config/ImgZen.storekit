@@ -1,0 +1,186 @@
+{
+  "appPolicies": {
+    "eula": "",
+    "policies": [
+      {
+        "locale": "en_US",
+        "policyText": "",
+        "policyURL": ""
+      }
+    ]
+  },
+  "identifier": "971010D7-7FD1-49D2-BB2E-6BB31D6E0D50",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "internalID": "6740000001",
+      "localizations": [
+        {
+          "description": "Buy the developer a coffee.",
+          "displayName": "Small Support",
+          "locale": "en_US"
+        },
+        {
+          "description": "Spendiere dem Entwickler einen Kaffee.",
+          "displayName": "Kleine Unterstützung",
+          "locale": "de"
+        }
+      ],
+      "productID": "de.linkandreas.imgzen.support.small",
+      "referenceName": "Small Support",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "5.99",
+      "familyShareable": false,
+      "internalID": "6740000002",
+      "localizations": [
+        {
+          "description": "Help keep ImgZen growing.",
+          "displayName": "Support",
+          "locale": "en_US"
+        },
+        {
+          "description": "Hilf mit, dass ImgZen weiter wächst.",
+          "displayName": "Unterstützung",
+          "locale": "de"
+        }
+      ],
+      "productID": "de.linkandreas.imgzen.support.medium",
+      "referenceName": "Support",
+      "type": "Consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "internalID": "6740000003",
+      "localizations": [
+        {
+          "description": "A big thank you.",
+          "displayName": "Generous Support",
+          "locale": "en_US"
+        },
+        {
+          "description": "Ein großes Dankeschön.",
+          "displayName": "Großzügige Unterstützung",
+          "locale": "de"
+        }
+      ],
+      "productID": "de.linkandreas.imgzen.support.generous",
+      "referenceName": "Generous Support",
+      "type": "Consumable"
+    }
+  ],
+  "settings": {
+    "_askToBuyEnabled": false,
+    "_billingGracePeriodEnabled": false,
+    "_billingIssuesEnabled": false,
+    "_disableDialogs": false,
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_renewalBillingIssuesEnabled": false,
+    "_storefront": "DEU",
+    "_storeKitErrors": [],
+    "_timeRate": 0
+  },
+  "subscriptionBundleGroups": [],
+  "subscriptionGroups": [
+    {
+      "id": "21500001",
+      "localizations": [
+        {
+          "description": "",
+          "displayName": "Support ImgZen",
+          "locale": "en_US"
+        },
+        {
+          "description": "",
+          "displayName": "ImgZen unterstützen",
+          "locale": "de"
+        }
+      ],
+      "name": "Support",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "billingPlans": [
+            {
+              "billingPlanType": "BILLED_UPFRONT",
+              "commitmentDisplayPrice": "14.99",
+              "displayPrice": "14.99",
+              "internalID": "A1756BDC",
+              "isEnabled": true
+            }
+          ],
+          "codeOffers": [],
+          "displayPrice": "14.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6740000005",
+          "introductoryOffers": [],
+          "localizations": [
+            {
+              "description": "Support ImgZen once a year.",
+              "displayName": "Yearly Support",
+              "locale": "en_US"
+            },
+            {
+              "description": "Unterstütze ImgZen einmal im Jahr.",
+              "displayName": "Jährliche Unterstützung",
+              "locale": "de"
+            }
+          ],
+          "productID": "de.linkandreas.imgzen.support.yearly",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Yearly Support",
+          "subscriptionGroupID": "21500001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "billingPlans": [
+            {
+              "billingPlanType": "BILLED_UPFRONT",
+              "commitmentDisplayPrice": "1.99",
+              "displayPrice": "1.99",
+              "internalID": "45BE005A",
+              "isEnabled": true
+            }
+          ],
+          "codeOffers": [],
+          "displayPrice": "1.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "internalID": "6740000004",
+          "introductoryOffers": [],
+          "localizations": [
+            {
+              "description": "Support ImgZen every month.",
+              "displayName": "Monthly Support",
+              "locale": "en_US"
+            },
+            {
+              "description": "Unterstütze ImgZen jeden Monat.",
+              "displayName": "Monatliche Unterstützung",
+              "locale": "de"
+            }
+          ],
+          "productID": "de.linkandreas.imgzen.support.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Monthly Support",
+          "subscriptionGroupID": "21500001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
+  "subscriptionSuiteGroups": [],
+  "version": {
+    "major": 6,
+    "minor": 3
+  }
+}
