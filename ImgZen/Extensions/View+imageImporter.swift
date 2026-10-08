@@ -18,7 +18,12 @@ extension View {
         self.sheet(isPresented: isPresented) {
             PHPicker(
                 selectionLimit: selectionLimit,
-                completion: completion
+                completion: { items in
+                    // Closing through the binding rather than UIKit's dismiss keeps SwiftUI's state in sync,
+                    // so the picker opens again the next time.
+                    isPresented.wrappedValue = false
+                    completion(items)
+                }
             )
             .ignoresSafeArea()
             .toolbarStaysInTopBar()
@@ -71,8 +76,6 @@ fileprivate final class PhotoPickerCoordinator: PHPickerViewControllerDelegate {
         _ picker: PHPickerViewController,
         didFinishPicking results: [PHPickerResult]
     ) {
-        picker.dismiss(animated: true)
-
         completion(results.map { result in
             InputItem(itemProvider: result.itemProvider)
         })

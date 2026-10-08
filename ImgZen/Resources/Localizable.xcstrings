@@ -22,6 +22,74 @@
         }
       }
     },
+    "alert.conversionFailed.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versuche es erneut oder wähle ein anderes Zielformat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again, or choose another output format."
+          }
+        }
+      }
+    },
+    "alert.conversionFailed.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder konnten nicht konvertiert werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t Convert Images"
+          }
+        }
+      }
+    },
+    "alert.conversionPartiallyFailed.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld Bildern konnten nicht konvertiert werden. Die anderen kannst du teilen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld of %2$lld images couldn’t be converted. The others are ready to share."
+          }
+        }
+      }
+    },
+    "alert.conversionPartiallyFailed.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einige Bilder konnten nicht konvertiert werden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some Images Couldn’t Be Converted"
+          }
+        }
+      }
+    },
     "alert.removeAllImages" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -204,6 +272,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
+          }
+        }
+      }
+    },
+    "button.ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }

@@ -87,10 +87,9 @@ struct FormatSettingsForm: View {
         }
         // Content scrolls softly under the sheet's title bar instead of being cut off at a hard edge.
         .scrollEdgeEffectStyle(.soft, for: .top)
+        // The quality is kept when choosing another format, so trying JPEG, HEIC and WebP
+        // doesn't throw away the quality the user picked.
         .sensoryFeedback(.selection, trigger: selectedImageFormat)
-        .onChange(of: selectedImageFormat) {
-            selectedImageCompressionQuality = 0.9
-        }
     }
 
     /// Lossless formats always keep every detail, so their quality reads as 100%.
