@@ -26,6 +26,7 @@ Tests for domain service classes.
 - `ImageConversionServiceTests.swift` - Tests for image conversion orchestration
 - `ImageServiceTests.swift` - Tests for image data and metadata retrieval
 - `InputServiceTests.swift` - Tests for input item management
+- `SupportStoreTests.swift` - Tests for Support the Developer purchases, restore and loading states
 
 ### UI/
 Tests for UI and presentation layer logic.

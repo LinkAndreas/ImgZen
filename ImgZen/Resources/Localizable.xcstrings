@@ -457,6 +457,23 @@
         }
       }
     },
+    "button.supportTheDeveloper" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entwicklung unterstützen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the Developer"
+          }
+        }
+      }
+    },
     "button.tryAgain" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1200,6 +1217,465 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Smaller files. Some detail is lost, depending on the quality you choose."
+          }
+        }
+      }
+    },
+    "support.aSinglePaymentNothing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine einmalige Zahlung. Nichts verlängert sich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A single payment. Nothing renews."
+          }
+        }
+      }
+    },
+    "support.active" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        }
+      }
+    },
+    "support.billedDaily" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tägliche Abrechnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billed daily"
+          }
+        }
+      }
+    },
+    "support.billedMonthly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatliche Abrechnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billed monthly"
+          }
+        }
+      }
+    },
+    "support.billedWeekly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wöchentliche Abrechnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billed weekly"
+          }
+        }
+      }
+    },
+    "support.billedYearly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jährliche Abrechnung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Billed yearly"
+          }
+        }
+      }
+    },
+    "support.endsOn" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endet am %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ends on %@"
+          }
+        }
+      }
+    },
+    "support.imgZenIsFree" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen ist kostenlos, ohne Werbung und ohne gesperrte Funktionen. Wenn dir die App nützt, kannst du ihre Pflege und die Entwicklung neuer Funktionen unterstützen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen is free, with no ads and nothing locked. If it’s useful to you, you can support its maintenance and the development of new features."
+          }
+        }
+      }
+    },
+    "support.loadingSupportOptions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstützungsoptionen werden geladen …"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading support options…"
+          }
+        }
+      }
+    },
+    "support.manageSubscription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abo verwalten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Subscription"
+          }
+        }
+      }
+    },
+    "support.oneTimeSupport" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einmalige Unterstützung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-Time Support"
+          }
+        }
+      }
+    },
+    "support.privacyPolicy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutzerklärung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
+    "support.purchasesCouldntBeRestored" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe konnten nicht wiederhergestellt werden. Bitte versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchases couldn't be restored. Please try again."
+          }
+        }
+      }
+    },
+    "support.purchasesRestored" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederhergestellt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchases restored."
+          }
+        }
+      }
+    },
+    "support.recurringSupport" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regelmäßige Unterstützung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurring Support"
+          }
+        }
+      }
+    },
+    "support.recurringSupportIsOptional" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regelmäßige Unterstützung ist freiwillig und schaltet nichts frei – ImgZen bleibt vollständig kostenlos. Die Zahlung wird deinem Apple Account belastet. Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ende des aktuellen Zeitraums gekündigt werden. Du kannst sie jederzeit in den Einstellungen deines Apple Accounts verwalten oder kündigen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurring support is optional and unlocks nothing — ImgZen stays fully free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."
+          }
+        }
+      }
+    },
+    "support.renewsOn" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verlängert sich am %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renews on %@"
+          }
+        }
+      }
+    },
+    "support.restorePurchases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Purchases"
+          }
+        }
+      }
+    },
+    "support.supportImgZen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen unterstützen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support ImgZen"
+          }
+        }
+      }
+    },
+    "support.supportOptionsCouldnt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Unterstützungsoptionen konnten nicht geladen werden. Prüfe deine Internetverbindung und versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support options couldn't be loaded. Check your internet connection and try again."
+          }
+        }
+      }
+    },
+    "support.termsOfUse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzungsbedingungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use"
+          }
+        }
+      }
+    },
+    "support.thankYou" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke für deine Unterstützung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you for your support"
+          }
+        }
+      }
+    },
+    "support.thankYouForSupporting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke, dass du die Weiterentwicklung der App unterstützt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you for supporting the continued development of the app"
+          }
+        }
+      }
+    },
+    "support.thePurchaseCouldnt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The purchase couldn't be completed. Please try again."
+          }
+        }
+      }
+    },
+    "support.thePurchaseCouldntBeVerified" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Kauf konnte vom App Store nicht bestätigt werden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The purchase couldn't be verified by the App Store."
+          }
+        }
+      }
+    },
+    "support.thereWereNoPurchases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es gibt keine Käufe zum Wiederherstellen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There were no purchases to restore."
+          }
+        }
+      }
+    },
+    "support.yourPurchaseIsWaiting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Kauf wartet auf Bestätigung. Er wird automatisch abgeschlossen, sobald er genehmigt ist."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your purchase is waiting for approval. It will complete automatically once approved."
           }
         }
       }
