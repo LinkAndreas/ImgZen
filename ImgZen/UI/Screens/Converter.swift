@@ -16,10 +16,21 @@ struct Converter: View {
         case mailComposer
     }
 
+    /// Images of a finished conversion that couldn't be converted.
+    struct ConversionFailure {
+        let failedCount: Int
+        let totalCount: Int
+
+        var isComplete: Bool {
+            failedCount == totalCount
+        }
+    }
+
     @State private var progress: ProgressBar.State?
     @State private var conversion: Task<Void, Error>?
     @State private var path: [Destination] = []
     @State private var sheet: Sheet?
+    @State private var conversionFailure: ConversionFailure?
     @Environment(\.requestReview) private var requestReview
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
 
@@ -59,6 +70,10 @@ struct Converter: View {
                     previewLoader: previewLoader,
                     fileURLFor: fileURLResolver.fileURL(for:),
                     onConvert: { items, imageFormat in
+                        // Only one conversion at a time: the keyboard shortcut still works behind the progress card.
+                        guard progress == nil else { return }
+                        progress = .indeterminate
+
                         conversion = Task {
                             let events: AsyncStream<ImageConversionService.Event>
                             do {
@@ -68,6 +83,8 @@ struct Converter: View {
                                 )
                             } catch {
                                 logger.error("Failed to start conversion: \(error)")
+                                progress = nil
+                                conversionFailure = ConversionFailure(failedCount: items.count, totalCount: items.count)
                                 return
                             }
 
@@ -79,11 +96,25 @@ struct Converter: View {
                                     progress = .amount(current: completed, total: total)
                                 case let .completed(outputItems):
                                     try await Task.sleep(for: .seconds(1.0))
+                                    let failedCount = items.count - outputItems.count
+
+                                    // Without any converted image there's nothing to share, so stay and explain instead.
+                                    guard !outputItems.isEmpty else {
+                                        progress = nil
+                                        conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
+                                        return
+                                    }
+
                                     path.append(.output(outputItems))
                                     try await Task.sleep(for: .seconds(0.3))
                                     progress = nil
-                                    try await Task.sleep(for: .seconds(0.75))
-                                    requestReviewIfNeeded()
+
+                                    if failedCount > 0 {
+                                        conversionFailure = ConversionFailure(failedCount: failedCount, totalCount: items.count)
+                                    } else {
+                                        try await Task.sleep(for: .seconds(0.75))
+                                        requestReviewIfNeeded()
+                                    }
                                 }
                             }
 
@@ -121,7 +152,31 @@ struct Converter: View {
             )
             // Confirms a finished conversion as the results slide in.
             .sensoryFeedback(.success, trigger: path.count) { old, new in new > old }
+            .alert(
+                conversionFailure.map(Self.alertTitle(for:)) ?? "",
+                isPresented: Binding(
+                    get: { conversionFailure != nil },
+                    set: { if !$0 { conversionFailure = nil } }
+                ),
+                presenting: conversionFailure
+            ) { _ in
+                Button(String(localized: "button.ok"), role: .cancel) {}
+            } message: { failure in
+                Text(Self.alertMessage(for: failure))
+            }
         }
+    }
+
+    private static func alertTitle(for failure: ConversionFailure) -> String {
+        failure.isComplete
+            ? String(localized: "alert.conversionFailed.title")
+            : String(localized: "alert.conversionPartiallyFailed.title")
+    }
+
+    private static func alertMessage(for failure: ConversionFailure) -> String {
+        failure.isComplete
+            ? String(localized: "alert.conversionFailed.message")
+            : String(format: String(localized: "alert.conversionPartiallyFailed.message"), failure.failedCount, failure.totalCount)
     }
 
     /// Asks for a review with the system prompt after the third conversion, once the user has seen the app's value.

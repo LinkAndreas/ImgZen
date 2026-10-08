@@ -4,6 +4,8 @@ import SwiftUI
 struct ShareSheet: UIViewControllerRepresentable {
     var items: [Any]
     var activities: [UIActivity]? = nil
+    /// Called when sharing finishes or is cancelled, since the controller then closes itself.
+    var onComplete: @MainActor () -> Void = {}
     
     /// Creates and configures the UIActivityViewController.
     func makeUIViewController(context: Context) -> UIActivityViewController {
@@ -11,6 +13,12 @@ struct ShareSheet: UIViewControllerRepresentable {
             activityItems: items,
             applicationActivities: activities
         )
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            // UIKit calls this on the main thread.
+            MainActor.assumeIsolated {
+                onComplete()
+            }
+        }
         return controller
     }
     

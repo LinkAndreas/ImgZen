@@ -97,7 +97,7 @@ struct OutputView: View {
         }
         .sensoryFeedback(.selection, trigger: selectedItemIDs)
         .sheet(item: $shareItem) { item in
-            ShareSheet(items: item.fileURLs)
+            ShareSheet(items: item.fileURLs, onComplete: { shareItem = nil })
                 .presentationDetents([.medium, .large])
         }
         .navigationTitle(String(localized: "navigation.readyToShare"))
