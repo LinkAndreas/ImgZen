@@ -73,6 +73,11 @@ struct FormatSettingsForm: View {
                 Text(String(localized: "section.lossyFormats.footer"))
             }
 
+            // Right below the lossy formats it applies to. It stays in place, just disabled, for lossless
+            // formats, so the lossless rows below never move while choosing.
+            qualitySection
+                .disabled(selectedImageFormat.isLossless)
+
             Section {
                 ForEach(LosslessImageFormat.allCases) { format in
                     OptionRow(
@@ -87,16 +92,9 @@ struct FormatSettingsForm: View {
             } footer: {
                 Text(String(localized: "section.losslessFormats.footer"))
             }
-
-            // Only lossy formats have a quality. The section is last, so showing or hiding it
-            // never moves the formats above while choosing.
-            if selectedImageFormat.isLossy {
-                qualitySection
-            }
         }
         // Content scrolls softly under the sheet's title bar instead of being cut off at a hard edge.
         .scrollEdgeEffectStyle(.soft, for: .top)
-        .animation(.smooth(duration: 0.25), value: selectedImageFormat.isLossy)
         .animation(.smooth(duration: 0.25), value: isCustomQuality)
         // The quality is kept when choosing another format, so trying JPEG, HEIC and WebP
         // doesn't throw away the quality the user picked.
@@ -138,7 +136,18 @@ struct FormatSettingsForm: View {
         } header: {
             Text(String(localized: "label.compressionQuality"))
         } footer: {
-            Text(String(localized: "label.compressionQuality.footer"))
+            Text(qualityFooter)
+        }
+    }
+}
+
+extension FormatSettingsForm {
+    /// Explains the quality, or why it doesn't apply to a lossless format.
+    private var qualityFooter: String {
+        if selectedImageFormat.isLossy {
+            String(localized: "label.compressionQuality.footer")
+        } else {
+            String(format: String(localized: "label.compressionQuality.losslessFooter"), selectedImageFormat.title)
         }
     }
 }
@@ -175,6 +184,8 @@ struct FormatSheet: View {
 
 /// A row for choosing one of several options, with a checkmark on the chosen one.
 struct OptionRow: View {
+    @Environment(\.isEnabled) private var isEnabled
+
     let title: String
     let subtitle: String
     /// A value shown before the checkmark, e.g. the percentage of a quality level.
@@ -187,18 +198,19 @@ struct OptionRow: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     // Explicit label colors: inside a button, the hierarchical styles resolve to the tint color.
+                    // Disabled rows dim themselves, since explicit colors don't follow the disabled state.
                     Text(title)
-                        .foregroundStyle(Color(.label))
+                        .foregroundStyle(isEnabled ? Color(.label) : Color(.tertiaryLabel))
                     Text(subtitle)
                         .font(.subheadline)
-                        .foregroundStyle(Color(.secondaryLabel))
+                        .foregroundStyle(isEnabled ? Color(.secondaryLabel) : Color(.tertiaryLabel))
                 }
 
                 Spacer(minLength: 0)
 
                 if let value {
                     Text(value)
-                        .foregroundStyle(Color(.secondaryLabel))
+                        .foregroundStyle(isEnabled ? Color(.secondaryLabel) : Color(.tertiaryLabel))
                         .monospacedDigit()
                         .contentTransition(.numericText())
                 }
