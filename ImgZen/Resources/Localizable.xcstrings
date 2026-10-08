@@ -175,23 +175,6 @@
         }
       }
     },
-    "button.files" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dateien"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Files"
-          }
-        }
-      }
-    },
     "button.more" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -221,23 +204,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
-          }
-        }
-      }
-    },
-    "button.photos" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fotos"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Photos"
           }
         }
       }

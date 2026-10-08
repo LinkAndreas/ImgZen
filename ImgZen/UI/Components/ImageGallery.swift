@@ -1,11 +1,15 @@
 import SwiftUI
+import UIKit
 
 /// A gallery view displaying a grid of image cells with async loading support.
 struct ImageGallery: View {
     /// Represents an item in the image gallery with async loading support.
     struct Item: Identifiable, Equatable {
         let id: String
-        let imageInfo: @Sendable @concurrent () async throws -> (ImageMetadata, ImageData)
+        /// Loads the item's preview off the main actor.
+        let loadPreview: @Sendable @concurrent () async throws -> ImagePreview
+        /// Returns the item's preview if it's already in memory, so the cell can show it without a spinner.
+        let cachedPreview: @Sendable () -> ImagePreview?
         let contextActions: [ContextAction]
         /// Action performed when the item is tapped, if any.
         var primaryAction: (() -> Void)? = nil
@@ -55,13 +59,26 @@ struct ImageGallery: View {
     }
 }
 
-/// One square tile of the gallery: loads its image, and handles taps, selection and the context menu.
-/// The selection is drawn here rather than in the loaded content, so it updates immediately
-/// and stays independent of the image's loading state.
+/// One square tile of the gallery: loads its preview, and handles taps, selection and the context menu.
+///
+/// Built for smooth scrolling: a tile that scrolls back into view shows its cached preview at once,
+/// and loading is a `task` that's cancelled when the tile scrolls away, so fast scrolling
+/// doesn't queue up work for cells that are long gone. Selection is drawn here rather than
+/// in the loaded content, so it updates immediately, even while the image is loading.
 private struct GalleryTile: View {
     let item: ImageGallery.Item
 
+    @State private var preview: ImagePreview?
+    @State private var didFail = false
+    /// Increased to load again after a failure.
+    @State private var attempt = 0
+
     private static let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+
+    init(item: ImageGallery.Item) {
+        self.item = item
+        _preview = State(initialValue: item.cachedPreview())
+    }
 
     var body: some View {
         Group {
@@ -86,28 +103,31 @@ private struct GalleryTile: View {
             }
         }
         .accessibilityAddTraits(item.isSelected == true ? .isSelected : [])
+        .task(id: attempt) {
+            guard preview == nil else { return }
+
+            do {
+                preview = try await item.loadPreview()
+            } catch {
+                // A tile that scrolled away was cancelled, not failed; it loads again when it reappears.
+                if !Task.isCancelled {
+                    didFail = true
+                }
+            }
+        }
     }
 
     private var content: some View {
-        // Only the loading closure crosses into the background task; the item's actions stay on the main actor.
-        let imageInfo = item.imageInfo
-        return AsyncResourceView(
-            load: {
-                try await Task.detached(priority: .userInitiated) { @concurrent in
-                    let (metadata, imageData) = try await imageInfo()
-                    return (UIImage(data: imageData), metadata)
-                }.value
-            },
-            notRequestedView: { load in
-                PlaceholderTile()
-                    .onFirstAppear(perform: load)
-            },
-            loadingView: {
-                PlaceholderTile {
-                    ProgressView()
-                }
-            },
-            failureView: { _, retry in
+        Group {
+            if let preview {
+                let presenter = ImageItemPresenter(metadata: preview.metadata)
+                ImageCell(
+                    title: presenter.title,
+                    subtitle: presenter.subtitle,
+                    badge: presenter.badge,
+                    image: preview.thumbnail
+                )
+            } else if didFail {
                 PlaceholderTile {
                     VStack(spacing: 8) {
                         Image(systemName: "exclamationmark.triangle")
@@ -117,25 +137,30 @@ private struct GalleryTile: View {
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
-                        Button(String(localized: "button.tryAgain"), action: retry)
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
+                        Button(String(localized: "button.tryAgain")) {
+                            didFail = false
+                            attempt += 1
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
                     }
                     .padding(8)
                 }
-            },
-            successView: { (image: UIImage?, metadata: ImageMetadata) in
-                let presenter = ImageItemPresenter(metadata: metadata)
-                ImageCell(
-                    title: presenter.title,
-                    subtitle: presenter.subtitle,
-                    badge: presenter.badge,
-                    image: image.map(Image.init(uiImage:))
-                )
+            } else {
+                PlaceholderTile {
+                    ProgressView()
+                }
             }
-        )
+        }
         .aspectRatio(1.0, contentMode: .fit)
         .clipShape(Self.shape)
+        .overlay {
+            // Unselected images are washed out with a plain overlay, which is cheaper to draw while
+            // scrolling than lowering the opacity of the whole cell.
+            if item.isSelected == false {
+                Self.shape.fill(Color(.systemBackground).opacity(0.4))
+            }
+        }
         .overlay {
             Self.shape.strokeBorder(
                 item.isSelected == true ? Color.accentColor : Color.secondary.opacity(0.2),
@@ -148,8 +173,6 @@ private struct GalleryTile: View {
                     .padding(8)
             }
         }
-        // Dims unselected images slightly, so the selection reads at a glance, as in Photos.
-        .opacity(item.isSelected == false ? 0.6 : 1)
         .animation(.smooth(duration: 0.15), value: item.isSelected)
         .contentShape(Self.shape)
     }
@@ -163,9 +186,8 @@ private struct SelectionIndicator: View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .font(.title2)
             .symbolRenderingMode(.palette)
-            .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.25))
-            .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.15)).padding(2))
-            .shadow(color: .black.opacity(0.2), radius: 2)
+            .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.3))
+            .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.2)).padding(2))
             .contentTransition(.symbolEffect(.replace))
             .accessibilityHidden(true)
     }
@@ -180,15 +202,8 @@ private struct PlaceholderTile<Content: View>: View {
     }
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 12, style: .continuous)
+        Rectangle()
             .fill(Color(.secondarySystemGroupedBackground))
-            .aspectRatio(1.0, contentMode: .fit)
             .overlay { content }
-    }
-}
-
-private extension PlaceholderTile where Content == SwiftUI.EmptyView {
-    init() {
-        self.init { SwiftUI.EmptyView() }
     }
 }

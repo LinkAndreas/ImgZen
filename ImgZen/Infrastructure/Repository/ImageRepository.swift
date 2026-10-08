@@ -1,7 +1,7 @@
 import Foundation
 
 /// Errors that can occur when accessing image repositories.
-enum ImageRepositoryError: Swift.Error {
+nonisolated enum ImageRepositoryError: Swift.Error {
     case itemNotFound(atURL: URL)
     case dataCorrupted(atURL: URL)
 }

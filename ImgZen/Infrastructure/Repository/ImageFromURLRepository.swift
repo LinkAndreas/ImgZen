@@ -3,8 +3,11 @@ import Foundation
 import UIKit
 
 /// Repository implementation for loading images from file URLs.
-struct ImageFromURLRepository: ImageRepository {
-    private let fileManager: FileManager
+/// Not isolated to the main actor: reading files and decoding images runs on background threads,
+/// so it doesn't stall scrolling or animations.
+nonisolated struct ImageFromURLRepository: ImageRepository, Sendable {
+    // FileManager's file operations are thread-safe.
+    nonisolated(unsafe) private let fileManager: FileManager
 
     /// Creates an ImageFromURLRepository.
     /// - Parameter fileManager: FileManager instance to use. Defaults to `.default`.
@@ -66,6 +69,7 @@ struct ImageFromURLRepository: ImageRepository {
     ///   - resolution: The desired resolution (full or thumbnail).
     /// - Returns: The image data.
     /// - Throws: ImageRepositoryError if the image cannot be loaded.
+    @concurrent
     func image(
         for url: URL,
         resolution: ImageResolution
@@ -90,7 +94,7 @@ struct ImageFromURLRepository: ImageRepository {
 /// Retrieves image dimensions from a file URL using ImageIO.
 /// - Parameter url: The file URL of the image.
 /// - Returns: Image dimensions as displayed (respecting EXIF orientation), or nil if dimensions cannot be determined.
-private func getImageDimensions(from url: URL) -> CGSize? {
+nonisolated private func getImageDimensions(from url: URL) -> CGSize? {
     guard
         let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
         let properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any],
@@ -112,7 +116,7 @@ private func getImageDimensions(from url: URL) -> CGSize? {
 /// Creates image data by reading the file at the given URL.
 /// - Parameter url: The file URL of the image.
 /// - Returns: Image data, or nil if reading fails.
-private func createImage(from url: URL) -> ImageData? {
+nonisolated private func createImage(from url: URL) -> ImageData? {
     let didStartAccess = url.startAccessingSecurityScopedResource()
     defer {
         if didStartAccess {
@@ -130,7 +134,7 @@ private func createImage(from url: URL) -> ImageData? {
 /// Creates a thumbnail image from a file URL using ImageIO.
 /// - Parameter url: The file URL of the source image.
 /// - Returns: Thumbnail image data as PNG, or nil if creation fails.
-private func createThumbnail(from url: URL) -> ImageData? {
+nonisolated private func createThumbnail(from url: URL) -> ImageData? {
     let didStartAccess = url.startAccessingSecurityScopedResource()
     defer {
         if didStartAccess {

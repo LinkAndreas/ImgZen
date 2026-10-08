@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// A cell displaying an image with its format and metadata.
 /// Selection, taps and context menus are handled by the gallery tile around it,
@@ -7,19 +8,19 @@ struct ImageCell: View {
     private let title: String
     private let subtitle: String
     private let badge: String
-    private let image: Image?
+    private let image: UIImage?
 
     /// Creates an image cell.
     /// - Parameters:
-    ///   - title: Title text to display.
+    ///   - title: Title read by VoiceOver (typically the file name).
     ///   - subtitle: Subtitle text (typically dimensions and file size).
     ///   - badge: Badge text (typically format name).
-    ///   - image: Optional SwiftUI Image to display.
+    ///   - image: Optional decoded image to display.
     init(
         title: String,
         subtitle: String,
         badge: String,
-        image: Image?
+        image: UIImage?
     ) {
         self.title = title
         self.subtitle = subtitle
@@ -32,7 +33,7 @@ struct ImageCell: View {
             Color.clear
                 .overlay {
                     if let image {
-                        image
+                        Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                     }
@@ -64,7 +65,7 @@ struct ImageCell: View {
         title: "Beach.heic",
         subtitle: "4032 x 3024 px · 22,4 MB",
         badge: "PNG",
-        image: Image(systemName: "photo")
+        image: UIImage(systemName: "photo")
     )
     .frame(width: 200, height: 200)
 }

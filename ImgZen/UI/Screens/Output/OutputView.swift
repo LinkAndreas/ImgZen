@@ -23,23 +23,19 @@ struct OutputView: View {
     }
     
     private let items: [OutputItem]
-    private let imageData: @Sendable @concurrent (ImageSource, ImageResolution) async throws -> ImageData
-    private let metadata: @Sendable @concurrent (ImageSource) async throws -> ImageMetadata
+    private let previewLoader: ImagePreviewLoader
     
     /// Creates an OutputView.
     /// - Parameters:
     ///   - items: The output items to display.
-    ///   - imageData: Closure to retrieve image data at a given resolution.
-    ///   - metadata: Closure to retrieve image metadata.
+    ///   - previewLoader: Loads the previews shown in the gallery.
     init(
         items: [OutputItem],
-        imageData: @Sendable @concurrent @escaping (ImageSource, ImageResolution) async throws -> ImageData,
-        metadata: @Sendable @concurrent @escaping (ImageSource) async throws -> ImageMetadata
+        previewLoader: ImagePreviewLoader
     ) {
         self.items = items
         self._selectedItemIDs = State(initialValue: Set(items.map(\.id)))
-        self.imageData = imageData
-        self.metadata = metadata
+        self.previewLoader = previewLoader
     }
 
     var body: some View {
@@ -47,10 +43,11 @@ struct OutputView: View {
             items: items.map { item in
                 ImageGallery.Item(
                     id: item.id.uuidString,
-                    imageInfo: { @concurrent in
-                        let metadata = try await metadata(item.url)
-                        let imageData = try await imageData(item.url, .thumbnail)
-                        return (metadata, imageData)
+                    loadPreview: { @concurrent [previewLoader] in
+                        try await previewLoader.preview(for: item.url, cacheKey: item.id.uuidString)
+                    },
+                    cachedPreview: { [previewLoader] in
+                        previewLoader.cachedPreview(forKey: item.id.uuidString)
                     },
                     contextActions: [
                         ContextAction(
