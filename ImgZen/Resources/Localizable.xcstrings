@@ -648,6 +648,74 @@
         }
       }
     },
+    "label.estimate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwa %@ pro Bild"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %@ per image"
+          }
+        }
+      }
+    },
+    "label.estimate.larger" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwa %1$@ pro Bild · %2$@ größer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %1$@ per image · %2$@ larger"
+          }
+        }
+      }
+    },
+    "label.estimate.similar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwa %@ pro Bild · etwa so groß wie das Original"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %@ per image · about the same as the original"
+          }
+        }
+      }
+    },
+    "label.estimate.smaller" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwa %1$@ pro Bild · %2$@ kleiner"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %1$@ per image · %2$@ smaller"
+          }
+        }
+      }
+    },
     "label.imageUnavailable" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -63,11 +63,13 @@ struct Converter: View {
             )
             // Shared by both galleries, so previews of converted images stay cached when going back and forth.
             let previewLoader = ImagePreviewLoader(repository: imageRepository)
-            return (fileURLResolver, conversionService, previewLoader)
-        } content: { fileURLResolver, conversionService, previewLoader in
+            let fileSizeEstimator = FileSizeEstimator()
+            return (fileURLResolver, conversionService, previewLoader, fileSizeEstimator)
+        } content: { fileURLResolver, conversionService, previewLoader, fileSizeEstimator in
             NavigationStack(path: $path) {
                 InputView(
                     previewLoader: previewLoader,
+                    fileSizeEstimator: fileSizeEstimator,
                     fileURLFor: fileURLResolver.fileURL(for:),
                     onConvert: { items, imageFormat in
                         // Only one conversion at a time: the keyboard shortcut still works behind the progress card.

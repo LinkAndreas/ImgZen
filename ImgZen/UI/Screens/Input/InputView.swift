@@ -32,6 +32,7 @@ struct InputView: View {
     }
     
     private let previewLoader: ImagePreviewLoader
+    private let fileSizeEstimator: FileSizeEstimator
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
     private let onSendFeedback: () -> Void
@@ -39,16 +40,19 @@ struct InputView: View {
     /// Creates an InputView.
     /// - Parameters:
     ///   - previewLoader: Loads the previews shown in the gallery.
+    ///   - fileSizeEstimator: Estimates the size of converted images for the quality settings.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
     ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
         previewLoader: ImagePreviewLoader,
+        fileSizeEstimator: FileSizeEstimator,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
         onSendFeedback: @escaping () -> Void
     ) {
         self.previewLoader = previewLoader
+        self.fileSizeEstimator = fileSizeEstimator
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
         self.onSendFeedback = onSendFeedback
@@ -95,6 +99,8 @@ struct InputView: View {
                     selectedImageFormat: $selectedImageFormat,
                     selectedImageCompressionQuality: $selectedImageCompressionQuality,
                     showsFormatButton: !isInspectorLayout,
+                    estimateFileSize: estimateFileSize(for:quality:),
+                    estimationSubject: inputService.items.first?.id.uuidString,
                     addFromPhotosAction: { sheet = .photoPicker },
                     addFromFilesAction: { sheet = .filePicker }
                 )
@@ -190,7 +196,9 @@ struct InputView: View {
                 .inspector(isPresented: .constant(isBottomControlPanelVisible)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
-                        selectedImageCompressionQuality: $selectedImageCompressionQuality
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                        estimateFileSize: estimateFileSize(for:quality:),
+                        estimationSubject: inputService.items.first?.id.uuidString
                     )
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
@@ -201,6 +209,28 @@ struct InputView: View {
 }
 
 extension InputView {
+    /// Estimates the size of the first image converted with the given settings, as a guide for the quality.
+    private func estimateFileSize(
+        for format: FormatSelection,
+        quality: ImageCompressionQuality
+    ) async -> FileSizeEstimate? {
+        guard
+            let item = inputService.items.first,
+            let lossyFormat = format.lossyImageFormat,
+            let typeIdentifier = lossyFormat.utType?.identifier,
+            let url = try? await fileURLFor(item)
+        else {
+            return nil
+        }
+
+        return await fileSizeEstimator.estimate(
+            for: url,
+            typeIdentifier: typeIdentifier,
+            usesWebPEncoder: lossyFormat == .webp,
+            quality: quality
+        )
+    }
+
     private func convert() {
         let outputFormat = ImageFormat(
             imageFormatSelection: selectedImageFormat,

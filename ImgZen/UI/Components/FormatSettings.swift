@@ -37,11 +37,27 @@ enum FormatSelection: Equatable {
     }
 }
 
+/// Estimates the size of a converted image for a format and quality.
+typealias FileSizeEstimation = @MainActor (FormatSelection, ImageCompressionQuality) async -> FileSizeEstimate?
+
 /// The conversion settings: the formats to convert to and, for lossy formats, the image quality.
 /// Shared by the iPad inspector and the iPhone format sheet, so both offer the same options.
 struct FormatSettingsForm: View {
     @Binding var selectedImageFormat: FormatSelection
     @Binding var selectedImageCompressionQuality: ImageCompressionQuality
+    /// Estimates the file size shown with the quality, if available.
+    var estimateFileSize: FileSizeEstimation? = nil
+    /// Changes when the images change, so the estimate is made again for the new first image.
+    var estimationSubject: String? = nil
+
+    @State private var estimate: FileSizeEstimate?
+
+    /// What the estimate depends on; a change makes a new estimate.
+    private struct EstimateRequest: Equatable {
+        let format: FormatSelection
+        let quality: ImageCompressionQuality
+        let subject: String?
+    }
 
     var body: some View {
         Form {
@@ -77,8 +93,11 @@ struct FormatSettingsForm: View {
 
             // Always shown, and only disabled for lossless formats, so the rows above never move while choosing.
             Section {
-                CompressionQualityPicker(quality: qualityBinding)
-                    .disabled(selectedImageFormat.isLossless)
+                CompressionQualityPicker(
+                    quality: qualityBinding,
+                    estimate: selectedImageFormat.isLossy ? estimate : nil
+                )
+                .disabled(selectedImageFormat.isLossless)
             } header: {
                 Text(String(localized: "label.compressionQuality"))
             } footer: {
@@ -90,6 +109,25 @@ struct FormatSettingsForm: View {
         // The quality is kept when choosing another format, so trying JPEG, HEIC and WebP
         // doesn't throw away the quality the user picked.
         .sensoryFeedback(.selection, trigger: selectedImageFormat)
+        .task(id: EstimateRequest(
+            format: selectedImageFormat,
+            quality: selectedImageCompressionQuality,
+            subject: estimationSubject
+        )) {
+            guard let estimateFileSize, selectedImageFormat.isLossy else {
+                estimate = nil
+                return
+            }
+
+            // Waits for the slider to settle, so dragging doesn't encode at every step.
+            // The previous estimate stays meanwhile, and the new one replaces it.
+            try? await Task.sleep(for: .milliseconds(250))
+            guard !Task.isCancelled else { return }
+
+            let newEstimate = await estimateFileSize(selectedImageFormat, selectedImageCompressionQuality)
+            guard !Task.isCancelled else { return }
+            estimate = newEstimate
+        }
     }
 
     /// Lossless formats always keep every detail, so their quality reads as 100%.
@@ -112,12 +150,16 @@ struct FormatSheet: View {
 
     @Binding var selectedImageFormat: FormatSelection
     @Binding var selectedImageCompressionQuality: ImageCompressionQuality
+    var estimateFileSize: FileSizeEstimation? = nil
+    var estimationSubject: String? = nil
 
     var body: some View {
         NavigationStack {
             FormatSettingsForm(
                 selectedImageFormat: $selectedImageFormat,
-                selectedImageCompressionQuality: $selectedImageCompressionQuality
+                selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                estimateFileSize: estimateFileSize,
+                estimationSubject: estimationSubject
             )
             .navigationTitle(String(localized: "label.destinationFormat"))
             .navigationBarTitleDisplayMode(.inline)
