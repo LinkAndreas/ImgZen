@@ -8,6 +8,8 @@ struct BottomControlPanel: View {
     @Binding private var selectedImageFormat: FormatSelection
     @Binding private var selectedImageCompressionQuality: ImageCompressionQuality
     private let showsFormatButton: Bool
+    private let estimateFileSize: FileSizeEstimation?
+    private let estimationSubject: String?
     private let addFromPhotosAction: () -> Void
     private let addFromFilesAction: () -> Void
 
@@ -16,18 +18,24 @@ struct BottomControlPanel: View {
     ///   - selectedImageFormat: Binding to the selected image format.
     ///   - selectedImageCompressionQuality: Binding to the compression quality value.
     ///   - showsFormatButton: Whether to show the format button, for screens without an inspector.
+    ///   - estimateFileSize: Estimates the file size shown with the quality.
+    ///   - estimationSubject: Changes when the images change, so the estimate is made again.
     ///   - addFromPhotosAction: Action to open photo picker.
     ///   - addFromFilesAction: Action to open file picker.
     init(
         selectedImageFormat: Binding<FormatSelection>,
         selectedImageCompressionQuality: Binding<ImageCompressionQuality>,
         showsFormatButton: Bool,
+        estimateFileSize: FileSizeEstimation? = nil,
+        estimationSubject: String? = nil,
         addFromPhotosAction: @escaping () -> Void,
         addFromFilesAction: @escaping () -> Void
     ) {
         self._selectedImageFormat = selectedImageFormat
         self._selectedImageCompressionQuality = selectedImageCompressionQuality
         self.showsFormatButton = showsFormatButton
+        self.estimateFileSize = estimateFileSize
+        self.estimationSubject = estimationSubject
         self.addFromPhotosAction = addFromPhotosAction
         self.addFromFilesAction = addFromFilesAction
     }
@@ -50,7 +58,9 @@ struct BottomControlPanel: View {
         .sheet(isPresented: $isFormatSheetPresented) {
             FormatSheet(
                 selectedImageFormat: $selectedImageFormat,
-                selectedImageCompressionQuality: $selectedImageCompressionQuality
+                selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                estimateFileSize: estimateFileSize,
+                estimationSubject: estimationSubject
             )
         }
     }

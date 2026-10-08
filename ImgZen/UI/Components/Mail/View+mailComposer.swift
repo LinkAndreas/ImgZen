@@ -25,7 +25,8 @@ extension View {
                 ccRecipients: ccRecipients,
                 bccRecipients: bccRecipients,
                 subject: subject,
-                body: body
+                body: body,
+                onFinish: { isPresenting.wrappedValue = false }
              )
         }
     }

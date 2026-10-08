@@ -8,6 +8,7 @@ struct MailComposer: UIViewControllerRepresentable {
     private let bccRecipients: [String]
     private let subject: String
     private let body: String
+    private let onFinish: () -> Void
 
     /// Creates a mail composer.
     /// - Parameters:
@@ -16,22 +17,25 @@ struct MailComposer: UIViewControllerRepresentable {
     ///   - bccRecipients: BCC recipients. Defaults to empty.
     ///   - subject: Email subject line. Defaults to empty.
     ///   - body: Email body text.
+    ///   - onFinish: Called when the user sends, saves or cancels the email, to close the composer.
     init(
         recipients: [String],
         ccRecipients: [String] = [],
         bccRecipients: [String] = [],
         subject: String = "",
-        body: String
+        body: String,
+        onFinish: @escaping () -> Void
     ) {
         self.recipients = recipients
         self.ccRecipients = ccRecipients
         self.bccRecipients = bccRecipients
         self.subject = subject
         self.body = body
+        self.onFinish = onFinish
     }
 
     func makeCoordinator() -> MailCoordinator {
-        MailCoordinator()
+        MailCoordinator(onFinish: onFinish)
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
@@ -80,12 +84,20 @@ struct MailComposer: UIViewControllerRepresentable {
 
 /// Coordinator that handles MFMailComposeViewController delegate callbacks.
 final class MailCoordinator: NSObject, MFMailComposeViewControllerDelegate {
+    private let onFinish: () -> Void
+
+    init(onFinish: @escaping () -> Void) {
+        self.onFinish = onFinish
+    }
+
     func mailComposeController(
         _ controller: MFMailComposeViewController,
         didFinishWith result: MFMailComposeResult,
         error: (any Error)?
     ) {
-        controller.dismiss(animated: true)
+        // Closing through SwiftUI rather than UIKit's dismiss keeps the sheet's state in sync,
+        // so feedback can be sent again later.
+        onFinish()
     }
 }
 
