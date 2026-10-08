@@ -25,9 +25,11 @@ struct InputView: View {
     /// Whether the bars are vertical (iPhone Duo), where the format sheet opens at full height.
     @State private var usesVerticalBars = false
 
-    /// Regular width windows (iPad) show the settings in an inspector column instead of the format button.
+    /// Regular width windows on iPad show the settings in an inspector column instead of the format button.
+    /// Only on iPad: iPhone Duo is regular width when unfolded too, but doesn't show the inspector as a column,
+    /// which would leave the settings out of reach, so iPhones always use the format button and its sheet.
     private var isInspectorLayout: Bool {
-        horizontalSizeClass == .regular
+        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
     }
 
     /// The inspector shows once there are images to convert.
