@@ -17,14 +17,9 @@ struct Badge: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 6)
             .padding(.vertical, 3)
-            .background {
-                Capsule()
-                    .fill(.ultraThinMaterial)
-                    .overlay {
-                        Capsule()
-                            .fill(.black.opacity(0.4))
-                    }
-            }
+            // A plain fill instead of a blur: every cell shows a badge, and a blur per cell
+            // is expensive to redraw while scrolling.
+            .background(.black.opacity(0.55), in: .capsule)
     }
 }
 

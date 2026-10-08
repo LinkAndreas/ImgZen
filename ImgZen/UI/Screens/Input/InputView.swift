@@ -31,28 +31,24 @@ struct InputView: View {
         !inputService.items.isEmpty
     }
     
-    private let imageData: @MainActor (ImageSource, ImageResolution) async throws -> ImageData
-    private let metadata: @MainActor (ImageSource) throws -> ImageMetadata
+    private let previewLoader: ImagePreviewLoader
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
     private let onSendFeedback: () -> Void
 
     /// Creates an InputView.
     /// - Parameters:
-    ///   - imageData: Closure to retrieve image data at a given resolution.
-    ///   - metadata: Closure to retrieve image metadata.
+    ///   - previewLoader: Loads the previews shown in the gallery.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
     ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
-        imageData: @escaping @MainActor (ImageSource, ImageResolution) async throws -> ImageData,
-        metadata: @escaping @MainActor (ImageSource) throws -> ImageMetadata,
+        previewLoader: ImagePreviewLoader,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
         onSendFeedback: @escaping () -> Void
     ) {
-        self.imageData = imageData
-        self.metadata = metadata
+        self.previewLoader = previewLoader
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
         self.onSendFeedback = onSendFeedback
@@ -64,11 +60,12 @@ struct InputView: View {
             items: inputService.items.map { item in
                 ImageGallery.Item(
                     id: item.id.uuidString,
-                    imageInfo: { @concurrent in
+                    loadPreview: { @concurrent [previewLoader, fileURLFor] in
                         let url = try await fileURLFor(item)
-                        let imageData = try await imageData(url, .thumbnail)
-                        let metadata = try await metadata(url)
-                        return (metadata, imageData)
+                        return try await previewLoader.preview(for: url, cacheKey: item.id.uuidString)
+                    },
+                    cachedPreview: { [previewLoader] in
+                        previewLoader.cachedPreview(forKey: item.id.uuidString)
                     },
                     contextActions: [
                         ContextAction(
@@ -83,31 +80,28 @@ struct InputView: View {
         )
         .overlay {
             if inputService.items.isEmpty {
-                // Lets touches through, so pulling down still reaches the gallery and the navigation bar beneath.
-                EmptyView()
-                    .allowsHitTesting(false)
-                    .transition(.opacity)
-            }
-        }
-        .animation(.smooth(duration: 0.25), value: inputService.items.isEmpty)
-        .safeAreaBar(edge: .bottom) {
-            // The actions sit at the bottom edge, with the most used ones on the trailing side,
-            // so they're within thumb reach when holding the device in one hand.
-            if inputService.items.isEmpty {
-                AddImagesBar(
+                EmptyView(
                     addFromPhotosAction: { sheet = .photoPicker },
                     addFromFilesAction: { sheet = .filePicker }
                 )
-            } else if !isInspectorLayout {
+                .transition(.opacity)
+            }
+        }
+        .safeAreaBar(edge: .bottom) {
+            // Once there are images, adding more is a single prominent button in the trailing corner,
+            // within reach of the right thumb; the format sits opposite it on iPhone.
+            if !inputService.items.isEmpty {
                 BottomControlPanel(
                     selectedImageFormat: $selectedImageFormat,
                     selectedImageCompressionQuality: $selectedImageCompressionQuality,
+                    showsFormatButton: !isInspectorLayout,
                     addFromPhotosAction: { sheet = .photoPicker },
-                    addFromFilesAction: { sheet = .filePicker },
-                    onConvert: convert
+                    addFromFilesAction: { sheet = .filePicker }
                 )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .animation(.smooth(duration: 0.25), value: inputService.items.isEmpty)
         .onDrop(of: [.image], isTargeted: $isDropTargeted) { providers in
             let items = providers
                 .filter { $0.hasItemConformingToTypeIdentifier(UTType.image.identifier) }
@@ -159,6 +153,16 @@ struct InputView: View {
                     Text(String(localized: "alert.removeAllImages.message"))
                 }
             }
+
+            ToolbarSpacer(.fixed, placement: .topBarTrailing)
+
+            // Convert is the screen's confirming action, so it takes the prominent trailing spot,
+            // as Send does in Mail. It's always there, just disabled without images, so the bar never shifts.
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(String(localized: "button.convert"), role: .confirm, action: convert)
+                    .keyboardShortcut(.return, modifiers: .command)
+                    .disabled(inputService.items.isEmpty)
+            }
         }
         .sensoryFeedback(.impact(weight: .light), trigger: inputService.items.count) { old, new in new > old }
         .imagePicker(
@@ -186,10 +190,7 @@ struct InputView: View {
                 .inspector(isPresented: .constant(isBottomControlPanelVisible)) {
                     FormatInspector(
                         selectedImageFormat: $selectedImageFormat,
-                        selectedImageCompressionQuality: $selectedImageCompressionQuality,
-                        addFromPhotosAction: { sheet = .photoPicker },
-                        addFromFilesAction: { sheet = .filePicker },
-                        onConvert: convert
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality
                     )
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
