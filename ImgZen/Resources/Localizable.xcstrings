@@ -970,23 +970,6 @@
         }
       }
     },
-    "quality.custom.subtitle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle eine genaue Qualität"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose an exact quality"
-          }
-        }
-      }
-    },
     "quality.high" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1010,13 +993,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Empfohlen. Wirkt wie das Original, bei einem Bruchteil der Größe"
+            "value" : "Empfohlen. Wirkt wie das Original, bei einem Bruchteil der Größe."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recommended. Looks like the original, at a fraction of the size"
+            "value" : "Recommended. Looks like the original, at a fraction of the size."
           }
         }
       }
@@ -1061,13 +1044,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleinste Dateien, mit sichtbaren Artefakten"
+            "value" : "Die kleinsten Dateien. Artefakte werden sichtbar."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Smallest files, with visible artifacts"
+            "value" : "The smallest files. Artifacts become visible."
           }
         }
       }
@@ -1095,13 +1078,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle Details, größte Dateien"
+            "value" : "Alle Details bleiben erhalten. Die Dateien sind am größten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Every detail, largest files"
+            "value" : "Every detail is kept. Files are the largest."
           }
         }
       }
@@ -1129,13 +1112,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gut für Websites und Nachrichten"
+            "value" : "Kleinere Dateien für Websites und Nachrichten. Feine Details werden weicher."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Good for websites and messages"
+            "value" : "Smaller files for websites and messages. Fine details soften."
           }
         }
       }

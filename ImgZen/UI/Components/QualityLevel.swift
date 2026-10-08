@@ -18,7 +18,7 @@ enum QualityLevel: CaseIterable, Identifiable {
         }
     }
 
-    /// What the level is good for.
+    /// What the level is good for, shown when it's chosen.
     var subtitle: String {
         switch self {
         case .maximum: String(localized: "quality.max.subtitle")
@@ -63,10 +63,19 @@ struct CompressionQualitySlider: View {
         VStack(spacing: 6) {
             // No step: a stepped slider draws tick marks, which at 90 steps look like a second track.
             // The binding rounds to whole percents instead.
-            Slider(value: roundedQuality, in: Self.minimumQuality...1.0) {
-                Text(String(localized: "label.compressionQuality"))
+            HStack(spacing: 12) {
+                Slider(value: roundedQuality, in: Self.minimumQuality...1.0) {
+                    Text(String(localized: "label.compressionQuality"))
+                }
+                .accessibilityValue(quality.formatted(.percent.precision(.fractionLength(0))))
+
+                Text(quality.formatted(.percent.precision(.fractionLength(0))))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .contentTransition(.numericText(value: quality))
+                    .frame(minWidth: 44, alignment: .trailing)
+                    .accessibilityHidden(true)
             }
-            .accessibilityValue(quality.formatted(.percent.precision(.fractionLength(0))))
 
             HStack {
                 Text(String(localized: "quality.mostCompression"))

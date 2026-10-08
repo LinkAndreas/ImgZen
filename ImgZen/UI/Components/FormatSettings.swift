@@ -103,51 +103,68 @@ struct FormatSettingsForm: View {
         .sensoryFeedback(.selection, trigger: QualityLevel(quality: selectedImageCompressionQuality))
     }
 
-    /// The quality as named levels, like the formats above, each saying what it's good for;
-    /// Custom reveals a slider for an exact value.
+    /// A choice in the quality menu: a named level, or an exact value set with the slider.
+    private enum QualityChoice: Hashable {
+        case level(QualityLevel)
+        case custom
+    }
+
+    private var qualityChoice: Binding<QualityChoice> {
+        Binding(
+            get: {
+                guard !isCustomQuality, let level = QualityLevel(quality: selectedImageCompressionQuality) else {
+                    return .custom
+                }
+                return .level(level)
+            },
+            set: { choice in
+                switch choice {
+                case let .level(level):
+                    isCustomQuality = false
+                    selectedImageCompressionQuality = level.quality
+                case .custom:
+                    isCustomQuality = true
+                }
+            }
+        )
+    }
+
+    /// One row with a menu of the levels, as Settings does for secondary choices; the footer explains
+    /// only the chosen level, so the section stays short. Custom adds a slider for an exact value.
     private var qualitySection: some View {
         Section {
-            ForEach(QualityLevel.allCases) { level in
-                OptionRow(
-                    title: level.title,
-                    subtitle: level.subtitle,
-                    value: level.quality.formatted(.percent.precision(.fractionLength(0))),
-                    isSelected: !isCustomQuality && selectedImageCompressionQuality == level.quality,
-                    action: {
-                        isCustomQuality = false
-                        selectedImageCompressionQuality = level.quality
-                    }
-                )
-            }
+            Picker(String(localized: "label.compressionQuality"), selection: qualityChoice) {
+                ForEach(QualityLevel.allCases) { level in
+                    Text(level.title)
+                        .tag(QualityChoice.level(level))
+                }
 
-            OptionRow(
-                title: String(localized: "quality.custom"),
-                subtitle: String(localized: "quality.custom.subtitle"),
-                value: isCustomQuality
-                    ? selectedImageCompressionQuality.formatted(.percent.precision(.fractionLength(0)))
-                    : nil,
-                isSelected: isCustomQuality,
-                action: { isCustomQuality = true }
-            )
+                Divider()
+
+                Text(String(localized: "quality.custom"))
+                    .tag(QualityChoice.custom)
+            }
+            .pickerStyle(.menu)
 
             if isCustomQuality {
                 CompressionQualitySlider(quality: $selectedImageCompressionQuality)
             }
-        } header: {
-            Text(String(localized: "label.compressionQuality"))
         } footer: {
             Text(qualityFooter)
+                .contentTransition(.opacity)
         }
     }
 }
 
 extension FormatSettingsForm {
-    /// Explains the quality, or why it doesn't apply to a lossless format.
+    /// Explains the chosen level, a custom quality, or why the quality doesn't apply to a lossless format.
     private var qualityFooter: String {
-        if selectedImageFormat.isLossy {
-            String(localized: "label.compressionQuality.footer")
-        } else {
+        if selectedImageFormat.isLossless {
             String(format: String(localized: "label.compressionQuality.losslessFooter"), selectedImageFormat.title)
+        } else if !isCustomQuality, let level = QualityLevel(quality: selectedImageCompressionQuality) {
+            level.subtitle
+        } else {
+            String(localized: "label.compressionQuality.footer")
         }
     }
 }
@@ -188,8 +205,6 @@ struct OptionRow: View {
 
     let title: String
     let subtitle: String
-    /// A value shown before the checkmark, e.g. the percentage of a quality level.
-    var value: String? = nil
     let isSelected: Bool
     let action: () -> Void
 
@@ -207,13 +222,6 @@ struct OptionRow: View {
                 }
 
                 Spacer(minLength: 0)
-
-                if let value {
-                    Text(value)
-                        .foregroundStyle(isEnabled ? Color(.secondaryLabel) : Color(.tertiaryLabel))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                }
 
                 Image(systemName: "checkmark")
                     .font(.body.weight(.semibold))
