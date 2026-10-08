@@ -24,12 +24,24 @@ struct InputView: View {
     @State private var isFormatSheetPresented = false
     /// Whether the bars are vertical (iPhone Duo), where the format sheet opens at full height.
     @State private var usesVerticalBars = false
+    /// Whether the settings are shown next to or below the gallery in a split arrangement (iPhone Duo).
+    @State private var isSplitArrangementShown = false
 
     /// Regular width windows on iPad show the settings in an inspector column instead of the format button.
-    /// Only on iPad: iPhone Duo is regular width when unfolded too, but doesn't show the inspector as a column,
-    /// which would leave the settings out of reach, so iPhones always use the format button and its sheet.
     private var isInspectorLayout: Bool {
         horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    /// Regular width on iPhone, e.g. iPhone Duo unfolded, shows the settings in a split arrangement:
+    /// iPhone doesn't show the inspector as a column, but an arrangement keeps both views visible in
+    /// either orientation, beside each other when the display is wide and above each other when it's tall.
+    private var isSplitArrangementLayout: Bool {
+        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .phone
+    }
+
+    /// Whether the settings are already on screen, so the format button isn't needed.
+    private var areSettingsShownInline: Bool {
+        (isInspectorLayout && isInspectorVisible) || isSplitArrangementShown
     }
 
     /// The inspector shows once there are images to convert.
@@ -123,7 +135,7 @@ struct InputView: View {
         // reach of the right thumb; the format sits opposite it on iPhone (iPad shows it in the inspector).
         .toolbarPreferringVerticalBar {
             if !inputService.items.isEmpty {
-                if !isInspectorLayout {
+                if !areSettingsShownInline {
                     ToolbarItem(placement: .bottomBar) {
                         FormatToolbarButton(
                             selectedImageFormat: selectedImageFormat,
@@ -203,8 +215,8 @@ struct InputView: View {
     }
 
     var body: some View {
-        // The inspector is only attached on wide screens. On iPhone it would never show, but it still wraps
-        // the navigation stack's content in a container that disturbs the large title's collapse on scroll.
+        // The inspector is only attached on iPad. Where it doesn't show as a column, it still wraps the
+        // navigation stack's content in a container that disturbs the large title's collapse on scroll.
         if isInspectorLayout {
             content
                 .inspector(isPresented: .constant(isInspectorVisible)) {
@@ -214,8 +226,27 @@ struct InputView: View {
                     )
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
+        } else if isSplitArrangementLayout {
+            if #available(iOS 27.1, *) {
+                ArrangementView {
+                    content
+                        // The arrangement may show only one view when space runs short; the format button
+                        // then comes back, so the settings always stay within reach.
+                        .onSplitArrangementChange { isSplitArrangementShown = $0 }
+                } secondary: {
+                    // Shown even before images are added, so the format can be chosen first.
+                    FormatInspector(
+                        selectedImageFormat: $selectedImageFormat,
+                        selectedImageCompressionQuality: $selectedImageCompressionQuality
+                    )
+                }
+                .arrangementViewStyle(.split)
+            } else {
+                content
+            }
         } else {
             content
+                .onAppear { isSplitArrangementShown = false }
         }
     }
 }
