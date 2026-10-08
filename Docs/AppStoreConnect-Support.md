@@ -57,7 +57,8 @@ Create one subscription group, **Support**, containing both subscriptions.
   are what the Support screen shows.
 - **Price** — choose the price point in *Pricing*. The app uses `Product.displayPrice`, so the storefront's local
   currency is shown automatically.
-- **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer).
+- **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer):
+  [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png).
 - **Review notes**, e.g.: "Optional developer support. Purchases and subscriptions unlock no content or features;
   the entire app is free. Found under the ⋯ (More) button at the top of the main screen › Support the Developer."
 
