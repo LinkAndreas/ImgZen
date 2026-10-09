@@ -58,7 +58,9 @@ struct EmptyView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     EmptyView(addFromPhotosAction: {}, addFromFilesAction: {})
         .environment(AppIconStore.preview())
 }
+#endif
