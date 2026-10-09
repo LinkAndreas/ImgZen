@@ -131,7 +131,7 @@ final class SupportStore {
             try await service.restorePurchases()
             activeSubscription = await service.activeSubscription()
             hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
-            status = activeSubscription == nil ? .nothingToRestore : .restored
+            status = hasSupported ? .restored : .nothingToRestore
         } catch {
             status = .failed(.restoreFailed)
         }
@@ -160,9 +160,10 @@ final class SupportStore {
             status = nil
             celebrationCount += 1
         }
-        // Also one-time support given on another device, or approved later.
+        // Also one-time support given on another device, approved later, or refunded,
+        // so it's read again rather than assumed.
         if id.kind == .oneTime {
-            hasGivenOneTimeSupport = true
+            hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
         }
         activeSubscription = await service.activeSubscription()
     }

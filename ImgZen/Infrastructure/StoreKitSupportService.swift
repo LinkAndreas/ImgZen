@@ -59,9 +59,11 @@ final class StoreKitSupportService: SupportStoreService {
     func activeSubscription() async -> ActiveSupportSubscription? {
         // `currentEntitlements` only contains subscriptions that are still active.
         for await result in Transaction.currentEntitlements {
+            // After an upgrade, the plan it replaced stays among the entitlements, marked upgraded.
             guard case let .verified(transaction) = result,
                   transaction.productType == .autoRenewable,
                   transaction.revocationDate == nil,
+                  !transaction.isUpgraded,
                   let id = SupportProductID(rawValue: transaction.productID)
             else { continue }
 
@@ -151,8 +153,9 @@ final class StoreKitSupportService: SupportStoreService {
         }
         guard let statuses = try? await product?.subscription?.status else { return (true, nil) }
 
+        // The group's statuses can include other plans; read the one for this subscription.
         for status in statuses {
-            if case let .verified(renewalInfo) = status.renewalInfo {
+            if case let .verified(renewalInfo) = status.renewalInfo, renewalInfo.currentProductID == id.rawValue {
                 let next = renewalInfo.autoRenewPreference.flatMap(SupportProductID.init(rawValue:))
                 return (renewalInfo.willAutoRenew, next == id ? nil : next)
             }

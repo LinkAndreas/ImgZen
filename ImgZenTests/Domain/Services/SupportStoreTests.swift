@@ -89,6 +89,16 @@ struct SupportStoreTests {
         #expect(store.activeSubscription?.willAutoRenew == false)
     }
 
+    @Test("Restoring after one-time support reports it as restored")
+    func testRestoreOneTimeSupport() async {
+        let store = SupportStore(service: PreviewSupportService(hasTipped: true))
+
+        await store.restorePurchases()
+
+        #expect(store.status == .restored)
+        #expect(store.hasGivenOneTimeSupport)
+    }
+
     @Test("A purchase waiting for approval says so, without celebrating yet")
     func testPendingPurchase() async throws {
         let service = PreviewSupportService()
