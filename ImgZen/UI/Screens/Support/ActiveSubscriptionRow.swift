@@ -22,10 +22,18 @@ struct ActiveSubscriptionRow: View {
 }
 
 extension ActiveSupportSubscription {
-    /// When the subscription renews, or ends if it won't.
+    /// When the subscription renews, or ends if it won't or is switching to another plan.
     var renewalText: String? {
         guard let date = expirationDate?.formatted(date: .abbreviated, time: .omitted) else { return nil }
-        return String(format: String(localized: willAutoRenew ? "support.renewsOn" : "support.endsOn"), date)
+        let renews = willAutoRenew && nextProductID == nil
+        return String(format: String(localized: renews ? "support.renewsOn" : "support.endsOn"), date)
+    }
+
+    /// When the plan it's switching to starts.
+    var nextPlanText: String? {
+        guard nextProductID != nil, willAutoRenew,
+              let date = expirationDate?.formatted(date: .abbreviated, time: .omitted) else { return nil }
+        return String(format: String(localized: "support.startsOn"), date)
     }
 }
 

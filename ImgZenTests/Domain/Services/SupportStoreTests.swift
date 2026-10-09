@@ -63,6 +63,19 @@ struct SupportStoreTests {
         #expect(store.status == nil)
     }
 
+    @Test("Switching from yearly to monthly keeps yearly active and schedules monthly for when it ends")
+    func testSwitchToLowerPlan() async throws {
+        let store = SupportStore(service: PreviewSupportService())
+        await store.load()
+
+        await store.purchase(try #require(store.subscriptionOffers.first { $0.id == .yearly }))
+        await store.purchase(try #require(store.subscriptionOffers.first { $0.id == .monthly }))
+
+        #expect(store.activeSubscription?.productID == .yearly)
+        #expect(store.activeSubscription?.nextProductID == .monthly)
+        #expect(store.activeSubscription?.nextPlanText != nil)
+    }
+
     @Test("A purchase waiting for approval says so, without celebrating yet")
     func testPendingPurchase() async throws {
         let service = PreviewSupportService()

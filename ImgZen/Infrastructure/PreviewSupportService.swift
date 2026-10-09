@@ -31,11 +31,21 @@ final class PreviewSupportService: SupportStoreService {
             hasTipped = true
         }
         if purchaseOutcome == .purchased, id.kind == .subscription {
-            subscription = ActiveSupportSubscription(
-                productID: id,
-                expirationDate: Calendar.current.date(byAdding: .month, value: 1, to: .now),
-                willAutoRenew: true
-            )
+            if let current = subscription, current.productID == .yearly, id == .monthly {
+                // A switch to the lower plan, as StoreKit does it: from the end of the current period.
+                subscription = ActiveSupportSubscription(
+                    productID: current.productID,
+                    expirationDate: current.expirationDate,
+                    willAutoRenew: current.willAutoRenew,
+                    nextProductID: .monthly
+                )
+            } else {
+                subscription = ActiveSupportSubscription(
+                    productID: id,
+                    expirationDate: Calendar.current.date(byAdding: id == .yearly ? .year : .month, value: 1, to: .now),
+                    willAutoRenew: true
+                )
+            }
         }
         return purchaseOutcome
     }

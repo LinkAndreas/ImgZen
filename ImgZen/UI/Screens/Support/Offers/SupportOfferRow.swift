@@ -7,6 +7,10 @@ struct SupportOfferRow: View {
     let isActive: Bool
     /// For the active subscription: when it renews or ends.
     var activeDetail: String?
+    /// Whether the active subscription switches to this plan when its period ends.
+    var isNext = false
+    /// For that plan: when it starts.
+    var nextDetail: String?
     let isPurchasing: Bool
     let isDisabled: Bool
     let action: () -> Void
@@ -39,6 +43,11 @@ struct SupportOfferRow: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+                if isNext, let nextDetail {
+                    Text(verbatim: nextDetail)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .multilineTextAlignment(.leading)
@@ -51,6 +60,13 @@ struct SupportOfferRow: View {
                     }
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.green)
+                } else if isNext {
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock")
+                        Text(String(localized: "support.nextPlan"))
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 } else {
                     SupportPriceButton(
                         offer: offer,
