@@ -7,6 +7,7 @@ import SwiftUI
 struct SupportView: View {
     @Environment(SupportStore.self) private var store
     @State private var isManagingSubscription = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Form {
@@ -74,6 +75,14 @@ struct SupportView: View {
         }
         .sensoryFeedback(.success, trigger: store.celebrationCount)
         .manageSubscriptionsSheet(isPresented: $isManagingSubscription)
+        // Cancelling or switching plans there changes no transaction, so read the subscription again
+        // once the sheet closes, and when coming back from Settings, where it can be managed too.
+        .onChange(of: isManagingSubscription) { _, isManaging in
+            if !isManaging { Task { await store.refreshSubscription() } }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await store.refreshSubscription() } }
+        }
         .task { await store.load() }
     }
 }
