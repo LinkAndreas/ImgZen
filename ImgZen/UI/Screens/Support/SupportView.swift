@@ -7,7 +7,6 @@ import SwiftUI
 struct SupportView: View {
     @Environment(SupportStore.self) private var store
     @State private var isManagingSubscription = false
-    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Form {
@@ -22,6 +21,17 @@ struct SupportView: View {
             if let status = store.status {
                 Section {
                     SupportStatusRow(status: status)
+                }
+            }
+
+            // A renewal that couldn't be charged pauses recurring support until the payment is fixed.
+            if store.hasBillingIssue {
+                Section {
+                    Label(String(localized: "support.paymentProblem"), systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(.orange)
+                    Button(String(localized: "support.manageSubscription")) {
+                        isManagingSubscription = true
+                    }
                 }
             }
 
@@ -66,6 +76,7 @@ struct SupportView: View {
         // up, and the placeholders have the same layout, so swapping them in place is seamless.
         .animation(.default, value: store.status)
         .animation(.default, value: store.activeSubscription)
+        .animation(.default, value: store.hasBillingIssue)
         .scrollContentBackground(.hidden)
         .background { AppBackground() }
         // Every completed purchase — one-time or a new subscription — is celebrated.
@@ -76,12 +87,9 @@ struct SupportView: View {
         .sensoryFeedback(.success, trigger: store.celebrationCount)
         .manageSubscriptionsSheet(isPresented: $isManagingSubscription)
         // Cancelling or switching plans there changes no transaction, so read the subscription again
-        // once the sheet closes, and when coming back from Settings, where it can be managed too.
+        // once the sheet closes. Coming back from Settings, the app reads it again (`ImgZenApp`).
         .onChange(of: isManagingSubscription) { _, isManaging in
             if !isManaging { Task { await store.refreshSubscription() } }
-        }
-        .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await store.refreshSubscription() } }
         }
         .task { await store.load() }
     }

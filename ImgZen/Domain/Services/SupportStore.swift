@@ -30,6 +30,9 @@ final class SupportStore {
     private(set) var subscriptionOffers: [SupportOffer] = []
     private(set) var loadState: LoadState = .idle
     private(set) var activeSubscription: ActiveSupportSubscription?
+    /// Whether a renewal couldn't be charged and the App Store is still trying. Recurring support
+    /// is paused meanwhile — the subscription isn't active — until the payment method is updated.
+    private(set) var hasBillingIssue = false
     /// Whether this Apple Account has ever given one-time support, which the screen thanks
     /// them for. It unlocks nothing: one-time support is consumable.
     private(set) var hasGivenOneTimeSupport = false
@@ -43,6 +46,11 @@ final class SupportStore {
     @ObservationIgnored private let service: SupportStoreService
     @ObservationIgnored private var transactionObserver: Task<Void, Never>?
     @ObservationIgnored private var subscriptionObserver: Task<Void, Never>?
+    @ObservationIgnored private var expiryCheck: Task<Void, Never>?
+    /// The purchase waiting for approval, e.g. Ask to Buy.
+    @ObservationIgnored private var pendingProductID: SupportProductID?
+    /// Counts reads of the subscription, so one that finishes late can't overwrite a newer one.
+    @ObservationIgnored private var subscriptionReads = 0
 
     init(service: SupportStoreService) {
         self.service = service
@@ -56,10 +64,12 @@ final class SupportStore {
     /// Whether to thank the user for their support: one-time or recurring.
     var hasSupported: Bool { isSupporter || hasGivenOneTimeSupport }
 
-    /// Starts listening for transactions that complete outside the purchase flow.
-    /// Call once at launch so approvals and renewals are finished promptly.
+    /// Starts listening for transactions that complete outside the purchase flow, and for changes
+    /// to the subscription. Call once at launch so approvals and renewals are finished promptly.
     func startObservingTransactions() {
         guard transactionObserver == nil else { return }
+        // Read at launch, not only on the Support screen: the supporter icons depend on it.
+        Task { await refreshSubscription() }
         transactionObserver = service.observeTransactions { [weak self] id in
             await self?.transactionCompleted(id)
         }
@@ -72,12 +82,27 @@ final class SupportStore {
     /// Reads the subscription again, e.g. after it was cancelled or changed in the App Store's
     /// subscription management.
     func refreshSubscription() async {
-        activeSubscription = await service.activeSubscription()
+        let read = beginSubscriptionRead()
+        let subscription = await service.activeSubscription()
+        let hasBillingIssue = await service.hasBillingIssue()
+        apply(subscription, hasBillingIssue: hasBillingIssue, read: read)
+    }
+
+    /// Whether recurring support has ended for sure, so the supporter icon should go: no active
+    /// subscription, and the App Store confirms it expired or was refunded. A renewal that's late
+    /// or still being billed doesn't count, nor does being offline.
+    func hasRecurringSupportEnded() async -> Bool {
+        await refreshSubscription()
+        guard activeSubscription == nil else { return false }
+        return await service.hasSubscriptionEnded()
     }
 
     func load() async {
         guard loadState != .loading else { return }
         if loadState != .loaded { loadState = .loading }
+        // Each visit starts afresh. A purchase waiting for approval still completes and is celebrated,
+        // but its note doesn't linger: a declined request is never reported.
+        status = nil
 
         // Fetch everything first and apply it in one go, so the screen changes once
         // instead of reflowing when the subscription arrives after the offers.
@@ -87,10 +112,12 @@ final class SupportStore {
         } catch {
             offers = nil
         }
+        let read = beginSubscriptionRead()
         let subscription = await service.activeSubscription()
+        let hasBillingIssue = await service.hasBillingIssue()
         let hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
 
-        activeSubscription = subscription
+        apply(subscription, hasBillingIssue: hasBillingIssue, read: read)
         self.hasGivenOneTimeSupport = hasGivenOneTimeSupport
         if let offers {
             oneTimeOffers = offers.filter { $0.id.kind == .oneTime }
@@ -110,6 +137,7 @@ final class SupportStore {
             case .purchased:
                 await purchaseCompleted(offer.id)
             case .pending:
+                pendingProductID = offer.id
                 status = .pending
             case .cancelled:
                 break
@@ -129,7 +157,7 @@ final class SupportStore {
 
         do {
             try await service.restorePurchases()
-            activeSubscription = await service.activeSubscription()
+            await refreshSubscription()
             hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
             status = hasSupported ? .restored : .nothingToRestore
         } catch {
@@ -144,20 +172,26 @@ final class SupportStore {
     // MARK: Private
 
     private func purchaseCompleted(_ id: SupportProductID) async {
-        celebrationCount += 1
         switch id.kind {
         case .oneTime:
             hasGivenOneTimeSupport = true
+            celebrationCount += 1
         case .subscription:
+            let previous = activeSubscription?.productID
             // The subscription section shows its own thank-you.
-            activeSubscription = await service.activeSubscription()
+            await refreshSubscription()
+            // A switch to a lower plan only takes effect at renewal: nothing new to celebrate yet.
+            if previous == nil || activeSubscription?.productID != previous {
+                celebrationCount += 1
+            }
         }
     }
 
     private func transactionCompleted(_ id: SupportProductID) async {
-        // A purchase that was waiting for approval went through (renewals don't celebrate).
-        if status == .pending {
-            status = nil
+        // The purchase that was waiting for approval went through (renewals don't celebrate).
+        if id == pendingProductID {
+            pendingProductID = nil
+            if status == .pending { status = nil }
             celebrationCount += 1
         }
         // Also one-time support given on another device, approved later, or refunded,
@@ -165,6 +199,33 @@ final class SupportStore {
         if id.kind == .oneTime {
             hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
         }
-        activeSubscription = await service.activeSubscription()
+        await refreshSubscription()
+    }
+
+    private func beginSubscriptionRead() -> Int {
+        subscriptionReads += 1
+        return subscriptionReads
+    }
+
+    /// Applies a read of the subscription unless a newer one has started since — reads triggered
+    /// close together (the management sheet closing, a status update, coming back to the app)
+    /// can finish out of order.
+    private func apply(_ subscription: ActiveSupportSubscription?, hasBillingIssue: Bool, read: Int) {
+        guard read == subscriptionReads else { return }
+        activeSubscription = subscription
+        self.hasBillingIssue = hasBillingIssue
+        scheduleExpiryCheck()
+    }
+
+    /// Reads the subscription again just after it runs out, as nothing else reports it while the
+    /// app stays open; a renewal arrives as a transaction.
+    private func scheduleExpiryCheck() {
+        expiryCheck?.cancel()
+        guard let expiration = activeSubscription?.expirationDate else { return }
+        expiryCheck = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(max(0, expiration.timeIntervalSinceNow) + 2))
+            guard !Task.isCancelled else { return }
+            await self?.refreshSubscription()
+        }
     }
 }

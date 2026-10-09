@@ -140,8 +140,11 @@ background (`AppBackground`). Both come from `SupporterIcon+Palette.swift`, whic
 from the SVGs. The launch screen can't follow the icon, as the system draws it before the app runs, so it's the
 plain grouped background; the app starts on the same background and fades the wash in.
 
-The icons unlock while a subscription is active (`SupportStore.isSupporter`). When it ends, the icon someone chose
-stays — the app never changes it without being asked, which would show a system alert — but the picker locks again.
+The icons unlock while a subscription is active (`SupportStore.isSupporter`). When it ends, the picker locks again,
+and the app goes back to the classic icon and its colors (the system shows its "icon changed" alert). It only does so
+once the App Store confirms the subscription expired or was refunded: not while a renewal is late or being billed again,
+nor while offline. The app checks when it becomes active, when the subscription's status changes, and just after the
+subscription's expiration date.
 
 ## Changing prices later
 

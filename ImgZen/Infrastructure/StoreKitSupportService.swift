@@ -5,6 +5,13 @@ import StoreKit
 /// imports StoreKit's purchasing API.
 final class StoreKitSupportService: SupportStoreService {
     private var products: [SupportProductID: Product] = [:]
+    /// The last renewal state read for each plan, for when it can't be read again, e.g. offline.
+    private var renewalStates: [SupportProductID: RenewalState] = [:]
+
+    private struct RenewalState {
+        var willAutoRenew: Bool
+        var nextProductID: SupportProductID?
+    }
 
     func loadOffers() async throws -> [SupportOffer] {
         let storeProducts: [Product]
@@ -67,7 +74,7 @@ final class StoreKitSupportService: SupportStoreService {
                   let id = SupportProductID(rawValue: transaction.productID)
             else { continue }
 
-            let renewal = await renewalState(id)
+            let renewal = await renewalState(of: transaction, id: id)
             return ActiveSupportSubscription(
                 productID: id,
                 expirationDate: transaction.expirationDate,
@@ -76,6 +83,17 @@ final class StoreKitSupportService: SupportStoreService {
             )
         }
         return nil
+    }
+
+    func hasSubscriptionEnded() async -> Bool {
+        guard let statuses = await groupStatuses() else { return false }
+        // A renewal that's late or failing to bill isn't the end yet; only expired and refunded are.
+        return statuses.allSatisfy { $0.state == .expired || $0.state == .revoked }
+    }
+
+    func hasBillingIssue() async -> Bool {
+        guard let statuses = await groupStatuses() else { return false }
+        return statuses.contains { $0.state == .inBillingRetryPeriod || $0.state == .inGracePeriod }
     }
 
     func hasGivenOneTimeSupport() async -> Bool {
@@ -143,24 +161,34 @@ final class StoreKitSupportService: SupportStoreService {
         }
     }
 
-    /// Whether the subscription renews, and into which plan when it's switching to another one.
-    private func renewalState(_ id: SupportProductID) async -> (willAutoRenew: Bool, nextProductID: SupportProductID?) {
+    /// The statuses of the support subscription group, or `nil` when they can't be read.
+    private func groupStatuses() async -> [Product.SubscriptionInfo.Status]? {
+        // Both plans share a group, so either one's statuses cover the whole group.
         let product: Product?
-        if let cached = products[id] {
+        if let cached = products[.monthly] ?? products[.yearly] {
             product = cached
         } else {
-            product = try? await Product.products(for: [id.rawValue]).first
+            product = try? await Product.products(for: [SupportProductID.monthly.rawValue]).first
         }
-        guard let statuses = try? await product?.subscription?.status else { return (true, nil) }
+        guard let subscription = product?.subscription else { return nil }
+        return try? await subscription.status
+    }
 
-        // The group's statuses can include other plans; read the one for this subscription.
-        for status in statuses {
-            if case let .verified(renewalInfo) = status.renewalInfo, renewalInfo.currentProductID == id.rawValue {
-                let next = renewalInfo.autoRenewPreference.flatMap(SupportProductID.init(rawValue:))
-                return (renewalInfo.willAutoRenew, next == id ? nil : next)
-            }
+    /// Whether the subscription renews, and into which plan when it's switching to another one.
+    /// When it can't be read, the last state read stands rather than assuming it renews.
+    private func renewalState(of transaction: Transaction, id: SupportProductID) async -> RenewalState {
+        // The transaction's own status needs no product from the App Store, so it's read even offline.
+        if let status = await transaction.subscriptionStatus,
+           case let .verified(renewalInfo) = status.renewalInfo {
+            // A switch that's been cancelled too has nothing next: the subscription just ends.
+            let next = renewalInfo.willAutoRenew
+                ? renewalInfo.autoRenewPreference.flatMap(SupportProductID.init(rawValue:))
+                : nil
+            let state = RenewalState(willAutoRenew: renewalInfo.willAutoRenew, nextProductID: next == id ? nil : next)
+            renewalStates[id] = state
+            return state
         }
-        return (true, nil)
+        return renewalStates[id] ?? RenewalState(willAutoRenew: true, nextProductID: nil)
     }
 }
 

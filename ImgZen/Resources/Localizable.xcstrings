@@ -1545,6 +1545,23 @@
         }
       }
     },
+    "support.paymentProblem" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine wiederkehrende Unterstützung konnte nicht abgebucht werden. Aktualisiere deine Zahlungsmethode, damit sie weiterläuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your recurring support couldn’t be charged. Update your payment method to keep it going."
+          }
+        }
+      }
+    },
     "support.pickAnIcon" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -54,6 +54,12 @@ protocol SupportStoreService: AnyObject {
     func loadOffers() async throws -> [SupportOffer]
     func purchase(_ id: SupportProductID) async throws -> PurchaseOutcome
     func activeSubscription() async -> ActiveSupportSubscription?
+    /// Whether the App Store confirms that recurring support has ended: expired, refunded, or never
+    /// started. `false` when it can't tell, such as offline, so nothing is taken away by mistake.
+    func hasSubscriptionEnded() async -> Bool
+    /// Whether a renewal couldn't be charged and the App Store is still trying: the subscription
+    /// is in its billing retry or grace period until the payment method is updated.
+    func hasBillingIssue() async -> Bool
     /// Whether this Apple Account has ever given one-time support, on any device.
     func hasGivenOneTimeSupport() async -> Bool
     func restorePurchases() async throws
