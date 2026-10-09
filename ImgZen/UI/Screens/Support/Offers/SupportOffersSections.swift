@@ -1,8 +1,7 @@
 import SwiftUI
 
 /// The purchase options: placeholders while they load, a retry when they can't,
-/// and one-time and recurring support once they're in, with the supporter icons
-/// that recurring support unlocks.
+/// and one-time and recurring support once they're in.
 struct SupportOffersSections: View {
     @Environment(SupportStore.self) private var store
 
@@ -46,12 +45,6 @@ struct SupportOffersSections: View {
                 } footer: {
                     Text(String(localized: "support.recurringSupportIsOptional"))
                 }
-            }
-
-            // What recurring support unlocks, just below it. Supporters have the
-            // icons below their subscription at the top of the screen instead.
-            if !store.subscriptionOffers.isEmpty, !store.isSupporter {
-                SupporterIconsSection(isUnlocked: false)
             }
         }
     }

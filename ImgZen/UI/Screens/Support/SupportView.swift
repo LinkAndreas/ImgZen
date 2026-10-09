@@ -11,9 +11,12 @@ struct SupportView: View {
     var body: some View {
         Form {
             Section {
-                SupportHeader()
+                SupportHeader(hasSupported: store.hasSupported)
             }
             .listRowBackground(Color.clear)
+            // Closer to the navigation bar: the header opens the screen rather than being a card in it.
+            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 4, trailing: 16))
+            .listSectionMargins(.top, 0)
 
             if let subscription = store.activeSubscription {
                 Section {
@@ -22,10 +25,6 @@ struct SupportView: View {
                         isManagingSubscription = true
                     }
                 }
-
-                // Supporters find their icons right under their subscription; everyone
-                // else sees them locked below the subscriptions that unlock them.
-                SupporterIconsSection(isUnlocked: true)
             }
 
             if let status = store.status {
@@ -35,6 +34,12 @@ struct SupportView: View {
             }
 
             SupportOffersSections()
+
+            // What recurring support unlocks, right below it: locked until someone subscribes,
+            // and the picker once they have. Supporters keep it even when the offers can't load.
+            if store.isSupporter || !store.subscriptionOffers.isEmpty {
+                SupporterIconsSection(isUnlocked: store.isSupporter)
+            }
 
             Section {
                 Button {

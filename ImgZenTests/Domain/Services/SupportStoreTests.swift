@@ -124,6 +124,40 @@ struct SupportStoreTests {
         await store.purchase(try #require(store.subscriptionOffers.first))
         #expect(store.isSupporter)
     }
+
+    @Test("One-time support is remembered and thanked for, without unlocking the icons")
+    func testOneTimeSupportIsThanked() async throws {
+        let store = SupportStore(service: PreviewSupportService())
+        await store.load()
+        #expect(!store.hasSupported)
+
+        await store.purchase(try #require(store.oneTimeOffers.first))
+
+        #expect(store.hasGivenOneTimeSupport)
+        #expect(store.hasSupported)
+        #expect(!store.isSupporter)
+    }
+
+    @Test("One-time support given before, or on another device, is thanked for after loading")
+    func testPastOneTimeSupport() async {
+        let store = SupportStore(service: PreviewSupportService(hasTipped: true))
+
+        await store.load()
+
+        #expect(store.hasGivenOneTimeSupport)
+        #expect(store.hasSupported)
+    }
+
+    @Test("A subscriber is thanked for their support")
+    func testSubscriberIsThanked() async {
+        let subscription = ActiveSupportSubscription(productID: .monthly, expirationDate: nil, willAutoRenew: true)
+        let store = SupportStore(service: PreviewSupportService(subscription: subscription))
+
+        await store.load()
+
+        #expect(!store.hasGivenOneTimeSupport)
+        #expect(store.hasSupported)
+    }
 }
 
 @MainActor

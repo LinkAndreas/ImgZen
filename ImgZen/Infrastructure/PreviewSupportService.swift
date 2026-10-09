@@ -7,12 +7,18 @@ import Foundation
 final class PreviewSupportService: SupportStoreService {
     var offers: [SupportOffer]
     var subscription: ActiveSupportSubscription?
+    var hasTipped = false
     var purchaseOutcome: PurchaseOutcome = .purchased
     var failsToLoad = false
 
-    init(offers: [SupportOffer] = PreviewSupportService.sampleOffers, subscription: ActiveSupportSubscription? = nil) {
+    init(
+        offers: [SupportOffer] = PreviewSupportService.sampleOffers,
+        subscription: ActiveSupportSubscription? = nil,
+        hasTipped: Bool = false
+    ) {
         self.offers = offers
         self.subscription = subscription
+        self.hasTipped = hasTipped
     }
 
     func loadOffers() async throws -> [SupportOffer] {
@@ -21,6 +27,9 @@ final class PreviewSupportService: SupportStoreService {
     }
 
     func purchase(_ id: SupportProductID) async throws -> PurchaseOutcome {
+        if purchaseOutcome == .purchased, id.kind == .oneTime {
+            hasTipped = true
+        }
         if purchaseOutcome == .purchased, id.kind == .subscription {
             subscription = ActiveSupportSubscription(
                 productID: id,
@@ -33,6 +42,10 @@ final class PreviewSupportService: SupportStoreService {
 
     func activeSubscription() async -> ActiveSupportSubscription? {
         subscription
+    }
+
+    func hasGivenOneTimeSupport() async -> Bool {
+        hasTipped
     }
 
     func restorePurchases() async throws {}
