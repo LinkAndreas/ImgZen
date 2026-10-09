@@ -14,6 +14,9 @@ struct SupportView: View {
                 SupportHeader(hasSupported: store.hasSupported)
             }
             .listRowBackground(Color.clear)
+            // Closer to the navigation bar: the header opens the screen rather than being a card in it.
+            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 4, trailing: 16))
+            .listSectionMargins(.top, 0)
 
             if let subscription = store.activeSubscription {
                 Section {
