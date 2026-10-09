@@ -132,7 +132,7 @@ struct SupporterIconTests {
     @Test("Each icon maps to its alternate icon set and back, the classic icon to the primary one")
     func testAlternateIconNames() {
         #expect(SupporterIcon.classic.alternateIconName == nil)
-        #expect(SupporterIcon.forest.alternateIconName == "AppIcon-Forest")
+        #expect(SupporterIcon.amethyst.alternateIconName == "AppIcon-Amethyst")
         for icon in SupporterIcon.allCases {
             #expect(SupporterIcon(alternateIconName: icon.alternateIconName) == icon)
         }

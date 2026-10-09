@@ -7,11 +7,18 @@ import Foundation
 /// app icon sets can't be loaded as images.
 enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
     case classic = "Default"
-    case midnight = "Midnight"
-    case forest = "Forest"
-    case rose = "Rose"
-    case ocean = "Ocean"
-    case graphite = "Graphite"
+    case amethyst = "Amethyst"
+    case aurora = "Aurora"
+    case blush = "Blush"
+    case cyberLime = "CyberLime"
+    case dune = "Dune"
+    case ember = "Ember"
+    case evergreen = "Evergreen"
+    case glacier = "Glacier"
+    case lagoon = "Lagoon"
+    case matcha = "Matcha"
+    case midnightGold = "MidnightGold"
+    case noir = "Noir"
 
     var id: String { rawValue }
 
@@ -30,11 +37,18 @@ enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .classic: String(localized: "support.iconClassic")
-        case .midnight: String(localized: "support.iconMidnight")
-        case .forest: String(localized: "support.iconForest")
-        case .rose: String(localized: "support.iconRose")
-        case .ocean: String(localized: "support.iconOcean")
-        case .graphite: String(localized: "support.iconGraphite")
+        case .amethyst: String(localized: "support.iconAmethyst")
+        case .aurora: String(localized: "support.iconAurora")
+        case .blush: String(localized: "support.iconBlush")
+        case .cyberLime: String(localized: "support.iconCyberLime")
+        case .dune: String(localized: "support.iconDune")
+        case .ember: String(localized: "support.iconEmber")
+        case .evergreen: String(localized: "support.iconEvergreen")
+        case .glacier: String(localized: "support.iconGlacier")
+        case .lagoon: String(localized: "support.iconLagoon")
+        case .matcha: String(localized: "support.iconMatcha")
+        case .midnightGold: String(localized: "support.iconMidnightGold")
+        case .noir: String(localized: "support.iconNoir")
         }
     }
 }

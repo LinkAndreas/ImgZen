@@ -1,7 +1,7 @@
 # Support the Developer — App Store Connect setup
 
 ImgZen's Support the Developer feature is **optional support**. No feature is ever locked; the app is fully usable
-for free. Recurring support unlocks the **supporter app icons** (Midnight, Forest, Rose, Ocean, Graphite) as a
+for free. Recurring support unlocks the **supporter app icons** (Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir) as a
 thank-you — App Review requires a subscription to say what the user receives (Guideline 3.1.2(c)). One-time support
 unlocks nothing. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
 test it.
@@ -118,12 +118,16 @@ build).
 
 ## Supporter app icons
 
-![Classic, Midnight, Forest, Rose, Ocean, Graphite — light and dark](Images/SupporterIcons.png)
+![Classic, Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir — light and dark](Images/SupporterIcons.png)
 
-Each icon is an alternate app icon set, `AppIcon-<Name>` in `Assets.xcassets`, with light, dark and tinted
-variants, plus a 256 px `IconPreview-<Name>` image for the picker (app icon sets can't be loaded as images). The
+Each icon is an Icon Composer document, `AppIcon-<Name>.icon` in `ImgZen/Resources/AppIcons` (the primary icon is
+`AppIcon.icon`), with light and dark appearances; the tinted and clear appearances are derived by the system. Every
+element of the source SVGs in `AppIcon/` (`app_icon_<light|dark>.svg`, and `app_icon_variants/` for the supporter
+icons) is its own layer, in the SVGs' paint order; the dark-only glows are hidden in the light appearance. After changing
+the SVGs, run `python3 AppIcon/make_icons.py` to regenerate the `.icon` bundles and the previews. A vector
+`IconPreview-<Name>` image in `Assets.xcassets` is the picker's preview (app icons can't be loaded as images). The
 build setting *Include All App Icon Assets* (`ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS`) adds them to the
-app. `SupporterIcon` lists them; `SupporterIconsSection` is the picker.
+app as alternate icons. `SupporterIcon` lists them; `SupporterIconsSection` is the picker.
 
 The icons unlock while a subscription is active (`SupportStore.isSupporter`). When it ends, the icon someone chose
 stays — the app never changes it without being asked, which would show a system alert — but the picker locks again.
