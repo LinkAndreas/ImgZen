@@ -1658,13 +1658,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regelmäßige Unterstützung schaltet diese fünf App-Icons frei, solange sie aktiv ist."
+            "value" : "Regelmäßige Unterstützung schaltet diese App-Icons frei, solange sie aktiv ist."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recurring support unlocks these five app icons for as long as it’s active."
+            "value" : "Recurring support unlocks these app icons for as long as it’s active."
           }
         }
       }

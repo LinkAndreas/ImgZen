@@ -49,7 +49,7 @@ Create one subscription group, **Support**, containing both subscriptions.
 | `de.linkandreas.imgzen.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Descriptions (both subscriptions, max. 55 characters): "Unlocks 5 supporter app icons." / "Schaltet 5
+- Descriptions (both subscriptions, max. 55 characters): "Unlocks 7 supporter app icons." / "Schaltet 7
   Supporter-App-Icons frei." Don't describe them as "ongoing support" — App Review rejected that as not saying what
   the user receives.
 - No free trials or introductory offers — this is support, not access.
@@ -65,7 +65,7 @@ Create one subscription group, **Support**, containing both subscriptions.
 - **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer):
   [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png).
 - **Review notes**, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly
-  Support subscriptions unlock five alternative app icons, shown locked in the Supporter App Icons section of the
+  Support subscriptions unlock seven alternative app icons, shown locked in the Supporter App Icons section of the
   Support screen and selectable there once subscribed. One-time support unlocks nothing. Found under the ⋯ (More)
   button at the top of the main screen › Support the Developer."
 
@@ -75,7 +75,7 @@ version under *In-App Purchases and Subscriptions* before submitting it for revi
 ## App Review requirements covered by the app
 
 - Localized price and billing period, taken from StoreKit, next to each option.
-- What a subscription includes: the Supporter App Icons section, with the icons shown locked, sits right above the
+- What a subscription includes: the Supporter App Icons section, with the icons shown locked, sits right below the
   Recurring Support section, and its footer says recurring support unlocks them.
 - A clear statement that subscriptions renew automatically, how to cancel, and what they unlock (footer of the
   Recurring Support section).
