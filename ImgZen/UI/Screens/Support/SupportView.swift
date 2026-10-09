@@ -2,7 +2,8 @@ import StoreKit
 import SwiftUI
 
 /// Support the Developer: a quiet, optional way to pay for ImgZen's development.
-/// Nothing here unlocks features — the app stays fully free.
+/// No feature is locked — the app stays fully free. Recurring support unlocks the
+/// supporter app icons as a thank-you.
 struct SupportView: View {
     @Environment(SupportStore.self) private var store
     @State private var isManagingSubscription = false
@@ -21,6 +22,10 @@ struct SupportView: View {
                         isManagingSubscription = true
                     }
                 }
+
+                // Supporters find their icons right under their thank-you; everyone
+                // else sees them locked next to the subscriptions that unlock them.
+                SupporterIconsSection(isUnlocked: true)
             }
 
             if let status = store.status {

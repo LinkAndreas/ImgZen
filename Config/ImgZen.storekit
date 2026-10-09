@@ -122,12 +122,12 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Support ImgZen once a year.",
+              "description": "Unlocks 5 supporter app icons.",
               "displayName": "Yearly Support",
               "locale": "en_US"
             },
             {
-              "description": "Unterstütze ImgZen einmal im Jahr.",
+              "description": "Schaltet 5 Supporter-App-Icons frei.",
               "displayName": "Jährliche Unterstützung",
               "locale": "de"
             }
@@ -158,12 +158,12 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Support ImgZen every month.",
+              "description": "Unlocks 5 supporter app icons.",
               "displayName": "Monthly Support",
               "locale": "en_US"
             },
             {
-              "description": "Unterstütze ImgZen jeden Monat.",
+              "description": "Schaltet 5 Supporter-App-Icons frei.",
               "displayName": "Monatliche Unterstützung",
               "locale": "de"
             }

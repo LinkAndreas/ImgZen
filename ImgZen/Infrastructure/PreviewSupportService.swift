@@ -47,8 +47,8 @@ final class PreviewSupportService: SupportStoreService {
         SupportOffer(id: .small, displayName: "Small Support", description: "Buy the developer a coffee.", displayPrice: "€2.99", billingPeriod: nil),
         SupportOffer(id: .medium, displayName: "Support", description: "Help keep ImgZen growing.", displayPrice: "€5.99", billingPeriod: nil),
         SupportOffer(id: .generous, displayName: "Generous Support", description: "A big thank you.", displayPrice: "€9.99", billingPeriod: nil),
-        SupportOffer(id: .monthly, displayName: "Monthly Support", description: "Ongoing support, every month.", displayPrice: "€1.99", billingPeriod: .month),
-        SupportOffer(id: .yearly, displayName: "Yearly Support", description: "Ongoing support, every year.", displayPrice: "€14.99", billingPeriod: .year),
+        SupportOffer(id: .monthly, displayName: "Monthly Support", description: "Unlocks the supporter app icons.", displayPrice: "€1.99", billingPeriod: .month),
+        SupportOffer(id: .yearly, displayName: "Yearly Support", description: "Unlocks the supporter app icons.", displayPrice: "€14.99", billingPeriod: .year),
     ]
 }
 #endif
