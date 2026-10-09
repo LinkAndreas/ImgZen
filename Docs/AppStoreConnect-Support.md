@@ -1,7 +1,7 @@
 # Support the Developer — App Store Connect setup
 
 ImgZen's Support the Developer feature is **optional support**. No feature is ever locked; the app is fully usable
-for free. Recurring support unlocks the **supporter app icons** (Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir) as a
+for free. Recurring support unlocks the **supporter app icons** (Amethyst, Blush, Ember, Glacier, Lagoon, Midnight Gold, Noir) as a
 thank-you — App Review requires a subscription to say what the user receives (Guideline 3.1.2(c)). One-time support
 unlocks nothing. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
 test it.
@@ -49,7 +49,7 @@ Create one subscription group, **Support**, containing both subscriptions.
 | `de.linkandreas.imgzen.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Descriptions (both subscriptions, max. 55 characters): "Unlocks 5 supporter app icons." / "Schaltet 5
+- Descriptions (both subscriptions, max. 55 characters): "Unlocks 7 supporter app icons." / "Schaltet 7
   Supporter-App-Icons frei." Don't describe them as "ongoing support" — App Review rejected that as not saying what
   the user receives.
 - No free trials or introductory offers — this is support, not access.
@@ -65,7 +65,7 @@ Create one subscription group, **Support**, containing both subscriptions.
 - **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer):
   [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png).
 - **Review notes**, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly
-  Support subscriptions unlock five alternative app icons, shown locked in the Supporter App Icons section of the
+  Support subscriptions unlock seven alternative app icons, shown locked in the Supporter App Icons section of the
   Support screen and selectable there once subscribed. One-time support unlocks nothing. Found under the ⋯ (More)
   button at the top of the main screen › Support the Developer."
 
@@ -75,7 +75,7 @@ version under *In-App Purchases and Subscriptions* before submitting it for revi
 ## App Review requirements covered by the app
 
 - Localized price and billing period, taken from StoreKit, next to each option.
-- What a subscription includes: the Supporter App Icons section, with the icons shown locked, sits right above the
+- What a subscription includes: the Supporter App Icons section, with the icons shown locked, sits right below the
   Recurring Support section, and its footer says recurring support unlocks them.
 - A clear statement that subscriptions renew automatically, how to cancel, and what they unlock (footer of the
   Recurring Support section).
@@ -118,7 +118,7 @@ build).
 
 ## Supporter app icons
 
-![Classic, Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir — light and dark](Images/SupporterIcons.png)
+![Classic, Amethyst, Blush, Ember, Glacier, Lagoon, Midnight Gold, Noir — light and dark](Images/SupporterIcons.png)
 
 Each icon is an Icon Composer document, `AppIcon-<Name>.icon` in `ImgZen/Resources/AppIcons` (the primary icon is
 `AppIcon.icon`), with light and dark appearances; the tinted and clear appearances are derived by the system. Every

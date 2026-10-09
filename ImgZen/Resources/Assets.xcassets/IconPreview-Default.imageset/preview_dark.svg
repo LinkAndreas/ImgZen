@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="96" height="96">
 <defs>
 <linearGradient id="g1" gradientUnits="userSpaceOnUse" x1="333.8" y1="-107.8" x2="682.1" y2="688.3"><stop offset="0.000" stop-color="#2939b8"/><stop offset="0.250" stop-color="#4546ca"/><stop offset="0.500" stop-color="#8149bc"/><stop offset="0.750" stop-color="#b253be"/><stop offset="1.000" stop-color="#ad72d1"/></linearGradient>
 <linearGradient id="g2" gradientUnits="userSpaceOnUse" x1="220.8" y1="846.5" x2="261.2" y2="249.6"><stop offset="0.000" stop-color="#1d0763"/><stop offset="0.250" stop-color="#1b0e91"/><stop offset="0.500" stop-color="#2f28c9"/><stop offset="0.750" stop-color="#3d62ef"/><stop offset="1.000" stop-color="#59c1ff"/></linearGradient>

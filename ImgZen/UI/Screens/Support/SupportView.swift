@@ -23,8 +23,8 @@ struct SupportView: View {
                     }
                 }
 
-                // Supporters find their icons right under their thank-you; everyone
-                // else sees them locked next to the subscriptions that unlock them.
+                // Supporters find their icons right under their subscription; everyone
+                // else sees them locked below the subscriptions that unlock them.
                 SupporterIconsSection(isUnlocked: true)
             }
 
