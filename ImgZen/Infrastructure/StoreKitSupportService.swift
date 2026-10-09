@@ -74,6 +74,20 @@ final class StoreKitSupportService: SupportStoreService {
         return nil
     }
 
+    func hasGivenOneTimeSupport() async -> Bool {
+        // One-time support is consumable, and finished consumables are only in the history
+        // because Info.plist sets SKIncludeConsumableInAppPurchaseHistory.
+        for await result in Transaction.all {
+            guard case let .verified(transaction) = result,
+                  transaction.revocationDate == nil,
+                  let id = SupportProductID(rawValue: transaction.productID),
+                  id.kind == .oneTime
+            else { continue }
+            return true
+        }
+        return false
+    }
+
     func restorePurchases() async throws {
         do {
             try await AppStore.sync()

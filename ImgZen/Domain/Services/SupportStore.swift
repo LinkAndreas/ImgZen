@@ -5,7 +5,8 @@ import Observation
 /// what's in progress, the active subscription, and the last outcome to report.
 ///
 /// No feature is ever locked; recurring support unlocks only the supporter app
-/// icons, as a thank-you. Entitlements are always read from the App Store.
+/// icons, as a thank-you, and anyone who has supported is thanked on the screen.
+/// Entitlements and past support are always read from the App Store.
 @Observable
 final class SupportStore {
     enum LoadState: Equatable {
@@ -29,6 +30,9 @@ final class SupportStore {
     private(set) var subscriptionOffers: [SupportOffer] = []
     private(set) var loadState: LoadState = .idle
     private(set) var activeSubscription: ActiveSupportSubscription?
+    /// Whether this Apple Account has ever given one-time support, which the screen thanks
+    /// them for. It unlocks nothing: one-time support is consumable.
+    private(set) var hasGivenOneTimeSupport = false
     private(set) var purchasingProductID: SupportProductID?
     private(set) var isRestoring = false
     private(set) var status: Status?
@@ -47,6 +51,9 @@ final class SupportStore {
 
     /// Whether recurring support is active, which unlocks the supporter app icons.
     var isSupporter: Bool { activeSubscription != nil }
+
+    /// Whether to thank the user for their support: one-time or recurring.
+    var hasSupported: Bool { isSupporter || hasGivenOneTimeSupport }
 
     /// Starts listening for transactions that complete outside the purchase flow.
     /// Call once at launch so approvals and renewals are finished promptly.
@@ -70,8 +77,10 @@ final class SupportStore {
             offers = nil
         }
         let subscription = await service.activeSubscription()
+        let hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
 
         activeSubscription = subscription
+        self.hasGivenOneTimeSupport = hasGivenOneTimeSupport
         if let offers {
             oneTimeOffers = offers.filter { $0.id.kind == .oneTime }
             subscriptionOffers = offers.filter { $0.id.kind == .subscription }
@@ -110,6 +119,7 @@ final class SupportStore {
         do {
             try await service.restorePurchases()
             activeSubscription = await service.activeSubscription()
+            hasGivenOneTimeSupport = await service.hasGivenOneTimeSupport()
             status = activeSubscription == nil ? .nothingToRestore : .restored
         } catch {
             status = .failed(.restoreFailed)
@@ -127,6 +137,7 @@ final class SupportStore {
         switch id.kind {
         case .oneTime:
             status = .thankYou
+            hasGivenOneTimeSupport = true
         case .subscription:
             // The subscription section shows its own thank-you.
             activeSubscription = await service.activeSubscription()
@@ -138,6 +149,10 @@ final class SupportStore {
         if status == .pending {
             status = id.kind == .oneTime ? .thankYou : nil
             celebrationCount += 1
+        }
+        // Also one-time support given on another device, or approved later.
+        if id.kind == .oneTime {
+            hasGivenOneTimeSupport = true
         }
         activeSubscription = await service.activeSubscription()
     }

@@ -1720,6 +1720,23 @@
         }
       }
     },
+    "support.supporterBadge" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supporter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supporter"
+          }
+        }
+      }
+    },
     "support.supportImgZen" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1822,6 +1839,23 @@
         }
       }
     },
+    "support.thankYouTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank You!"
+          }
+        }
+      }
+    },
     "support.thePurchaseCouldnt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1886,6 +1920,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your purchase is waiting for approval. It will complete automatically once approved."
+          }
+        }
+      }
+    },
+    "support.yourSupportKeepsImgZenFree" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Unterstützung hilft, ImgZen für alle kostenlos und werbefrei zu halten, und macht neue Funktionen möglich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your support helps keep ImgZen free and ad-free for everyone, and makes new features possible."
           }
         }
       }

@@ -11,7 +11,7 @@ struct SupportView: View {
     var body: some View {
         Form {
             Section {
-                SupportHeader()
+                SupportHeader(hasSupported: store.hasSupported)
             }
             .listRowBackground(Color.clear)
 
