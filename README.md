@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="ImgZen/Resources/app_icon_rounded_light.png" width="128" height="128" alt="ImgZen app icon">
+  <img src="AppIcon/app_icon_rounded_light.svg" width="128" height="128" alt="ImgZen app icon">
 </p>
 
 <h1 align="center">ImgZen</h1>
