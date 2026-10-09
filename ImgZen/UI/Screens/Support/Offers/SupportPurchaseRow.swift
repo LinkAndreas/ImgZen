@@ -14,6 +14,8 @@ struct SupportPurchaseRow: View {
             isProminent: isProminent,
             isActive: store.activeSubscription?.productID == offer.id,
             activeDetail: store.activeSubscription?.renewalText,
+            isNext: store.activeSubscription?.nextProductID == offer.id,
+            nextDetail: store.activeSubscription?.nextPlanText,
             isPurchasing: store.purchasingProductID == offer.id,
             isDisabled: store.isBusy
         ) {

@@ -22,6 +22,9 @@ struct ActiveSupportSubscription: Equatable, Sendable {
     let productID: SupportProductID
     let expirationDate: Date?
     let willAutoRenew: Bool
+    /// The plan it renews into when that's a different one: a switch to a lower plan, such as
+    /// yearly to monthly, takes effect only when the current period ends.
+    var nextProductID: SupportProductID? = nil
 }
 
 enum PurchaseOutcome: Equatable, Sendable {
