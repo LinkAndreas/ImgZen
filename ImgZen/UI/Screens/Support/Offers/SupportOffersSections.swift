@@ -3,6 +3,9 @@ import SwiftUI
 /// The purchase options: placeholders while they load, a retry when they can't,
 /// and one-time and recurring support once they're in.
 struct SupportOffersSections: View {
+    /// Opens the App Store's subscription management, offered with the active subscription.
+    var manageSubscription: () -> Void = {}
+
     @Environment(SupportStore.self) private var store
 
     var body: some View {
@@ -39,6 +42,9 @@ struct SupportOffersSections: View {
                 Section {
                     ForEach(store.subscriptionOffers) { offer in
                         SupportPurchaseRow(offer: offer, isProminent: false)
+                    }
+                    if store.isSupporter {
+                        Button(String(localized: "support.manageSubscription"), action: manageSubscription)
                     }
                 } header: {
                     Text(String(localized: "support.recurringSupport"))

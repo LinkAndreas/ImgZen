@@ -5,6 +5,8 @@ struct SupportOfferRow: View {
     /// One-time support gets filled price buttons; recurring support is quieter.
     let isProminent: Bool
     let isActive: Bool
+    /// For the active subscription: when it renews or ends.
+    var activeDetail: String?
     let isPurchasing: Bool
     let isDisabled: Bool
     let action: () -> Void
@@ -29,6 +31,11 @@ struct SupportOfferRow: View {
                 // one line and the same size.
                 if let period = offer.billingPeriod {
                     Text(verbatim: period.billingText)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                if isActive, let activeDetail {
+                    Text(verbatim: activeDetail)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -72,6 +79,7 @@ struct SupportOfferRow: View {
             offer: PreviewSupportService.sampleOffers[3],
             isProminent: false,
             isActive: true,
+            activeDetail: "Renews on Nov 9, 2026",
             isPurchasing: false,
             isDisabled: false
         ) {}

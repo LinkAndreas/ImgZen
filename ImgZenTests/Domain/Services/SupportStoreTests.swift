@@ -37,7 +37,7 @@ struct SupportStoreTests {
         #expect(store.loadState == .unavailable)
     }
 
-    @Test("One-time support says thank you and celebrates")
+    @Test("One-time support celebrates, with nothing left to report")
     func testOneTimePurchase() async throws {
         let store = SupportStore(service: PreviewSupportService())
         await store.load()
@@ -45,7 +45,7 @@ struct SupportStoreTests {
 
         await store.purchase(offer)
 
-        #expect(store.status == .thankYou)
+        #expect(store.status == nil)
         #expect(store.celebrationCount == 1)
         #expect(store.purchasingProductID == nil)
     }

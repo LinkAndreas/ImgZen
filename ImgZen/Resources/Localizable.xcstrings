@@ -1545,6 +1545,23 @@
         }
       }
     },
+    "support.pickAnIcon" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle das Icon, mit dem ImgZen auf deinem Home-Bildschirm erscheint."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick the icon ImgZen shows on your Home Screen."
+          }
+        }
+      }
+    },
     "support.privacyPolicy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1609,6 +1626,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recurring Support"
+          }
+        }
+      }
+    },
+    "support.recurringSupportIsActive" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regelmäßige Unterstützung ist aktiv"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recurring support is active"
           }
         }
       }
@@ -1762,57 +1796,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terms of Use"
-          }
-        }
-      }
-    },
-    "support.thanksPickAnIcon" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Danke für deine Unterstützung! Wähle das Icon, mit dem ImgZen auf deinem Home-Bildschirm erscheint."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thanks for your support! Pick the icon ImgZen shows on your Home Screen."
-          }
-        }
-      }
-    },
-    "support.thankYou" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Danke für deine Unterstützung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thank you for your support"
-          }
-        }
-      }
-    },
-    "support.thankYouForSupporting" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Danke, dass du die Weiterentwicklung der App unterstützt"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thank you for supporting the continued development of the app"
           }
         }
       }
