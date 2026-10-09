@@ -55,9 +55,11 @@ struct ImageGallery: View {
         .contentMargins(.vertical, 12, for: .scrollContent)
         // Content that fits on screen doesn't bounce, so an empty or short gallery doesn't drag the bars around.
         .scrollBounceBehavior(.basedOnSize)
-        // The grouped background goes on the navigation container rather than the scroll view,
+        // The background goes on the navigation container rather than the scroll view,
         // so it doesn't interfere with the navigation bar's scroll edge effect.
-        .containerBackground(Color(.systemGroupedBackground), for: .navigation)
+        .containerBackground(for: .navigation) {
+            AppBackground()
+        }
     }
 }
 
@@ -68,6 +70,8 @@ struct ImageGallery: View {
 /// doesn't queue up work for cells that are long gone. Selection is drawn here rather than
 /// in the loaded content, so it updates immediately, even while the image is loading.
 private struct GalleryTile: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     let item: ImageGallery.Item
 
     @State private var preview: ImagePreview?
@@ -172,7 +176,7 @@ private struct GalleryTile: View {
         }
         .overlay {
             Self.shape.strokeBorder(
-                item.isSelected == true ? Color.accentColor : Color.secondary.opacity(0.2),
+                item.isSelected == true ? accentColor : Color.secondary.opacity(0.2),
                 lineWidth: item.isSelected == true ? 3 : 0.5
             )
         }
@@ -189,13 +193,15 @@ private struct GalleryTile: View {
 
 /// The checkmark badge showing whether an image is selected.
 private struct SelectionIndicator: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     let isSelected: Bool
 
     var body: some View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .font(.title2)
             .symbolRenderingMode(.palette)
-            .foregroundStyle(.white, isSelected ? Color.accentColor : Color.black.opacity(0.3))
+            .foregroundStyle(.white, isSelected ? accentColor : Color.black.opacity(0.3))
             .background(Circle().fill(isSelected ? Color.white : Color.black.opacity(0.2)).padding(2))
             .contentTransition(.symbolEffect(.replace))
             .accessibilityHidden(true)

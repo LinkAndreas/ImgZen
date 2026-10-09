@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct OnboardingPageView: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     let page: OnboardingPage
     /// Whether the page is the one currently shown, used to animate its symbol when it appears.
     var isActive: Bool = true
@@ -17,7 +19,7 @@ struct OnboardingPageView: View {
                     Circle()
                         .fill(
                             LinearGradient(
-                                colors: [Color.accentColor.opacity(0.18), Color.purple.opacity(0.12)],
+                                colors: [accentColor.opacity(0.18), accentColor.opacity(0.08)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )

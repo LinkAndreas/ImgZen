@@ -1,6 +1,5 @@
 import os
 import SwiftUI
-import UIKit
 
 /// The supporter app icons. Supporters pick the icon ImgZen shows on the Home Screen;
 /// everyone else sees the same icons locked, as a preview of what recurring support
@@ -8,7 +7,7 @@ import UIKit
 struct SupporterIconsSection: View {
     let isUnlocked: Bool
 
-    @State private var current = SupporterIcon(alternateIconName: UIApplication.shared.alternateIconName)
+    @Environment(AppIconStore.self) private var iconStore
     /// Goes up with every tap on a locked icon, to bounce its lock.
     @State private var lockedTapCount = 0
 
@@ -19,7 +18,7 @@ struct SupporterIconsSection: View {
                     ForEach(SupporterIcon.allCases) { icon in
                         SupporterIconTile(
                             icon: icon,
-                            isSelected: icon == current,
+                            isSelected: icon == iconStore.current,
                             isLocked: !isUnlocked && icon != .classic,
                             lockedTapCount: lockedTapCount
                         ) {
@@ -30,7 +29,7 @@ struct SupporterIconsSection: View {
                 .padding(.vertical, 6)
             }
             .scrollIndicators(.hidden)
-            .sensoryFeedback(.selection, trigger: current)
+            .sensoryFeedback(.selection, trigger: iconStore.current)
             .sensoryFeedback(.impact(weight: .light), trigger: lockedTapCount)
         } header: {
             Text(String(localized: "support.supporterAppIcons"))
@@ -44,16 +43,12 @@ struct SupporterIconsSection: View {
             lockedTapCount += 1
             return
         }
-        guard icon != current else { return }
 
-        let previous = current
-        current = icon
         Task {
             do {
-                try await UIApplication.shared.setAlternateIconName(icon.alternateIconName)
+                try await iconStore.select(icon)
             } catch {
                 logger.error("Failed to set the app icon to \(icon.rawValue): \(error)")
-                current = previous
             }
         }
     }
@@ -118,11 +113,13 @@ private struct SupporterIconTile: View {
     Form {
         SupporterIconsSection(isUnlocked: false)
     }
+    .environment(AppIconStore.preview())
 }
 
 #Preview("Unlocked") {
     Form {
         SupporterIconsSection(isUnlocked: true)
     }
+    .environment(AppIconStore.preview())
 }
 #endif

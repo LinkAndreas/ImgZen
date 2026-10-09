@@ -2,6 +2,8 @@ import SwiftUI
 
 /// A full-screen progress bar overlay with title, subtitle, and cancel option.
 public struct ProgressBar: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     /// The state of the progress indicator.
     public enum State: Equatable {
         case indeterminate
@@ -88,7 +90,7 @@ public struct ProgressBar: View {
                 Image(systemName: isComplete ? "checkmark.circle.fill" : "photo.stack")
                     .font(.system(size: 52, weight: .medium))
                     .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(isComplete ? Color.green : Color.accentColor)
+                    .foregroundStyle(isComplete ? Color.green : accentColor)
                     .contentTransition(.symbolEffect(.replace))
                     .symbolEffect(.pulse, isActive: !isComplete)
                     .frame(height: 60)
@@ -112,7 +114,7 @@ public struct ProgressBar: View {
                 VStack(spacing: 10) {
                     ProgressView(value: fraction)
                         .progressViewStyle(.linear)
-                        .tint(isComplete ? .green : .accentColor)
+                        .tint(isComplete ? .green : accentColor)
                         .scaleEffect(x: 1, y: 1.5)
 
                     Text(detail)

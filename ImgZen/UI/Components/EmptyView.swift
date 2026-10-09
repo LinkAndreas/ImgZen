@@ -23,12 +23,8 @@ struct EmptyView: View {
     var body: some View {
         VStack(spacing: 28) {
             VStack(spacing: 12) {
-                Image("Logo")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 88)
+                AppLogo(size: 88)
                     .padding(.bottom, 4)
-                    .accessibilityHidden(true)
 
                 Text(String(localized: "label.readyToSelectImages"))
                     .font(.title2.bold())
@@ -64,4 +60,5 @@ struct EmptyView: View {
 
 #Preview {
     EmptyView(addFromPhotosAction: {}, addFromFilesAction: {})
+        .environment(AppIconStore.preview())
 }

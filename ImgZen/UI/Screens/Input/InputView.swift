@@ -6,6 +6,8 @@ import UIKit
 
 /// The main input screen where users select images and configure conversion settings.
 struct InputView: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     /// Enum representing sheet types that can be presented.
     enum Sheet {
         /// Photo picker sheet for selecting from photo library.
@@ -116,8 +118,8 @@ struct InputView: View {
         .overlay {
             if isDropTargeted {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 3, dash: [10, 6]))
-                    .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .strokeBorder(accentColor, style: StrokeStyle(lineWidth: 3, dash: [10, 6]))
+                    .background(accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .padding(8)
                     .allowsHitTesting(false)
             }
