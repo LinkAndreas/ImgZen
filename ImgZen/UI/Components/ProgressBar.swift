@@ -68,7 +68,9 @@ public struct ProgressBar: View {
         case .indeterminate:
             return " "
         case let .percentage(value):
-            return String(format: String(localized: "progress.percentage", defaultValue: "%lld%%"), Int(max(0, min(1, value)) * 100))
+            // Whole percent, rounded down so it never shows 100 % before it's done; formatted
+            // for the locale, which decides the sign, its spacing and the digits.
+            return Int(max(0, min(1, value)) * 100).formatted(.percent)
         case let .amount(current, total):
             return String(format: String(localized: "progress.amount", defaultValue: "%lld of %lld"), current, total)
         }

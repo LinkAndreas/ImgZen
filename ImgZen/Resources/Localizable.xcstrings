@@ -933,23 +933,6 @@
         }
       }
     },
-    "progress.percentage" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%%"
-          }
-        }
-      }
-    },
     "quality.custom" : {
       "extractionState" : "manual",
       "localizations" : {
