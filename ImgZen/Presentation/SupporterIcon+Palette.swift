@@ -29,41 +29,17 @@ extension SupporterIcon {
                 mountain: .dynamic(light: UIColor(red: 0.592, green: 0.380, blue: 0.788, alpha: 0.16), dark: UIColor(red: 0.408, green: 0.125, blue: 0.612, alpha: 0.3)),
                 sun: .dynamic(light: UIColor(red: 0.925, green: 0.537, blue: 0.424, alpha: 0.1), dark: UIColor(red: 0.945, green: 0.318, blue: 0.333, alpha: 0.14))
             )
-        case .aurora:
-            Palette(
-                accent: Color(UIColor(red: 0.000, green: 0.573, blue: 0.545, alpha: 1)),
-                mountain: .dynamic(light: UIColor(red: 0.000, green: 0.573, blue: 0.545, alpha: 0.16), dark: UIColor(red: 0.000, green: 0.353, blue: 0.337, alpha: 0.3)),
-                sun: .dynamic(light: UIColor(red: 0.922, green: 0.494, blue: 0.725, alpha: 0.1), dark: UIColor(red: 0.886, green: 0.286, blue: 0.745, alpha: 0.14))
-            )
         case .blush:
             Palette(
                 accent: Color(UIColor(red: 0.694, green: 0.380, blue: 0.510, alpha: 1)),
                 mountain: .dynamic(light: UIColor(red: 0.694, green: 0.380, blue: 0.510, alpha: 0.16), dark: UIColor(red: 0.502, green: 0.157, blue: 0.318, alpha: 0.3)),
                 sun: .dynamic(light: UIColor(red: 0.886, green: 0.569, blue: 0.408, alpha: 0.1), dark: UIColor(red: 0.894, green: 0.392, blue: 0.259, alpha: 0.14))
             )
-        case .cyberLime:
-            Palette(
-                accent: Color(UIColor(red: 0.392, green: 0.420, blue: 0.949, alpha: 1)),
-                mountain: .dynamic(light: UIColor(red: 0.392, green: 0.420, blue: 0.949, alpha: 0.16), dark: UIColor(red: 0.231, green: 0.133, blue: 0.784, alpha: 0.3)),
-                sun: .dynamic(light: UIColor(red: 0.541, green: 0.729, blue: 0.302, alpha: 0.1), dark: UIColor(red: 0.349, green: 0.663, blue: 0.000, alpha: 0.14))
-            )
-        case .dune:
-            Palette(
-                accent: Color(UIColor(red: 0.682, green: 0.424, blue: 0.267, alpha: 1)),
-                mountain: .dynamic(light: UIColor(red: 0.682, green: 0.424, blue: 0.267, alpha: 0.16), dark: UIColor(red: 0.482, green: 0.220, blue: 0.000, alpha: 0.3)),
-                sun: .dynamic(light: UIColor(red: 0.863, green: 0.592, blue: 0.318, alpha: 0.1), dark: UIColor(red: 0.851, green: 0.443, blue: 0.000, alpha: 0.14))
-            )
         case .ember:
             Palette(
                 accent: Color(UIColor(red: 0.800, green: 0.314, blue: 0.306, alpha: 1)),
                 mountain: .dynamic(light: UIColor(red: 0.800, green: 0.314, blue: 0.306, alpha: 0.16), dark: UIColor(red: 0.584, green: 0.000, blue: 0.094, alpha: 0.3)),
                 sun: .dynamic(light: UIColor(red: 0.941, green: 0.541, blue: 0.263, alpha: 0.1), dark: UIColor(red: 0.937, green: 0.353, blue: 0.000, alpha: 0.14))
-            )
-        case .evergreen:
-            Palette(
-                accent: Color(UIColor(red: 0.000, green: 0.588, blue: 0.396, alpha: 1)),
-                mountain: .dynamic(light: UIColor(red: 0.000, green: 0.588, blue: 0.396, alpha: 0.16), dark: UIColor(red: 0.000, green: 0.365, blue: 0.239, alpha: 0.3)),
-                sun: .dynamic(light: UIColor(red: 0.878, green: 0.588, blue: 0.184, alpha: 0.1), dark: UIColor(red: 0.816, green: 0.471, blue: 0.000, alpha: 0.14))
             )
         case .glacier:
             Palette(
@@ -76,12 +52,6 @@ extension SupporterIcon {
                 accent: Color(UIColor(red: 0.000, green: 0.565, blue: 0.592, alpha: 1)),
                 mountain: .dynamic(light: UIColor(red: 0.000, green: 0.565, blue: 0.592, alpha: 0.16), dark: UIColor(red: 0.000, green: 0.349, blue: 0.365, alpha: 0.3)),
                 sun: .dynamic(light: UIColor(red: 0.937, green: 0.533, blue: 0.404, alpha: 0.1), dark: UIColor(red: 0.953, green: 0.318, blue: 0.247, alpha: 0.14))
-            )
-        case .matcha:
-            Palette(
-                accent: Color(UIColor(red: 0.357, green: 0.553, blue: 0.369, alpha: 1)),
-                mountain: .dynamic(light: UIColor(red: 0.357, green: 0.553, blue: 0.369, alpha: 0.16), dark: UIColor(red: 0.122, green: 0.361, blue: 0.153, alpha: 0.3)),
-                sun: .dynamic(light: UIColor(red: 0.761, green: 0.647, blue: 0.302, alpha: 0.1), dark: UIColor(red: 0.702, green: 0.545, blue: 0.000, alpha: 0.14))
             )
         case .midnightGold:
             Palette(

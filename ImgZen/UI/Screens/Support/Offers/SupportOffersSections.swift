@@ -36,12 +36,6 @@ struct SupportOffersSections: View {
                 }
             }
 
-            // What recurring support unlocks, just above it. Supporters have the
-            // icons at the top of the screen instead.
-            if !store.subscriptionOffers.isEmpty, !store.isSupporter {
-                SupporterIconsSection(isUnlocked: false)
-            }
-
             if !store.subscriptionOffers.isEmpty {
                 Section {
                     ForEach(store.subscriptionOffers) { offer in
@@ -52,6 +46,12 @@ struct SupportOffersSections: View {
                 } footer: {
                     Text(String(localized: "support.recurringSupportIsOptional"))
                 }
+            }
+
+            // What recurring support unlocks, just below it. Supporters have the
+            // icons below their subscription at the top of the screen instead.
+            if !store.subscriptionOffers.isEmpty, !store.isSupporter {
+                SupporterIconsSection(isUnlocked: false)
             }
         }
     }

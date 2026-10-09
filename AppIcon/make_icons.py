@@ -102,12 +102,24 @@ def make(name, light, dark):
         json.dump(icon, f, indent=2)
         f.write("\n")
 
+# The largest the app shows an icon preview, in points (the logo on the onboarding screen). Xcode also
+# stores the vector previews as bitmaps at their declared size, at 1x to 3x; at the artwork's 1024 points
+# those were 3072 px images of several megabytes each.
+PREVIEW_SIZE = 96
+
+def write_preview_svg(src_svg, dst_svg):
+    """The icon SVG, declared at PREVIEW_SIZE points; the viewBox keeps the artwork's coordinates."""
+    text = open(src_svg).read()
+    text = re.sub(r'(<svg[^>]*?) width="\d+" height="\d+"', rf'\1 width="{PREVIEW_SIZE}" height="{PREVIEW_SIZE}"', text, count=1)
+    assert f'width="{PREVIEW_SIZE}"' in text, src_svg
+    open(dst_svg, "w").write(text)
+
 def preview(name, light, dark):
     imageset = os.path.join(out, "Assets.xcassets", f"IconPreview-{name}.imageset")
     shutil.rmtree(imageset, ignore_errors=True)
     os.makedirs(imageset)
-    shutil.copy(light, os.path.join(imageset, "preview.svg"))
-    shutil.copy(dark, os.path.join(imageset, "preview_dark.svg"))
+    write_preview_svg(light, os.path.join(imageset, "preview.svg"))
+    write_preview_svg(dark, os.path.join(imageset, "preview_dark.svg"))
     contents = {
         "images": [
             {"filename": "preview.svg", "idiom": "universal"},
@@ -196,8 +208,8 @@ classic_light, classic_dark = f"{src}/app_icon_light.svg", f"{src}/app_icon_dark
 make("AppIcon", classic_light, classic_dark)
 preview("Default", classic_light, classic_dark)
 palettes = [("classic", palette(classic_light, classic_dark))]
-for variant in ["amethyst", "aurora", "blush", "cyber_lime", "dune", "ember", "evergreen",
-                "glacier", "lagoon", "matcha", "midnight_gold", "noir"]:
+# The supporter icons the app offers; the other SVGs in app_icon_variants/ aren't used.
+for variant in ["amethyst", "blush", "ember", "glacier", "lagoon", "midnight_gold", "noir"]:
     name = "".join(p.capitalize() for p in variant.split("_"))
     light = f"{src}/app_icon_variants/app_icon_{variant}_light.svg"
     dark = f"{src}/app_icon_variants/app_icon_{variant}_dark.svg"
