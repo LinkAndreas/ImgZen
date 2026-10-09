@@ -111,4 +111,31 @@ struct SupportStoreTests {
         #expect(store.status == .restored)
         #expect(store.activeSubscription == subscription)
     }
+
+    @Test("Only a subscription unlocks the supporter icons, not one-time support")
+    func testSupporterIconsUnlock() async throws {
+        let store = SupportStore(service: PreviewSupportService())
+        await store.load()
+        #expect(!store.isSupporter)
+
+        await store.purchase(try #require(store.oneTimeOffers.first))
+        #expect(!store.isSupporter)
+
+        await store.purchase(try #require(store.subscriptionOffers.first))
+        #expect(store.isSupporter)
+    }
+}
+
+@MainActor
+struct SupporterIconTests {
+
+    @Test("Each icon maps to its alternate icon set and back, the classic icon to the primary one")
+    func testAlternateIconNames() {
+        #expect(SupporterIcon.classic.alternateIconName == nil)
+        #expect(SupporterIcon.forest.alternateIconName == "AppIcon-Forest")
+        for icon in SupporterIcon.allCases {
+            #expect(SupporterIcon(alternateIconName: icon.alternateIconName) == icon)
+        }
+        #expect(SupporterIcon(alternateIconName: "Unknown") == .classic)
+    }
 }

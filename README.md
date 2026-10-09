@@ -37,7 +37,7 @@
 - 📱 **iPhone, iPad and iPhone Duo** — the output format sits in an inspector beside the images on iPad, and the
   toolbar moves into the vertical bar on iPhone Duo.
 - 🔒 **Private** — no photo library permission, no account, no analytics; everything happens on the device.
-- ❤️ **Free** — with optional tips and support subscriptions that unlock nothing
+- ❤️ **Free** — every feature included; optional tips, and support subscriptions that unlock supporter app icons
   ([setup](Docs/AppStoreConnect-Support.md)).
 
 ## Privacy
@@ -71,7 +71,7 @@ ImgZen/
 ├── Domain/                   # Models and services
 │   ├── ImageConversion/      # Formats and conversion
 │   ├── Services/             # Conversion, storage, input, Support the Developer store
-│   └── Support/              # Support product IDs and the store service protocol
+│   └── Support/              # Support product IDs, supporter icons, the store service protocol
 ├── Infrastructure/           # Repositories, StoreKit, launch cleanup
 ├── Presentation/             # Format titles and subtitles
 ├── UI/

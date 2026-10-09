@@ -1,7 +1,9 @@
 # Support the Developer — App Store Connect setup
 
-ImgZen's Support the Developer feature is **optional support**. It never unlocks features; the app is fully usable
-for free. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
+ImgZen's Support the Developer feature is **optional support**. No feature is ever locked; the app is fully usable
+for free. Recurring support unlocks the **supporter app icons** (Midnight, Forest, Rose, Ocean, Graphite) as a
+thank-you — App Review requires a subscription to say what the user receives (Guideline 3.1.2(c)). One-time support
+unlocks nothing. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
 test it.
 
 Product identifiers are defined once in `ImgZen/Domain/Support/SupportProductID.swift`. Names and prices are **not**
@@ -47,6 +49,9 @@ Create one subscription group, **Support**, containing both subscriptions.
 | `de.linkandreas.imgzen.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
+- Descriptions (both subscriptions, max. 55 characters): "Unlocks 5 supporter app icons." / "Schaltet 5
+  Supporter-App-Icons frei." Don't describe them as "ongoing support" — App Review rejected that as not saying what
+  the user receives.
 - No free trials or introductory offers — this is support, not access.
 - Family Sharing: off.
 - Localize the group display name: "Support ImgZen" / "ImgZen unterstützen".
@@ -59,8 +64,10 @@ Create one subscription group, **Support**, containing both subscriptions.
   currency is shown automatically.
 - **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer):
   [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png).
-- **Review notes**, e.g.: "Optional developer support. Purchases and subscriptions unlock no content or features;
-  the entire app is free. Found under the ⋯ (More) button at the top of the main screen › Support the Developer."
+- **Review notes**, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly
+  Support subscriptions unlock five alternative app icons, shown locked in the Supporter App Icons section of the
+  Support screen and selectable there once subscribed. One-time support unlocks nothing. Found under the ⋯ (More)
+  button at the top of the main screen › Support the Developer."
 
 The first in-app purchases and subscriptions must be submitted **together with an app version**: add them to the
 version under *In-App Purchases and Subscriptions* before submitting it for review.
@@ -68,8 +75,10 @@ version under *In-App Purchases and Subscriptions* before submitting it for revi
 ## App Review requirements covered by the app
 
 - Localized price and billing period, taken from StoreKit, next to each option.
-- A clear statement that subscriptions renew automatically, how to cancel, and that they unlock nothing (footer of
-  the Recurring Support section).
+- What a subscription includes: the Supporter App Icons section, with the icons shown locked, sits right above the
+  Recurring Support section, and its footer says recurring support unlocks them.
+- A clear statement that subscriptions renew automatically, how to cancel, and what they unlock (footer of the
+  Recurring Support section).
 - **Restore Purchases** button.
 - Links to the **Terms of Use** and **Privacy Policy**, published in English and German at
   `https://imgzen.linkandreas.de/termsofuse/<language>/` and `…/privacy/<language>/` (the
@@ -106,6 +115,16 @@ launch ("Try Again").
 Create sandbox testers in App Store Connect › Users and Access › Sandbox, sign in on a device under Settings ›
 App Store › Sandbox Account, and run a build without the StoreKit configuration file selected (or a TestFlight
 build).
+
+## Supporter app icons
+
+Each icon is an alternate app icon set, `AppIcon-<Name>` in `Assets.xcassets`, with light, dark and tinted
+variants, plus a 256 px `IconPreview-<Name>` image for the picker (app icon sets can't be loaded as images). The
+build setting *Include All App Icon Assets* (`ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS`) adds them to the
+app. `SupporterIcon` lists them; `SupporterIconsSection` is the picker.
+
+The icons unlock while a subscription is active (`SupportStore.isSupporter`). When it ends, the icon someone chose
+stays — the app never changes it without being asked, which would show a system alert — but the picker locks again.
 
 ## Changing prices later
 
