@@ -42,6 +42,7 @@ final class SupportStore {
 
     @ObservationIgnored private let service: SupportStoreService
     @ObservationIgnored private var transactionObserver: Task<Void, Never>?
+    @ObservationIgnored private var subscriptionObserver: Task<Void, Never>?
 
     init(service: SupportStoreService) {
         self.service = service
@@ -62,6 +63,16 @@ final class SupportStore {
         transactionObserver = service.observeTransactions { [weak self] id in
             await self?.transactionCompleted(id)
         }
+        // A cancellation or plan change creates no transaction, only a new subscription status.
+        subscriptionObserver = service.observeSubscriptionChanges { [weak self] in
+            await self?.refreshSubscription()
+        }
+    }
+
+    /// Reads the subscription again, e.g. after it was cancelled or changed in the App Store's
+    /// subscription management.
+    func refreshSubscription() async {
+        activeSubscription = await service.activeSubscription()
     }
 
     func load() async {

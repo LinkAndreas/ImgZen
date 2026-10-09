@@ -76,6 +76,19 @@ struct SupportStoreTests {
         #expect(store.activeSubscription?.nextPlanText != nil)
     }
 
+    @Test("Refreshing picks up a subscription cancelled outside the app")
+    func testRefreshAfterCancel() async {
+        let service = PreviewSupportService(subscription: ActiveSupportSubscription(productID: .monthly, expirationDate: .now.addingTimeInterval(86_400), willAutoRenew: true))
+        let store = SupportStore(service: service)
+        await store.load()
+        #expect(store.activeSubscription?.willAutoRenew == true)
+
+        service.subscription = ActiveSupportSubscription(productID: .monthly, expirationDate: .now.addingTimeInterval(86_400), willAutoRenew: false)
+        await store.refreshSubscription()
+
+        #expect(store.activeSubscription?.willAutoRenew == false)
+    }
+
     @Test("A purchase waiting for approval says so, without celebrating yet")
     func testPendingPurchase() async throws {
         let service = PreviewSupportService()

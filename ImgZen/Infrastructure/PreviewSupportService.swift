@@ -66,6 +66,12 @@ final class PreviewSupportService: SupportStoreService {
         Task {}
     }
 
+    func observeSubscriptionChanges(
+        onChange: @escaping @MainActor () async -> Void
+    ) -> Task<Void, Never> {
+        Task {}
+    }
+
     static let sampleOffers: [SupportOffer] = [
         SupportOffer(id: .small, displayName: "Small Support", description: "Buy the developer a coffee.", displayPrice: "€2.99", billingPeriod: nil),
         SupportOffer(id: .medium, displayName: "Support", description: "Help keep ImgZen growing.", displayPrice: "€5.99", billingPeriod: nil),

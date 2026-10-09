@@ -63,4 +63,9 @@ protocol SupportStoreService: AnyObject {
     func observeTransactions(
         onTransaction: @escaping @MainActor (SupportProductID) async -> Void
     ) -> Task<Void, Never>
+    /// Calls `onChange` whenever a subscription's status or renewal changes, such as when it's
+    /// cancelled, which creates no transaction. Runs until the returned task is cancelled.
+    func observeSubscriptionChanges(
+        onChange: @escaping @MainActor () async -> Void
+    ) -> Task<Void, Never>
 }

@@ -98,6 +98,16 @@ final class StoreKitSupportService: SupportStoreService {
         }
     }
 
+    func observeSubscriptionChanges(
+        onChange: @escaping @MainActor () async -> Void
+    ) -> Task<Void, Never> {
+        Task {
+            for await _ in Product.SubscriptionInfo.Status.updates {
+                await onChange()
+            }
+        }
+    }
+
     func observeTransactions(
         onTransaction: @escaping @MainActor (SupportProductID) async -> Void
     ) -> Task<Void, Never> {
