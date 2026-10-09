@@ -17,9 +17,9 @@ final class SupportStore {
         case unavailable
     }
 
-    /// The latest outcome, shown inline on the Support screen.
+    /// The latest outcome that needs a word on the Support screen. A completed purchase
+    /// has none: the header thanks the supporter for good, and the screen celebrates it.
     enum Status: Equatable {
-        case thankYou
         case pending
         case restored
         case nothingToRestore
@@ -136,7 +136,6 @@ final class SupportStore {
         celebrationCount += 1
         switch id.kind {
         case .oneTime:
-            status = .thankYou
             hasGivenOneTimeSupport = true
         case .subscription:
             // The subscription section shows its own thank-you.
@@ -147,7 +146,7 @@ final class SupportStore {
     private func transactionCompleted(_ id: SupportProductID) async {
         // A purchase that was waiting for approval went through (renewals don't celebrate).
         if status == .pending {
-            status = id.kind == .oneTime ? .thankYou : nil
+            status = nil
             celebrationCount += 1
         }
         // Also one-time support given on another device, or approved later.

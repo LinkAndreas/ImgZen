@@ -5,9 +5,6 @@ struct SupportStatusRow: View {
 
     var body: some View {
         switch status {
-        case .thankYou:
-            Label(String(localized: "support.thankYou"), systemImage: "heart.fill")
-                .foregroundStyle(.pink)
         case .pending:
             Label(String(localized: "support.yourPurchaseIsWaiting"), systemImage: "clock")
         case .restored:
@@ -39,7 +36,6 @@ private extension SupportStoreError {
 #if DEBUG
 #Preview {
     List {
-        SupportStatusRow(status: .thankYou)
         SupportStatusRow(status: .pending)
         SupportStatusRow(status: .failed(.storeUnavailable))
     }
