@@ -4,8 +4,8 @@ import Observation
 /// Purchase state for the Support the Developer screen: the available offers,
 /// what's in progress, the active subscription, and the last outcome to report.
 ///
-/// Support never unlocks anything; this store exists only to take voluntary
-/// payments and say thank you. Entitlements are always read from the App Store.
+/// No feature is ever locked; recurring support unlocks only the supporter app
+/// icons, as a thank-you. Entitlements are always read from the App Store.
 @Observable
 final class SupportStore {
     enum LoadState: Equatable {
@@ -44,6 +44,9 @@ final class SupportStore {
     }
 
     var isBusy: Bool { purchasingProductID != nil || isRestoring }
+
+    /// Whether recurring support is active, which unlocks the supporter app icons.
+    var isSupporter: Bool { activeSubscription != nil }
 
     /// Starts listening for transactions that complete outside the purchase flow.
     /// Call once at launch so approvals and renewals are finished promptly.
