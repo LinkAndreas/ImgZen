@@ -23,6 +23,7 @@
 /* Begin PBXFileReference section */
 		38A18B5A2E9BFF9F00291847 /* ImgZen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImgZen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38A18B672E9BFFA000291847 /* ImgZenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImgZenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		38A18BA02E9BFFA000291847 /* ImgZen.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = ImgZen.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -75,8 +76,17 @@
 			children = (
 				38A18B5C2E9BFF9F00291847 /* ImgZen */,
 				38A18B6A2E9BFFA000291847 /* ImgZenTests */,
+				38A18BA12E9BFFA000291847 /* Config */,
 				38A18B5B2E9BFF9F00291847 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		38A18BA12E9BFFA000291847 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				38A18BA02E9BFFA000291847 /* ImgZen.storekit */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		38A18B5B2E9BFF9F00291847 /* Products */ = {
@@ -385,7 +395,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.7.4;
+				MARKETING_VERSION = 1.7.5;
 				PRODUCT_BUNDLE_IDENTIFIER = de.linkandreas.imgzen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -441,7 +451,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.7.4;
+				MARKETING_VERSION = 1.7.5;
 				PRODUCT_BUNDLE_IDENTIFIER = de.linkandreas.imgzen;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
