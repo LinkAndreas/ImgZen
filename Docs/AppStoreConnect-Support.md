@@ -1,7 +1,7 @@
 # Support the Developer — App Store Connect setup
 
 ImgZen's Support the Developer feature is **optional support**. No feature is ever locked; the app is fully usable
-for free. Recurring support unlocks the **supporter app icons** (Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir) as a
+for free. Recurring support unlocks the **supporter app icons** (Amethyst, Blush, Ember, Glacier, Lagoon, Midnight Gold, Noir) as a
 thank-you — App Review requires a subscription to say what the user receives (Guideline 3.1.2(c)). One-time support
 unlocks nothing. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
 test it.
@@ -118,7 +118,7 @@ build).
 
 ## Supporter app icons
 
-![Classic, Amethyst, Aurora, Blush, Cyber Lime, Dune, Ember, Evergreen, Glacier, Lagoon, Matcha, Midnight Gold, Noir — light and dark](Images/SupporterIcons.png)
+![Classic, Amethyst, Blush, Ember, Glacier, Lagoon, Midnight Gold, Noir — light and dark](Images/SupporterIcons.png)
 
 Each icon is an Icon Composer document, `AppIcon-<Name>.icon` in `ImgZen/Resources/AppIcons` (the primary icon is
 `AppIcon.icon`), with light and dark appearances; the tinted and clear appearances are derived by the system. Every

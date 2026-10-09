@@ -8,15 +8,10 @@ import Foundation
 enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
     case classic = "Default"
     case amethyst = "Amethyst"
-    case aurora = "Aurora"
     case blush = "Blush"
-    case cyberLime = "CyberLime"
-    case dune = "Dune"
     case ember = "Ember"
-    case evergreen = "Evergreen"
     case glacier = "Glacier"
     case lagoon = "Lagoon"
-    case matcha = "Matcha"
     case midnightGold = "MidnightGold"
     case noir = "Noir"
 
@@ -38,15 +33,10 @@ enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .classic: String(localized: "support.iconClassic")
         case .amethyst: String(localized: "support.iconAmethyst")
-        case .aurora: String(localized: "support.iconAurora")
         case .blush: String(localized: "support.iconBlush")
-        case .cyberLime: String(localized: "support.iconCyberLime")
-        case .dune: String(localized: "support.iconDune")
         case .ember: String(localized: "support.iconEmber")
-        case .evergreen: String(localized: "support.iconEvergreen")
         case .glacier: String(localized: "support.iconGlacier")
         case .lagoon: String(localized: "support.iconLagoon")
-        case .matcha: String(localized: "support.iconMatcha")
         case .midnightGold: String(localized: "support.iconMidnightGold")
         case .noir: String(localized: "support.iconNoir")
         }

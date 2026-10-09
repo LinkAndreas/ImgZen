@@ -208,8 +208,8 @@ classic_light, classic_dark = f"{src}/app_icon_light.svg", f"{src}/app_icon_dark
 make("AppIcon", classic_light, classic_dark)
 preview("Default", classic_light, classic_dark)
 palettes = [("classic", palette(classic_light, classic_dark))]
-for variant in ["amethyst", "aurora", "blush", "cyber_lime", "dune", "ember", "evergreen",
-                "glacier", "lagoon", "matcha", "midnight_gold", "noir"]:
+# The supporter icons the app offers; the other SVGs in app_icon_variants/ aren't used.
+for variant in ["amethyst", "blush", "ember", "glacier", "lagoon", "midnight_gold", "noir"]:
     name = "".join(p.capitalize() for p in variant.split("_"))
     light = f"{src}/app_icon_variants/app_icon_{variant}_light.svg"
     dark = f"{src}/app_icon_variants/app_icon_{variant}_dark.svg"

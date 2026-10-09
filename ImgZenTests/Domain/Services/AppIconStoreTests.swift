@@ -33,22 +33,22 @@ struct AppIconStoreTests {
     @Test("Selecting the current icon doesn't ask the system again")
     func testSelectCurrent() async throws {
         var requestCount = 0
-        let store = AppIconStore(alternateIconName: "AppIcon-Dune") { _ in requestCount += 1 }
+        let store = AppIconStore(alternateIconName: "AppIcon-Lagoon") { _ in requestCount += 1 }
 
-        try await store.select(.dune)
+        try await store.select(.lagoon)
 
         #expect(requestCount == 0)
     }
 
     @Test("When the system refuses the icon, the app goes back to the previous one")
     func testSelectRefused() async {
-        let store = AppIconStore(alternateIconName: "AppIcon-Matcha") { _ in throw Refused() }
+        let store = AppIconStore(alternateIconName: "AppIcon-Blush") { _ in throw Refused() }
         store.showTheme()
 
         await #expect(throws: Refused.self) {
             try await store.select(.glacier)
         }
-        #expect(store.current == .matcha)
-        #expect(store.theme == .matcha)
+        #expect(store.current == .blush)
+        #expect(store.theme == .blush)
     }
 }

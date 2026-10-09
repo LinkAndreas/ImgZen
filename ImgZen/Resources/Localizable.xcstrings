@@ -1363,23 +1363,6 @@
         }
       }
     },
-    "support.iconAurora" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Polarlicht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aurora"
-          }
-        }
-      }
-    },
     "support.iconBlush" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1414,40 +1397,6 @@
         }
       }
     },
-    "support.iconCyberLime" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cyber-Limette"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cyber Lime"
-          }
-        }
-      }
-    },
-    "support.iconDune" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Düne"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dune"
-          }
-        }
-      }
-    },
     "support.iconEmber" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1461,23 +1410,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ember"
-          }
-        }
-      }
-    },
-    "support.iconEvergreen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Immergrün"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evergreen"
           }
         }
       }
@@ -1512,23 +1444,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lagoon"
-          }
-        }
-      }
-    },
-    "support.iconMatcha" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Matcha"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Matcha"
           }
         }
       }
