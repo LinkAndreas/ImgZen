@@ -64,8 +64,11 @@ Create one subscription group, **Support**, containing both subscriptions.
   are what the Support screen shows.
 - **Price** — choose the price point in *Pricing*. The app uses `Product.displayPrice`, so the storefront's local
   currency is shown automatically.
-- **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer):
-  [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png).
+- **Review screenshot** — a screenshot of the Support screen (⋯ › Support the Developer): for the subscriptions,
+  [`Docs/Images/SupportReviewScreenshot.png`](Images/SupportReviewScreenshot.png) (the subscriptions with the locked
+  icons below); for the one-time purchases,
+  [`Docs/Images/SupportReviewScreenshot-OneTime.png`](Images/SupportReviewScreenshot-OneTime.png). A purchase's review
+  screenshot can't be replaced while the purchase is in an open review submission; remove it from the submission first.
 - **Review notes**, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly
   Support subscriptions unlock alternative app icons, shown locked in the Supporter App Icons section of the
   Support screen and selectable there once subscribed. One-time support unlocks nothing. Found under the ⋯ (More)
