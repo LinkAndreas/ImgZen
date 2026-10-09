@@ -142,7 +142,9 @@ struct Onboarding: View {
     }
 }
 
+#if DEBUG
 #Preview {
     Onboarding()
         .environment(AppIconStore.preview())
 }
+#endif
