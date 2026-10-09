@@ -94,6 +94,8 @@ public struct AsyncResourceDefaultLoadingView: View {
 
 /// Default view that presents an error and retry option upon failed async resource load.
 public struct AsyncResourceDefaultFailureView: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     private let error: Error
     private let retry: () -> Void
 
@@ -113,7 +115,7 @@ public struct AsyncResourceDefaultFailureView: View {
             Button(action: retry) {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 25))
-                    .tint(.accentColor)
+                    .tint(accentColor)
             }
         }
     }

@@ -63,5 +63,6 @@ struct SupportOffersSections: View {
         SupportOffersSections()
     }
     .environment(SupportStore(service: PreviewSupportService()))
+    .environment(AppIconStore.preview())
 }
 #endif

@@ -28,5 +28,6 @@ struct SupportSheet: View {
             SupportSheet()
         }
         .environment(SupportStore(service: PreviewSupportService()))
+        .environment(AppIconStore.preview())
 }
 #endif

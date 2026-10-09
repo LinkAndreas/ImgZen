@@ -29,25 +29,13 @@ struct Onboarding: View {
     }
 
     private var logo: some View {
-        Image("Logo")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: Self.logoSize, height: Self.logoSize)
-            .accessibilityHidden(true)
+        AppLogo(size: Self.logoSize)
     }
 
     var body: some View {
         ZStack {
-            Color.systemBackground
-                .ignoresSafeArea()
-
             // A soft wash in the logo's colors gives the screen depth without boxing the content in.
-            LinearGradient(
-                colors: [Color.accentColor.opacity(0.14), Color.purple.opacity(0.08), .clear],
-                startPoint: .top,
-                endPoint: .center
-            )
-            .ignoresSafeArea()
+            AppBackground()
 
             GeometryReader { geometry in
                 let layout = Layout(
@@ -156,4 +144,5 @@ struct Onboarding: View {
 
 #Preview {
     Onboarding()
+        .environment(AppIconStore.preview())
 }
