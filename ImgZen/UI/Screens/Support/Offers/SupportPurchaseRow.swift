@@ -13,6 +13,7 @@ struct SupportPurchaseRow: View {
             offer: offer,
             isProminent: isProminent,
             isActive: store.activeSubscription?.productID == offer.id,
+            activeDetail: store.activeSubscription?.renewalText,
             isPurchasing: store.purchasingProductID == offer.id,
             isDisabled: store.isBusy
         ) {

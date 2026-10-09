@@ -18,7 +18,17 @@ struct SupportView: View {
             .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 4, trailing: 16))
             .listSectionMargins(.top, 0)
 
-            if let subscription = store.activeSubscription {
+            if let status = store.status {
+                Section {
+                    SupportStatusRow(status: status)
+                }
+            }
+
+            // A subscriber's plan shows, with Manage Subscription, among the recurring offers.
+            SupportOffersSections { isManagingSubscription = true }
+
+            // Without the offers, the subscription and its management still show.
+            if let subscription = store.activeSubscription, store.subscriptionOffers.isEmpty {
                 Section {
                     ActiveSubscriptionRow(subscription: subscription)
                     Button(String(localized: "support.manageSubscription")) {
@@ -26,14 +36,6 @@ struct SupportView: View {
                     }
                 }
             }
-
-            if let status = store.status {
-                Section {
-                    SupportStatusRow(status: status)
-                }
-            }
-
-            SupportOffersSections()
 
             // What recurring support unlocks, right below it: locked until someone subscribes,
             // and the picker once they have. Supporters keep it even when the offers can't load.

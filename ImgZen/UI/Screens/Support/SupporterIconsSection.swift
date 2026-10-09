@@ -34,7 +34,7 @@ struct SupporterIconsSection: View {
         } header: {
             Text(String(localized: "support.supporterAppIcons"))
         } footer: {
-            Text(String(localized: isUnlocked ? "support.thanksPickAnIcon" : "support.recurringSupportUnlocksIcons"))
+            Text(String(localized: isUnlocked ? "support.pickAnIcon" : "support.recurringSupportUnlocksIcons"))
         }
     }
 
