@@ -51,6 +51,8 @@ protocol SupportStoreService: AnyObject {
     func loadOffers() async throws -> [SupportOffer]
     func purchase(_ id: SupportProductID) async throws -> PurchaseOutcome
     func activeSubscription() async -> ActiveSupportSubscription?
+    /// Whether this Apple Account has ever given one-time support, on any device.
+    func hasGivenOneTimeSupport() async -> Bool
     func restorePurchases() async throws
     /// Finishes transactions that complete outside a purchase call — Ask to Buy
     /// approvals, renewals, purchases on other devices — calling

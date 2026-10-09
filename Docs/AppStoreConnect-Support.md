@@ -3,8 +3,9 @@
 ImgZen's Support the Developer feature is **optional support**. No feature is ever locked; the app is fully usable
 for free. Recurring support unlocks the **supporter app icons** (Amethyst, Blush, Ember, Glacier, Lagoon, Midnight Gold, Noir) as a
 thank-you — App Review requires a subscription to say what the user receives (Guideline 3.1.2(c)). One-time support
-unlocks nothing. This document lists what has to be configured in App Store Connect for the in-app code to work, and how to
-test it.
+unlocks nothing, but the Support screen thanks everyone who has supported and marks them as a supporter; finished one-time
+purchases stay in StoreKit's history because `ImgZen/Info.plist` sets `SKIncludeConsumableInAppPurchaseHistory`. This
+document lists what has to be configured in App Store Connect for the in-app code to work, and how to test it.
 
 Product identifiers are defined once in `ImgZen/Domain/Support/SupportProductID.swift`. Names and prices are **not**
 in the code: the app shows the localized name and price StoreKit returns, so both can be changed in App Store
