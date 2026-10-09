@@ -122,12 +122,12 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 7 supporter app icons.",
+              "description": "Unlocks supporter app icons.",
               "displayName": "Yearly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 7 Supporter-App-Icons frei.",
+              "description": "Schaltet Supporter-App-Icons frei.",
               "displayName": "Jährliche Unterstützung",
               "locale": "de"
             }
@@ -158,12 +158,12 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 7 supporter app icons.",
+              "description": "Unlocks supporter app icons.",
               "displayName": "Monthly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 7 Supporter-App-Icons frei.",
+              "description": "Schaltet Supporter-App-Icons frei.",
               "displayName": "Monatliche Unterstützung",
               "locale": "de"
             }

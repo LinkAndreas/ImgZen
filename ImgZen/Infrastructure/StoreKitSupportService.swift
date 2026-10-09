@@ -65,10 +65,12 @@ final class StoreKitSupportService: SupportStoreService {
                   let id = SupportProductID(rawValue: transaction.productID)
             else { continue }
 
+            let renewal = await renewalState(id)
             return ActiveSupportSubscription(
                 productID: id,
                 expirationDate: transaction.expirationDate,
-                willAutoRenew: await willAutoRenew(id)
+                willAutoRenew: renewal.willAutoRenew,
+                nextProductID: renewal.nextProductID
             )
         }
         return nil
@@ -129,21 +131,23 @@ final class StoreKitSupportService: SupportStoreService {
         }
     }
 
-    private func willAutoRenew(_ id: SupportProductID) async -> Bool {
+    /// Whether the subscription renews, and into which plan when it's switching to another one.
+    private func renewalState(_ id: SupportProductID) async -> (willAutoRenew: Bool, nextProductID: SupportProductID?) {
         let product: Product?
         if let cached = products[id] {
             product = cached
         } else {
             product = try? await Product.products(for: [id.rawValue]).first
         }
-        guard let statuses = try? await product?.subscription?.status else { return true }
+        guard let statuses = try? await product?.subscription?.status else { return (true, nil) }
 
         for status in statuses {
             if case let .verified(renewalInfo) = status.renewalInfo {
-                return renewalInfo.willAutoRenew
+                let next = renewalInfo.autoRenewPreference.flatMap(SupportProductID.init(rawValue:))
+                return (renewalInfo.willAutoRenew, next == id ? nil : next)
             }
         }
-        return true
+        return (true, nil)
     }
 }
 

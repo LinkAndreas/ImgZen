@@ -1511,6 +1511,23 @@
         }
       }
     },
+    "support.nextPlan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Nächstes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
     "support.oneTimeSupport" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1694,6 +1711,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restore Purchases"
+          }
+        }
+      }
+    },
+    "support.startsOn" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginnt am %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starts on %@"
           }
         }
       }
