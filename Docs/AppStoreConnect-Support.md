@@ -118,6 +118,8 @@ build).
 
 ## Supporter app icons
 
+![Classic, Midnight, Forest, Rose, Ocean, Graphite — light and dark](Images/SupporterIcons.png)
+
 Each icon is an alternate app icon set, `AppIcon-<Name>` in `Assets.xcassets`, with light, dark and tinted
 variants, plus a 256 px `IconPreview-<Name>` image for the picker (app icon sets can't be loaded as images). The
 build setting *Include All App Icon Assets* (`ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS`) adds them to the
