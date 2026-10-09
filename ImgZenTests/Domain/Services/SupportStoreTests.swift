@@ -73,6 +73,7 @@ struct SupportStoreTests {
 
         #expect(store.activeSubscription?.productID == .yearly)
         #expect(store.activeSubscription?.nextProductID == .monthly)
+        #expect(store.celebrationCount == 1, "only subscribing celebrates, not the switch")
         #expect(store.activeSubscription?.nextPlanText != nil)
     }
 
@@ -193,6 +194,78 @@ struct SupportStoreTests {
 
         #expect(!store.hasGivenOneTimeSupport)
         #expect(store.hasSupported)
+    }
+
+    @Test("Recurring support has ended once the subscription is gone and the App Store confirms it")
+    func testRecurringSupportEnded() async {
+        let subscription = ActiveSupportSubscription(productID: .monthly, expirationDate: nil, willAutoRenew: false)
+        let service = PreviewSupportService(subscription: subscription)
+        let store = SupportStore(service: service)
+        await store.load()
+        #expect(!(await store.hasRecurringSupportEnded()))
+
+        service.subscription = nil
+
+        #expect(await store.hasRecurringSupportEnded())
+        #expect(!store.isSupporter)
+    }
+
+    @Test("Recurring support hasn't ended while the App Store can't confirm it, e.g. offline or billing")
+    func testRecurringSupportNotConfirmedEnded() async {
+        let service = PreviewSupportService()
+        service.subscriptionHasEnded = false
+        let store = SupportStore(service: service)
+
+        #expect(!(await store.hasRecurringSupportEnded()))
+    }
+
+    @Test("A renewal that couldn't be charged is reported, and clears once it's paid")
+    func testBillingIssue() async {
+        let service = PreviewSupportService()
+        service.billingIssue = true
+        let store = SupportStore(service: service)
+
+        await store.load()
+        #expect(store.hasBillingIssue)
+        #expect(!store.isSupporter)
+
+        service.billingIssue = false
+        service.subscription = ActiveSupportSubscription(productID: .monthly, expirationDate: nil, willAutoRenew: true)
+        await store.refreshSubscription()
+        #expect(!store.hasBillingIssue)
+        #expect(store.isSupporter)
+    }
+
+    @Test("A purchase waiting for approval isn't still reported when the screen opens again")
+    func testPendingNoteDoesNotLinger() async throws {
+        let service = PreviewSupportService()
+        service.purchaseOutcome = .pending
+        let store = SupportStore(service: service)
+        await store.load()
+
+        await store.purchase(try #require(store.oneTimeOffers.first))
+        #expect(store.status == .pending)
+
+        await store.load()
+        #expect(store.status == nil)
+    }
+
+    @Test("The subscription is read again once it runs out")
+    func testExpiryIsNoticed() async throws {
+        let subscription = ActiveSupportSubscription(
+            productID: .monthly,
+            expirationDate: .now.addingTimeInterval(0.2),
+            willAutoRenew: false
+        )
+        let service = PreviewSupportService(subscription: subscription)
+        let store = SupportStore(service: service)
+        await store.load()
+        #expect(store.isSupporter)
+
+        service.subscription = nil
+        try await Task.sleep(for: .seconds(3))
+
+        #expect(!store.isSupporter)
     }
 }
 

@@ -10,6 +10,9 @@ final class PreviewSupportService: SupportStoreService {
     var hasTipped = false
     var purchaseOutcome: PurchaseOutcome = .purchased
     var failsToLoad = false
+    /// Whether the App Store would confirm the subscription has ended; `nil` follows `subscription`.
+    var subscriptionHasEnded: Bool?
+    var billingIssue = false
 
     init(
         offers: [SupportOffer] = PreviewSupportService.sampleOffers,
@@ -52,6 +55,14 @@ final class PreviewSupportService: SupportStoreService {
 
     func activeSubscription() async -> ActiveSupportSubscription? {
         subscription
+    }
+
+    func hasSubscriptionEnded() async -> Bool {
+        subscriptionHasEnded ?? (subscription == nil)
+    }
+
+    func hasBillingIssue() async -> Bool {
+        billingIssue
     }
 
     func hasGivenOneTimeSupport() async -> Bool {
