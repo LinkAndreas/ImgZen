@@ -124,10 +124,16 @@ Each icon is an Icon Composer document, `AppIcon-<Name>.icon` in `ImgZen/Resourc
 `AppIcon.icon`), with light and dark appearances; the tinted and clear appearances are derived by the system. Every
 element of the source SVGs in `AppIcon/` (`app_icon_<light|dark>.svg`, and `app_icon_variants/` for the supporter
 icons) is its own layer, in the SVGs' paint order; the dark-only glows are hidden in the light appearance. After changing
-the SVGs, run `python3 AppIcon/make_icons.py` to regenerate the `.icon` bundles and the previews. A vector
+the SVGs, run `python3 AppIcon/make_icons.py` to regenerate the `.icon` bundles, the previews and the palettes. A vector
 `IconPreview-<Name>` image in `Assets.xcassets` is the picker's preview (app icons can't be loaded as images). The
 build setting *Include All App Icon Assets* (`ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS`) adds them to the
 app as alternate icons. `SupporterIcon` lists them; `SupporterIconsSection` is the picker.
+
+The chosen icon also themes the app (`AppIconStore`): the logo on the onboarding and empty screens, the accent
+color of its controls (the icon's mountain color), and a soft wash in the icon's colors at the top of the
+background (`AppBackground`). Both come from `SupporterIcon+Palette.swift`, which `AppIcon/make_icons.py` generates
+from the SVGs. The launch screen can't follow the icon, as the system draws it before the app runs, so it's the
+plain grouped background; the app starts on the same background and fades the wash in.
 
 The icons unlock while a subscription is active (`SupportStore.isSupporter`). When it ends, the icon someone chose
 stays — the app never changes it without being asked, which would show a system alert — but the picker locks again.

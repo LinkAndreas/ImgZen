@@ -3,6 +3,8 @@ import SwiftUI
 
 /// A prominent button with a menu for adding images from Photos or Files, in a toolbar or floating over content.
 struct ImageSourceSelection: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     enum Style {
         /// An item in a toolbar, which the toolbar renders.
         case toolbar
@@ -37,7 +39,7 @@ struct ImageSourceSelection: View {
             menu
                 // The one prominent item of the bottom bar, as adding images is what the screen is for.
                 .buttonStyle(.borderedProminent)
-                .tint(.accentColor)
+                .tint(accentColor)
         case .floating:
             menu
                 .buttonStyle(.glassProminent)

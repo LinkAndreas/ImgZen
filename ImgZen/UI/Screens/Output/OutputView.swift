@@ -2,6 +2,8 @@ import SwiftUI
 
 /// The output screen displaying converted images ready for sharing.
 struct OutputView: View {
+    @Environment(\.appAccentColor) private var accentColor
+
     /// Images to share; all of them are selected initially.
     @State private var selectedItemIDs: Set<OutputItem.ID>
 
@@ -94,7 +96,7 @@ struct OutputView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.accentColor)
+                .tint(accentColor)
                 .disabled(selectedItemIDs.isEmpty)
             }
         }

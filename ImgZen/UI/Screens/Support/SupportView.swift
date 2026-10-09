@@ -58,6 +58,8 @@ struct SupportView: View {
         // up, and the placeholders have the same layout, so swapping them in place is seamless.
         .animation(.default, value: store.status)
         .animation(.default, value: store.activeSubscription)
+        .scrollContentBackground(.hidden)
+        .background { AppBackground() }
         // Every completed purchase — one-time or a new subscription — is celebrated.
         .overlay {
             CelebrationBurst(trigger: store.celebrationCount)
@@ -76,6 +78,7 @@ struct SupportView: View {
             .navigationTitle(String(localized: "button.supportTheDeveloper"))
     }
     .environment(SupportStore(service: PreviewSupportService()))
+    .environment(AppIconStore.preview())
 }
 
 #Preview("Subscribed") {
@@ -85,5 +88,6 @@ struct SupportView: View {
     .environment(SupportStore(service: PreviewSupportService(
         subscription: ActiveSupportSubscription(productID: .yearly, expirationDate: .now.addingTimeInterval(200 * 86_400), willAutoRenew: true)
     )))
+    .environment(AppIconStore.preview(.ember))
 }
 #endif
