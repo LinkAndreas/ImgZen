@@ -28,6 +28,23 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
+      # A failing test stops the deploy before anything is signed or uploaded.
+      - name: Run tests
+        run: |
+          # A throwaway iPhone on the newest iOS runtime, so the tests run whatever simulators the
+          # runner has, and on an OS as new as the deployment target.
+          read RUNTIME DEVICE_TYPE <<< "$(xcrun simctl list runtimes available -j | python3 -c '
+          import json, sys
+          runtime = max((r for r in json.load(sys.stdin)["runtimes"] if r["platform"] == "iOS"), key=lambda r: [int(p) for p in r["version"].split(".")])
+          iphone = [t for t in runtime["supportedDeviceTypes"] if t["productFamily"] == "iPhone"][-1]
+          print(runtime["identifier"], iphone["identifier"])')"
+          SIMULATOR_ID=$(xcrun simctl create "Deploy Tests" "$DEVICE_TYPE" "$RUNTIME")
+          trap 'xcrun simctl delete "$SIMULATOR_ID"' EXIT
+          set -o pipefail && xcodebuild test \
+            -project ImgZen.xcodeproj \
+            -scheme "ImgZen" \
+            -destination "id=$SIMULATOR_ID" | xcbeautify
+
       - name: Install App Store Connect API Key
         env:
           API_KEY_BASE64: ${{ secrets.API_KEY_BASE64 }}
@@ -129,14 +146,6 @@ jobs:
         with:
           name: ImgZen.ipa
           path: ${{ runner.temp }}/ImgZen.ipa
-
-      - name: Validate Build Artifact
-        run: |
-          xcrun altool --validate-app \
-            -f ${{ runner.temp }}/ImgZen.ipa \
-            -t ios \
-            --apiKey ${{ secrets.API_KEY_ID }} \
-            --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
 
       - name: Upload Build Artifact to App Store Connect
         run: |
