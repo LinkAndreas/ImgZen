@@ -32,6 +32,8 @@ struct AppIconTile: View {
                     .font(.caption)
                     .foregroundStyle(isSelected ? .primary : .secondary)
                     .lineLimit(1)
+                    // Long names, such as "Mitternachtsgold", shrink a little to fit the grid column.
+                    .minimumScaleFactor(0.7)
             }
         }
         // Plain, so each icon is its own button rather than the whole row.

@@ -4,6 +4,10 @@ import SwiftUI
 struct AppIconSheet: View {
     @Environment(\.dismiss) private var dismiss
 
+    private static var detents: Set<PresentationDetent> {
+        UIDevice.current.userInterfaceIdiom == .pad ? [.large] : [.medium, .large]
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -20,8 +24,9 @@ struct AppIconSheet: View {
                 }
             }
         }
-        // A single row of icons: half height on iPhone, a centred form on iPad.
-        .presentationDetents([.medium, .large])
+        // Two rows of icons fit in half height on iPhone. On iPad, detents would pin the sheet to the bottom
+        // edge, so it stays a centred form there.
+        .presentationDetents(Self.detents)
         .presentationSizing(.form)
     }
 }

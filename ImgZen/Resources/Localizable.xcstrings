@@ -477,6 +477,23 @@
         }
       }
     },
+    "button.privacyPolicy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        }
+      }
+    },
     "button.remove" : {
       "extractionState" : "manual",
       "localizations" : {

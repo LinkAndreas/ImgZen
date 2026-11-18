@@ -6,19 +6,19 @@ import SwiftUI
 struct AppIconSection: View {
     @Environment(AppIconStore.self) private var iconStore
 
+    private static let columns = Array(repeating: GridItem(.flexible(), spacing: 8, alignment: .top), count: 4)
+
     var body: some View {
         Section {
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: 14) {
-                    ForEach(AppIcon.allCases) { icon in
-                        AppIconTile(icon: icon, isSelected: icon == iconStore.current) {
-                            select(icon)
-                        }
+            // Every icon at once, in two rows of four, rather than a row that hides half of them off the edge.
+            LazyVGrid(columns: Self.columns, alignment: .center, spacing: 14) {
+                ForEach(AppIcon.allCases) { icon in
+                    AppIconTile(icon: icon, isSelected: icon == iconStore.current) {
+                        select(icon)
                     }
                 }
-                .padding(.vertical, 6)
             }
-            .scrollIndicators(.hidden)
+            .padding(.vertical, 6)
             .sensoryFeedback(.selection, trigger: iconStore.current)
         } footer: {
             Text(String(localized: "appIcon.pickAnIcon"))

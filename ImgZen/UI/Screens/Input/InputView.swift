@@ -204,6 +204,11 @@ struct InputView: View {
                 systemImage: "envelope",
                 action: onSendFeedback
             )
+
+            // Opens in the browser, in the language the app runs in.
+            Link(destination: WebsiteLinks.privacyPolicy) {
+                Label(String(localized: "button.privacyPolicy"), systemImage: "hand.raised")
+            }
         }
         .sheet(isPresented: $isFormatSheetPresented) {
             FormatSheet(
