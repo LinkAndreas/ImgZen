@@ -1,11 +1,12 @@
 import Foundation
 
-/// The app icons a supporter can choose from — the thank-you for recurring support.
+/// The app icons to choose from: the icon ImgZen shows on the Home Screen, which the app also takes
+/// its logo and colors from.
 ///
 /// Every icon but `classic` is an alternate icon set in the asset catalog
 /// (`AppIcon-<Name>`), with a small `IconPreview-<Name>` image for the picker, since
 /// app icon sets can't be loaded as images.
-enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
+enum AppIcon: String, CaseIterable, Identifiable, Sendable {
     case classic = "Default"
     case amethyst = "Amethyst"
     case blush = "Blush"
@@ -31,14 +32,14 @@ enum SupporterIcon: String, CaseIterable, Identifiable, Sendable {
 
     var title: String {
         switch self {
-        case .classic: String(localized: "support.iconClassic")
-        case .amethyst: String(localized: "support.iconAmethyst")
-        case .blush: String(localized: "support.iconBlush")
-        case .ember: String(localized: "support.iconEmber")
-        case .glacier: String(localized: "support.iconGlacier")
-        case .lagoon: String(localized: "support.iconLagoon")
-        case .midnightGold: String(localized: "support.iconMidnightGold")
-        case .noir: String(localized: "support.iconNoir")
+        case .classic: String(localized: "appIcon.classic")
+        case .amethyst: String(localized: "appIcon.amethyst")
+        case .blush: String(localized: "appIcon.blush")
+        case .ember: String(localized: "appIcon.ember")
+        case .glacier: String(localized: "appIcon.glacier")
+        case .lagoon: String(localized: "appIcon.lagoon")
+        case .midnightGold: String(localized: "appIcon.midnightGold")
+        case .noir: String(localized: "appIcon.noir")
         }
     }
 }

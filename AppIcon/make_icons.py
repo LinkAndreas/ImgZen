@@ -5,8 +5,8 @@ Layers keep the SVGs' paint order. They are grouped (Icon Composer applies glass
 into Background, Mountains (behind the sun), Sun and Mountains (in front of the sun).
 Layers only in the dark SVG (the glows) are hidden in the light appearance.
 
-Also writes the vector IconPreview-<Name> images the supporter icon picker and the in-app logo
-show, and each icon's palette (SupporterIcon+Palette.swift): the accent color the app's controls
+Also writes the vector IconPreview-<Name> images the app icon picker and the in-app logo
+show, and each icon's palette (AppIcon+Palette.swift): the accent color the app's controls
 take, and the colors of its background wash.
 Run from anywhere after changing the SVGs: python3 AppIcon/make_icons.py
 """
@@ -155,7 +155,7 @@ def swift_color(hex_color, opacity):
     return f"UIColor(red: {r / 255:.3f}, green: {g / 255:.3f}, blue: {b / 255:.3f}, alpha: {opacity})"
 
 def write_palettes(palettes):
-    """SupporterIcon+Palette.swift: each icon's wash colors, dynamic for light and dark mode."""
+    """AppIcon+Palette.swift: each icon's wash colors, dynamic for light and dark mode."""
     cases = []
     for case, colors in palettes:
         (light_mountain, light_sun), (dark_mountain, dark_sun) = colors["light"], colors["dark"]
@@ -176,7 +176,7 @@ def write_palettes(palettes):
 import SwiftUI
 import UIKit
 
-extension SupporterIcon {{
+extension AppIcon {{
     /// An icon's colors, taken from its artwork: the accent the app's controls take, and the background
     /// wash's back mountain and sun, already at the wash's opacity.
     struct Palette {{
@@ -201,14 +201,14 @@ private extension Color {{
     }}
 }}
 """
-    with open(os.path.join(repo, "ImgZen/Presentation/SupporterIcon+Palette.swift"), "w") as f:
+    with open(os.path.join(repo, "ImgZen/Presentation/AppIcon+Palette.swift"), "w") as f:
         f.write(swift)
 
 classic_light, classic_dark = f"{src}/app_icon_light.svg", f"{src}/app_icon_dark.svg"
 make("AppIcon", classic_light, classic_dark)
 preview("Default", classic_light, classic_dark)
 palettes = [("classic", palette(classic_light, classic_dark))]
-# The supporter icons the app offers; the other SVGs in app_icon_variants/ aren't used.
+# The alternate icons the app offers; the other SVGs in app_icon_variants/ aren't used.
 for variant in ["amethyst", "blush", "ember", "glacier", "lagoon", "midnight_gold", "noir"]:
     name = "".join(p.capitalize() for p in variant.split("_"))
     light = f"{src}/app_icon_variants/app_icon_{variant}_light.svg"

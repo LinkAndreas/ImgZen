@@ -3,7 +3,7 @@
 import SwiftUI
 import UIKit
 
-extension SupporterIcon {
+extension AppIcon {
     /// An icon's colors, taken from its artwork: the accent the app's controls take, and the background
     /// wash's back mountain and sun, already at the wash's opacity.
     struct Palette {

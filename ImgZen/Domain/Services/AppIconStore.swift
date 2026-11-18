@@ -6,11 +6,11 @@ import UIKit
 @Observable
 final class AppIconStore {
     /// The app's icon.
-    private(set) var current: SupporterIcon
+    private(set) var current: AppIcon
 
     /// The icon whose colors the background shows. It starts without one, plain like the launch screen,
     /// and follows `current` once the app is on screen, so launching blends into the icon's colors.
-    private(set) var theme: SupporterIcon?
+    private(set) var theme: AppIcon?
 
     private let setAlternateIconName: (String?) async throws -> Void
 
@@ -21,7 +21,7 @@ final class AppIconStore {
         alternateIconName: String?,
         setAlternateIconName: @escaping (String?) async throws -> Void
     ) {
-        current = SupporterIcon(alternateIconName: alternateIconName)
+        current = AppIcon(alternateIconName: alternateIconName)
         self.setAlternateIconName = setAlternateIconName
     }
 
@@ -31,7 +31,7 @@ final class AppIconStore {
     }
 
     /// Makes `icon` the app's icon. The app follows right away and goes back if the system refuses.
-    func select(_ icon: SupporterIcon) async throws {
+    func select(_ icon: AppIcon) async throws {
         guard icon != current else { return }
 
         let previous = current
@@ -57,7 +57,7 @@ extension AppIconStore {
 
     #if DEBUG
     /// A store for previews, which can't change the app's icon.
-    static func preview(_ icon: SupporterIcon = .classic) -> AppIconStore {
+    static func preview(_ icon: AppIcon = .classic) -> AppIconStore {
         let store = AppIconStore(alternateIconName: icon.alternateIconName) { _ in }
         store.showTheme()
         return store

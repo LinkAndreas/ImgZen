@@ -38,7 +38,7 @@ struct InputView: View {
     private let previewLoader: ImagePreviewLoader
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
-    private let onSupportTheDeveloper: () -> Void
+    private let onAppIcon: () -> Void
     private let onSendFeedback: () -> Void
 
     /// Creates an InputView.
@@ -50,7 +50,7 @@ struct InputView: View {
     ///   - previewLoader: Loads the previews shown in the gallery.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
-    ///   - onSupportTheDeveloper: Action to perform when the user wants to support the developer.
+    ///   - onAppIcon: Action to perform when the user wants to choose the app icon.
     ///   - onSendFeedback: Action to perform when the user wants to send feedback.
     init(
         inputService: InputService,
@@ -60,7 +60,7 @@ struct InputView: View {
         previewLoader: ImagePreviewLoader,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
-        onSupportTheDeveloper: @escaping () -> Void,
+        onAppIcon: @escaping () -> Void,
         onSendFeedback: @escaping () -> Void
     ) {
         self.inputService = inputService
@@ -70,7 +70,7 @@ struct InputView: View {
         self.previewLoader = previewLoader
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
-        self.onSupportTheDeveloper = onSupportTheDeveloper
+        self.onAppIcon = onAppIcon
         self.onSendFeedback = onSendFeedback
     }
 
@@ -194,9 +194,9 @@ struct InputView: View {
         }
         .toolbarOverflowMenu(title: String(localized: "button.more")) {
             Button(
-                String(localized: "button.supportTheDeveloper"),
-                systemImage: "heart",
-                action: onSupportTheDeveloper
+                String(localized: "button.appIcon"),
+                systemImage: "app.badge.checkmark",
+                action: onAppIcon
             )
 
             Button(

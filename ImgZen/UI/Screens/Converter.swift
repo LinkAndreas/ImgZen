@@ -14,7 +14,7 @@ struct Converter: View {
 
     /// Enum representing currently presented sheets (modals).
     enum Sheet {
-        case supportTheDeveloper
+        case appIcon
         case mailComposer
     }
 
@@ -141,7 +141,7 @@ struct Converter: View {
                                 progress = nil
                             }
                         },
-                        onSupportTheDeveloper: { sheet = .supportTheDeveloper },
+                        onAppIcon: { sheet = .appIcon },
                         onSendFeedback: { sheet = .mailComposer }
                     )
                 }
@@ -156,8 +156,8 @@ struct Converter: View {
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
             }
-            .sheet(isPresented: $sheet.isSupportTheDeveloperPresented) {
-                SupportSheet()
+            .sheet(isPresented: $sheet.isAppIconPresented) {
+                AppIconSheet()
             }
             .mailComposer(
                 isPresenting: $sheet.isMailComposerPresented,
@@ -251,10 +251,10 @@ struct Converter: View {
 
 /// Extension to help present sheets in ContentView using optional Sheet binding.
 extension Converter.Sheet? {
-    /// Returns true if the Support the Developer sheet should be presented.
-    var isSupportTheDeveloperPresented: Bool {
+    /// Returns true if the App Icon sheet should be presented.
+    var isAppIconPresented: Bool {
         get {
-            if case .supportTheDeveloper = self {
+            if case .appIcon = self {
                 return true
             } else {
                 return false

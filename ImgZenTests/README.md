@@ -14,6 +14,7 @@ Tests for domain model types.
 - `OutputItemTests.swift` - Tests for output item model
 - `ContextActionTests.swift` - Tests for context action model
 - `ImageResolutionTests.swift` - Tests for image resolution enum
+- `AppIconTests.swift` - Tests for the app icons and their alternate icon names
 
 #### Domain/ImageConversion/
 Tests for image conversion functionality.
@@ -26,7 +27,7 @@ Tests for domain service classes.
 - `ImageConversionServiceTests.swift` - Tests for image conversion orchestration
 - `ImageServiceTests.swift` - Tests for image data and metadata retrieval
 - `InputServiceTests.swift` - Tests for input item management
-- `SupportStoreTests.swift` - Tests for Support the Developer purchases, restore and loading states
+- `AppIconStoreTests.swift` - Tests for choosing the app icon and the colors the app takes from it
 
 ### UI/
 Tests for UI and presentation layer logic.
