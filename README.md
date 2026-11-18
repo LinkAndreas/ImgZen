@@ -37,8 +37,8 @@
 - 📱 **iPhone, iPad and iPhone Duo** — the output format sits in an inspector beside the images on iPad, and the
   toolbar moves into the vertical bar on iPhone Duo.
 - 🔒 **Private** — no photo library permission, no account, no analytics; everything happens on the device.
-- ❤️ **Free** — every feature included; optional tips, and support subscriptions that unlock supporter app icons
-  ([setup](Docs/AppStoreConnect-Support.md)).
+- 🎨 **App icons** — choose from eight app icons; the app takes its colors from the one you pick.
+- ❤️ **Free** — every feature included, with no ads, purchases or subscriptions.
 
 ## Privacy
 
@@ -60,28 +60,22 @@ open ImgZen.xcodeproj
 Build and run with ⌘R. Swift Package Manager resolves the one dependency,
 [SDWebImageWebPCoder](https://github.com/SDWebImage/SDWebImageWebPCoder), for WebP support.
 
-The shared `ImgZen` scheme runs with `Config/ImgZen.storekit`, so Support the Developer can be tried without App
-Store Connect — see [Docs/AppStoreConnect-Support.md](Docs/AppStoreConnect-Support.md).
-
 ## Project structure
 
 ```
 ImgZen/
-├── App.swift                 # Entry point, Support the Developer store
+├── App.swift                 # Entry point, app icon store
 ├── Domain/                   # Models and services
 │   ├── ImageConversion/      # Formats and conversion
-│   ├── Services/             # Conversion, storage, input, Support the Developer store
-│   └── Support/              # Support product IDs, supporter icons, the store service protocol
-├── Infrastructure/           # Repositories, StoreKit, launch cleanup
-├── Presentation/             # Format titles and subtitles
+│   └── Services/             # Conversion, storage, input, app icon store
+├── Infrastructure/           # Repositories, launch cleanup
+├── Presentation/             # Format titles and subtitles, app icon colors
 ├── UI/
-│   ├── Components/           # Gallery, format settings, progress, celebration
-│   └── Screens/              # Onboarding, input, results, Support the Developer
+│   ├── Components/           # Gallery, format settings, progress, background
+│   └── Screens/              # Onboarding, input, results, app icon picker
 ├── Extensions/               # SwiftUI helpers (vertical bars, progress overlay, mail)
 ├── Logging/
 └── Resources/                # Assets, localization, launch screen, settings bundle
-Config/ImgZen.storekit        # Local StoreKit testing
-Docs/                         # App Store Connect setup
 ```
 
 ## Testing

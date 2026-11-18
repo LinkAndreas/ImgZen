@@ -24,10 +24,10 @@ struct AppBackground: View {
 }
 
 private struct Wash: View {
-    let palette: SupporterIcon.Palette
+    let palette: AppIcon.Palette
 
     var body: some View {
-        let locations = SupporterIcon.Palette.locations
+        let locations = AppIcon.Palette.locations
         LinearGradient(
             stops: [
                 .init(color: palette.mountain, location: locations[0]),
