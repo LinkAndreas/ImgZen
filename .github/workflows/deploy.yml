@@ -141,11 +141,20 @@ jobs:
             -exportOptionsPlist exportOptions.plist \
             -exportPath $RUNNER_TEMP | xcbeautify
 
+      # A copy of the build to download. A full artifact storage, or an upload that stalls, must
+      # never stop the upload to App Store Connect below: it only leaves a warning.
       - name: Publish ImgZen.ipa file
+        id: publish-package
         uses: actions/upload-artifact@v7
+        continue-on-error: true
+        timeout-minutes: 5
         with:
           name: ImgZen.ipa
           path: ${{ runner.temp }}/ImgZen.ipa
+
+      - name: Warn that the ImgZen.ipa file wasn't published
+        if: ${{ steps.publish-package.outcome != 'success' }}
+        run: echo "::warning title=Artifact not published::ImgZen.ipa couldn't be published as an artifact (storage full or upload stalled). The upload to App Store Connect goes ahead anyway."
 
       - name: Upload Build Artifact to App Store Connect
         run: |
