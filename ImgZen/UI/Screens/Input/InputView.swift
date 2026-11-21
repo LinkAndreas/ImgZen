@@ -38,8 +38,7 @@ struct InputView: View {
     private let previewLoader: ImagePreviewLoader
     private let fileURLFor: @MainActor (InputItem) async throws -> URL
     private let onConvert: ([InputItem], ImageFormat) -> Void
-    private let onAppIcon: () -> Void
-    private let onSendFeedback: () -> Void
+    private let onSettings: () -> Void
 
     /// Creates an InputView.
     /// - Parameters:
@@ -50,8 +49,7 @@ struct InputView: View {
     ///   - previewLoader: Loads the previews shown in the gallery.
     ///   - fileURLFor: Closure to resolve file URL from an InputItem.
     ///   - onConvert: Action to perform when conversion is initiated.
-    ///   - onAppIcon: Action to perform when the user wants to choose the app icon.
-    ///   - onSendFeedback: Action to perform when the user wants to send feedback.
+    ///   - onSettings: Action to perform when the user wants to open the settings.
     init(
         inputService: InputService,
         selectedImageFormat: Binding<FormatSelection>,
@@ -60,8 +58,7 @@ struct InputView: View {
         previewLoader: ImagePreviewLoader,
         fileURLFor: @escaping @MainActor (InputItem) async throws -> URL,
         onConvert: @escaping ([InputItem], ImageFormat) -> Void,
-        onAppIcon: @escaping () -> Void,
-        onSendFeedback: @escaping () -> Void
+        onSettings: @escaping () -> Void
     ) {
         self.inputService = inputService
         self._selectedImageFormat = selectedImageFormat
@@ -70,8 +67,7 @@ struct InputView: View {
         self.previewLoader = previewLoader
         self.fileURLFor = fileURLFor
         self.onConvert = onConvert
-        self.onAppIcon = onAppIcon
-        self.onSendFeedback = onSendFeedback
+        self.onSettings = onSettings
     }
 
     private func content(usesVerticalBars: Bool) -> some View {
@@ -145,6 +141,12 @@ struct InputView: View {
                 }
             }
 
+            // The app icon, feedback and the pages about the app, where the More menu used to be:
+            // next to Convert, but apart from it, since it's not about the images.
+            ToolbarItem(placement: .topBarTrailing) {
+                SettingsToolbarButton(action: onSettings)
+            }
+
             if !inputService.items.isEmpty && !areSettingsShownInline {
                 ToolbarItem(placement: .bottomBar) {
                     FormatToolbarButton(
@@ -190,24 +192,6 @@ struct InputView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
                 .transition(.opacity)
-            }
-        }
-        .toolbarOverflowMenu(title: String(localized: "button.more")) {
-            Button(
-                String(localized: "button.appIcon"),
-                systemImage: "app.badge.checkmark",
-                action: onAppIcon
-            )
-
-            Button(
-                String(localized: "button.sendFeedback"),
-                systemImage: "envelope",
-                action: onSendFeedback
-            )
-
-            // Opens in the browser, in the language the app runs in.
-            Link(destination: WebsiteLinks.privacyPolicy) {
-                Label(String(localized: "button.privacyPolicy"), systemImage: "hand.raised")
             }
         }
         .sheet(isPresented: $isFormatSheetPresented) {

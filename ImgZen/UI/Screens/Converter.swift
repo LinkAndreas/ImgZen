@@ -12,12 +12,6 @@ struct Converter: View {
         let items: [OutputItem]
     }
 
-    /// Enum representing currently presented sheets (modals).
-    enum Sheet {
-        case appIcon
-        case mailComposer
-    }
-
     /// Images of a finished conversion that couldn't be converted.
     struct ConversionFailure {
         let failedCount: Int
@@ -31,7 +25,7 @@ struct Converter: View {
     @State private var progress: ProgressBar.State?
     @State private var conversion: Task<Void, Error>?
     @State private var results: Results?
-    @State private var sheet: Sheet?
+    @State private var isSettingsPresented = false
     @State private var conversionFailure: ConversionFailure?
     @State private var inputService = InputService()
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
@@ -141,8 +135,7 @@ struct Converter: View {
                                 progress = nil
                             }
                         },
-                        onAppIcon: { sheet = .appIcon },
-                        onSendFeedback: { sheet = .mailComposer }
+                        onSettings: { isSettingsPresented = true }
                     )
                 }
                 // The inspector is a column next to the navigation stack rather than inside it, so the stack's
@@ -156,15 +149,9 @@ struct Converter: View {
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
             }
-            .sheet(isPresented: $sheet.isAppIconPresented) {
-                AppIconSheet()
+            .sheet(isPresented: $isSettingsPresented) {
+                SettingsSheet()
             }
-            .mailComposer(
-                isPresenting: $sheet.isMailComposerPresented,
-                recipients: ["feedback@linkandreas.de"],
-                subject: String(localized: "mail.feedbackSubject"),
-                body: String(localized: "mail.feedbackBody")
-            )
             .fullScreenProgressBar(
                 title: String(localized: "progress.imageConversion"),
                 subtitle: String(localized: "progress.convertingImages"),
@@ -245,43 +232,6 @@ struct Converter: View {
         completedConversionsCount += 1
         if completedConversionsCount == 3 {
             requestReview()
-        }
-    }
-}
-
-/// Extension to help present sheets in ContentView using optional Sheet binding.
-extension Converter.Sheet? {
-    /// Returns true if the App Icon sheet should be presented.
-    var isAppIconPresented: Bool {
-        get {
-            if case .appIcon = self {
-                return true
-            } else {
-                return false
-            }
-        }
-
-        set {
-            if !newValue {
-                self = nil
-            }
-        }
-    }
-
-    /// Returns true if the mail composer sheet should be presented.
-    var isMailComposerPresented: Bool {
-        get {
-            if case .mailComposer = self {
-                return true
-            } else {
-                return false
-            }
-        }
-
-        set {
-            if !newValue {
-                self = nil
-            }
         }
     }
 }
