@@ -100,7 +100,7 @@ Every merge into `main` builds the app on a self-hosted Mac and uploads it to Ap
 
 ## Licenses
 
-The code is available under the [MIT License](LICENSE). The licenses of the dependencies shown in the app's
+The code is available under the [MIT License](LICENSE). The ImgZen name, app icons and screenshots are not covered by it; see [NOTICE](NOTICE.md). The licenses of the dependencies shown in the app's
 Settings are generated with [LicensePlist](https://github.com/mono0926/LicensePlist):
 
 ```bash
