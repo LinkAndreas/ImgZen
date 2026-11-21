@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// The app's settings in one form: the app icon, feedback, and about the app with its version history.
+/// The app's settings in one form: the app icon, feedback, and about the app with what's new and its
+/// version history.
 struct SettingsView: View {
     let onSendFeedback: () -> Void
+    let onShowWhatsNew: () -> Void
 
     var body: some View {
         Form {
@@ -10,7 +12,10 @@ struct SettingsView: View {
 
             FeedbackSection(onSendFeedback: onSendFeedback)
 
-            AboutSection()
+            AboutSection(onShowWhatsNew: onShowWhatsNew)
+        }
+        .navigationDestination(for: SettingsPage.self) { page in
+            SettingsPageView(page: page)
         }
         .scrollContentBackground(.hidden)
         .background { AppBackground() }
@@ -24,7 +29,7 @@ struct SettingsView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        SettingsView(onSendFeedback: {})
+        SettingsView(onSendFeedback: {}, onShowWhatsNew: {})
     }
     .environment(AppIconStore.preview())
 }

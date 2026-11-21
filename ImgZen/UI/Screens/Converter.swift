@@ -26,13 +26,22 @@ struct Converter: View {
     @State private var conversion: Task<Void, Error>?
     @State private var results: Results?
     @State private var isSettingsPresented = false
+    /// The page the settings open on, e.g. the version history when it's tried from What's New.
+    @State private var settingsInitialPage: SettingsPage?
+    @State private var isWhatsNewPresented = false
+    /// Where a feature of What's New is tried, once its sheet has closed.
+    @State private var whatsNewDestination: WhatsNew.Feature.Destination?
     @State private var conversionFailure: ConversionFailure?
     @State private var inputService = InputService()
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.openURL) private var openURL
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
+    @AppStorage("isOnboardingCompleted") private var isOnboardingCompleted = false
+    /// The version of What's New last shown, so it's shown once after an update.
+    @AppStorage("lastSeenWhatsNew") private var lastSeenWhatsNew: String?
 
     /// The main application view structure. Sets up dependency context and manages navigation.
     var body: some View {
@@ -135,7 +144,10 @@ struct Converter: View {
                                 progress = nil
                             }
                         },
-                        onSettings: { isSettingsPresented = true }
+                        onSettings: {
+                            settingsInitialPage = nil
+                            isSettingsPresented = true
+                        }
                     )
                 }
                 // The inspector is a column next to the navigation stack rather than inside it, so the stack's
@@ -150,7 +162,25 @@ struct Converter: View {
                 }
             }
             .sheet(isPresented: $isSettingsPresented) {
-                SettingsSheet()
+                SettingsSheet(initialPage: settingsInitialPage)
+            }
+            // What the release brings, once after an update; trying a feature goes there once it's closed.
+            .sheet(isPresented: $isWhatsNewPresented, onDismiss: tryWhatsNewDestination) {
+                WhatsNewView(
+                    onTry: { destination in
+                        whatsNewDestination = destination
+                        isWhatsNewPresented = false
+                    },
+                    onDone: { isWhatsNewPresented = false },
+                    onSeen: { lastSeenWhatsNew = WhatsNew.version }
+                )
+                .presentationSizing(.form)
+            }
+            .onFirstAppear {
+                isWhatsNewPresented = WhatsNew.shouldShow(
+                    lastSeen: lastSeenWhatsNew,
+                    hasCompletedOnboarding: isOnboardingCompleted
+                )
             }
             .fullScreenProgressBar(
                 title: String(localized: "progress.imageConversion"),
@@ -209,6 +239,26 @@ struct Converter: View {
             return usesVerticalBars
         default:
             return false
+        }
+    }
+
+    /// Goes where the feature tried in What's New is: the settings, the version history in them, or the
+    /// app's page in the Settings app to pick a language.
+    private func tryWhatsNewDestination() {
+        guard let destination = whatsNewDestination else { return }
+        whatsNewDestination = nil
+
+        switch destination {
+        case .settings:
+            settingsInitialPage = nil
+            isSettingsPresented = true
+        case .versionHistory:
+            settingsInitialPage = .versionHistory
+            isSettingsPresented = true
+        case .languageSettings:
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                openURL(url)
+            }
         }
     }
 

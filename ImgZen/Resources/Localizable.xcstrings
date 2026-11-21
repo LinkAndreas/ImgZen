@@ -6687,6 +6687,78 @@
         }
       }
     },
+    "settings.whatsNew" : {
+      "comment" : "Settings row in About that shows the new features of the latest release again.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu in ImgZen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What’s New"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新機能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로운 기능"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat is er nieuw"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что нового"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新功能"
+          }
+        }
+      }
+    },
     "versionHistory.installed" : {
       "comment" : "Small badge on the release in the version history that is installed on this device.",
       "extractionState" : "manual",
@@ -7911,6 +7983,294 @@
         }
       }
     },
+    "versionHistory.v1_9_0.note1" : {
+      "comment" : "Version history: release note 1 of version 1.9.0, shown as a bullet point.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Zahnrad (mit Tastatur auch ⌘,) öffnet die neuen Einstellungen – App-Icon, Feedback, rechtliche Seiten und Open-Source-Lizenzen an einem Ort statt im ⋯-Menü."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The gear button (or ⌘, on a keyboard) opens the new Settings — the app icon, feedback, the legal pages and the open-source licenses, all in one place instead of the ⋯ menu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El botón del engranaje (o ⌘, con un teclado) abre los nuevos Ajustes: el icono de la app, los comentarios, las páginas legales y las licencias de código abierto, todo en un solo lugar en vez del menú ⋯."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le bouton en forme d’engrenage (ou ⌘, sur un clavier) ouvre les nouveaux Réglages : l’icône de l’app, ton avis, les pages juridiques et les licences open source, tout au même endroit au lieu du menu ⋯."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il pulsante con l’ingranaggio (o ⌘, con una tastiera) apre le nuove Impostazioni: icona dell’app, feedback, pagine legali e licenze open source, tutto in un unico posto invece che nel menu ⋯."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歯車ボタン（キーボードでは⌘,）で新しい設定が開きます。Appアイコン、フィードバック、法的情報、オープンソースライセンスを、「⋯」メニューの代わりに1か所にまとめました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "톱니바퀴 버튼(키보드에서는 ⌘,)을 누르면 새로운 설정이 열려요. 앱 아이콘, 피드백, 법적 정보, 오픈 소스 라이선스를 ⋯ 메뉴 대신 한곳에 모았어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De tandwielknop (of ⌘, op een toetsenbord) opent de nieuwe Instellingen – het appsymbool, feedback, de juridische pagina’s en de opensourcelicenties, alles op één plek in plaats van in het ⋯-menu."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O botão de engrenagem (ou ⌘, no teclado) abre os novos Ajustes — o ícone do app, o feedback, as páginas legais e as licenças de código aberto, tudo num só lugar em vez do menu ⋯."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кнопка с шестерёнкой (или ⌘, на клавиатуре) открывает новые Настройки — значок приложения, отзывы, юридические страницы и лицензии открытого ПО в одном месте вместо меню ⋯."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "齿轮按钮（或键盘上的 ⌘,）可打开全新的设置：App 图标、反馈、法律页面和开源许可证集中于一处，取代了 ⋯ 菜单。"
+          }
+        }
+      }
+    },
+    "versionHistory.v1_9_0.note2" : {
+      "comment" : "Version history: release note 2 of version 1.9.0, shown as a bullet point.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unter Einstellungen › Versionshistorie siehst du, was sich in jeder Version geändert hat."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Under Settings › Version History, you can see what changed in every version."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Ajustes › Historial de versiones puedes ver qué cambió en cada versión."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans Réglages › Historique des versions, tu vois ce qui a changé dans chaque version."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Impostazioni › Cronologia versioni puoi vedere cosa è cambiato in ogni versione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「設定」›「バージョン履歴」で、各バージョンの変更点を確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 › 버전 기록에서 버전마다 무엇이 바뀌었는지 확인할 수 있어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onder Instellingen › Versiegeschiedenis zie je wat er in elke versie is veranderd."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em Ajustes › Histórico de versões, você vê o que mudou em cada versão."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В разделе Настройки › История версий ты видишь, что изменилось в каждой версии."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“设置 › 版本历史”中，可以查看每个版本的更新内容。"
+          }
+        }
+      }
+    },
+    "versionHistory.v1_9_0.note3" : {
+      "comment" : "Version history: release note 3 of version 1.9.0, shown as a bullet point.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen spricht jetzt neben Deutsch und Englisch auch Spanisch, Französisch, Italienisch, Portugiesisch (Brasilien), Niederländisch, Japanisch, Koreanisch, Chinesisch (vereinfacht) und Russisch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen now speaks Spanish, French, Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Chinese (Simplified) and Russian, alongside English and German."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Además de inglés y alemán, ImgZen ahora habla español, francés, italiano, portugués (Brasil), neerlandés, japonés, coreano, chino (simplificado) y ruso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En plus de l’anglais et de l’allemand, ImgZen parle désormais espagnol, français, italien, portugais (Brésil), néerlandais, japonais, coréen, chinois (simplifié) et russe."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oltre a inglese e tedesco, ImgZen ora parla spagnolo, francese, italiano, portoghese (Brasile), olandese, giapponese, coreano, cinese (semplificato) e russo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語とドイツ語に加えて、スペイン語、フランス語、イタリア語、ポルトガル語（ブラジル）、オランダ語、日本語、韓国語、中国語（簡体字）、ロシア語に対応しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 영어와 독일어 외에도 스페인어, 프랑스어, 이탈리아어, 포르투갈어(브라질), 네덜란드어, 일본어, 한국어, 중국어(간체), 러시아어를 지원해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naast Engels en Duits spreekt ImgZen nu ook Spaans, Frans, Italiaans, Portugees (Brazilië), Nederlands, Japans, Koreaans, Chinees (vereenvoudigd) en Russisch."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Além de inglês e alemão, o ImgZen agora fala espanhol, francês, italiano, português (Brasil), holandês, japonês, coreano, chinês (simplificado) e russo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помимо английского и немецкого, ImgZen теперь говорит на испанском, французском, итальянском, португальском (Бразилия), нидерландском, японском, корейском, китайском (упрощённом) и русском."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除英语和德语外，ImgZen 现已支持西班牙语、法语、意大利语、葡萄牙语（巴西）、荷兰语、日语、韩语、简体中文和俄语。"
+          }
+        }
+      }
+    },
+    "versionHistory.v1_9_0.summary" : {
+      "comment" : "Version history: the line introducing the release notes of version 1.9.0.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen hat jetzt eigene Einstellungen und spricht elf Sprachen:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen has its own Settings now and speaks eleven languages:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen ahora tiene sus propios Ajustes y habla once idiomas:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen a désormais ses propres Réglages et parle onze langues :"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen ora ha le sue Impostazioni e parla undici lingue:"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZenに専用の設定が加わり、11の言語に対応しました："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 ImgZen에 전용 설정이 생기고 11개 언어를 지원해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen heeft nu eigen Instellingen en spreekt elf talen:"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ImgZen agora tem seus próprios Ajustes e fala onze idiomas:"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Теперь у ImgZen есть свои Настройки и одиннадцать языков:"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen 现已拥有独立的设置，并支持十一种语言："
+          }
+        }
+      }
+    },
     "versionHistory.version" : {
       "comment" : "Title of a release in the version history; the argument is the version number, e.g. 1.8.1.",
       "extractionState" : "manual",
@@ -7979,6 +8339,798 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "版本 %@"
+          }
+        }
+      }
+    },
+    "whatsNew.changeLanguage" : {
+      "comment" : "Button below a new feature in What's New: opens the app's page in the system Settings app, where a language can be picked for the app.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Language"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar idioma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changer de langue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia lingua"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語を変更"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어 변경"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wijzig taal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mudar idioma"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сменить язык"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更改语言"
+          }
+        }
+      }
+    },
+    "whatsNew.continue" : {
+      "comment" : "Button at the bottom of the What's New sheet that closes it.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continua"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "続ける"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ga door"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продолжить"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
+          }
+        }
+      }
+    },
+    "whatsNew.languages.text" : {
+      "comment" : "What's New: description of the new languages. \"Settings app\" is the system Settings app, where a language can be picked for ImgZen alone.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neben Deutsch und Englisch spricht ImgZen jetzt auch Spanisch, Französisch, Italienisch, Portugiesisch (Brasilien), Niederländisch, Japanisch, Koreanisch, Chinesisch (vereinfacht) und Russisch. Die App folgt der Sprache deines Geräts – oder du wählst in der Einstellungen-App eine nur für ImgZen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Besides English and German, ImgZen now speaks Spanish, French, Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Chinese (Simplified) and Russian. It follows your device’s language, or pick one just for ImgZen in the Settings app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Además de inglés y alemán, ImgZen ahora habla español, francés, italiano, portugués (Brasil), neerlandés, japonés, coreano, chino (simplificado) y ruso. Usa el idioma de tu dispositivo, o elige uno solo para ImgZen en la app Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En plus de l’anglais et de l’allemand, ImgZen parle désormais espagnol, français, italien, portugais (Brésil), néerlandais, japonais, coréen, chinois (simplifié) et russe. L’app suit la langue de ton appareil, ou choisis-en une rien que pour ImgZen dans l’app Réglages."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oltre a inglese e tedesco, ImgZen ora parla spagnolo, francese, italiano, portoghese (Brasile), olandese, giapponese, coreano, cinese (semplificato) e russo. Usa la lingua del tuo dispositivo, oppure scegline una solo per ImgZen nell’app Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "英語とドイツ語に加えて、スペイン語、フランス語、イタリア語、ポルトガル語（ブラジル）、オランダ語、日本語、韓国語、中国語（簡体字）、ロシア語に対応しました。デバイスの言語に合わせて表示されますが、「設定」AppでImgZenだけの言語を選ぶこともできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 영어와 독일어 외에도 스페인어, 프랑스어, 이탈리아어, 포르투갈어(브라질), 네덜란드어, 일본어, 한국어, 중국어(간체), 러시아어를 지원해요. 기기 언어를 따르지만, 설정 앱에서 ImgZen에만 쓸 언어를 고를 수도 있어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naast Engels en Duits spreekt ImgZen nu ook Spaans, Frans, Italiaans, Portugees (Brazilië), Nederlands, Japans, Koreaans, Chinees (vereenvoudigd) en Russisch. De app volgt de taal van je apparaat, of kies in de app Instellingen een taal alleen voor ImgZen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Além de inglês e alemão, o ImgZen agora fala espanhol, francês, italiano, português (Brasil), holandês, japonês, coreano, chinês (simplificado) e russo. Ele segue o idioma do seu dispositivo, ou escolha um só para o ImgZen no app Ajustes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Помимо английского и немецкого, ImgZen теперь говорит на испанском, французском, итальянском, португальском (Бразилия), нидерландском, японском, корейском, китайском (упрощённом) и русском. Приложение следует языку устройства, но в приложении «Настройки» можно выбрать язык только для ImgZen."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "除英语和德语外，ImgZen 现已支持西班牙语、法语、意大利语、葡萄牙语（巴西）、荷兰语、日语、韩语、简体中文和俄语。App 会跟随设备语言，你也可以在“设置”App 中单独为 ImgZen 选择语言。"
+          }
+        }
+      }
+    },
+    "whatsNew.languages.title" : {
+      "comment" : "What's New: title of the new feature that the app is now available in eleven languages.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elf Sprachen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eleven Languages"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once idiomas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onze langues"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undici lingue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "11の言語"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "11개 언어"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elf talen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onze idiomas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одиннадцать языков"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "十一种语言"
+          }
+        }
+      }
+    },
+    "whatsNew.openSettings" : {
+      "comment" : "Button below a new feature in What's New: closes the sheet and opens the app's settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir les Réglages"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri Impostazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 열기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Instellingen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть Настройки"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“设置”"
+          }
+        }
+      }
+    },
+    "whatsNew.openVersionHistory" : {
+      "comment" : "Button below a new feature in What's New: closes the sheet and opens the version history in the app's settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versionshistorie öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Version History"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir historial de versiones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir l’historique des versions"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri cronologia versioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン履歴を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버전 기록 열기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open versiegeschiedenis"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir histórico de versões"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть историю версий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开“版本历史”"
+          }
+        }
+      }
+    },
+    "whatsNew.settings.text" : {
+      "comment" : "What's New: description of the new Settings screen. ⌘, is the keyboard shortcut; ⋯ is the menu that was removed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipp aufs Zahnrad oder drück ⌘, auf der Tastatur, um das App-Icon zu wählen, ImgZen zu bewerten, Feedback zu senden und die rechtlichen Seiten und Open-Source-Lizenzen zu finden. Das ⋯-Menü gibt es nicht mehr."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap the gear button, or press ⌘, on a keyboard, to choose the app icon, rate ImgZen, send feedback, and find the legal pages and open-source licenses. The ⋯ menu is gone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca el engranaje, o pulsa ⌘, en un teclado, para elegir el icono de la app, valorar ImgZen, enviar comentarios y encontrar las páginas legales y las licencias de código abierto. El menú ⋯ ya no existe."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touche l’engrenage, ou appuie sur ⌘, sur un clavier, pour choisir l’icône de l’app, noter ImgZen, envoyer un commentaire et trouver les pages juridiques et les licences open source. Le menu ⋯ n’existe plus."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca l’ingranaggio, o premi ⌘, su una tastiera, per scegliere l’icona dell’app, valutare ImgZen, inviare feedback e trovare le pagine legali e le licenze open source. Il menu ⋯ non c’è più."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歯車をタップするか、キーボードで⌘,を押すと、Appアイコンの選択、ImgZenの評価、フィードバックの送信ができ、法的情報やオープンソースライセンスも確認できます。「⋯」メニューはなくなりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "톱니바퀴를 탭하거나 키보드에서 ⌘,을 누르면 앱 아이콘을 선택하고, ImgZen을 평가하고, 피드백을 보내고, 법적 정보와 오픈 소스 라이선스를 확인할 수 있어요. ⋯ 메뉴는 없어졌어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op het tandwiel, of druk op ⌘, op een toetsenbord, om het appsymbool te kiezen, ImgZen te beoordelen, feedback te sturen en de juridische pagina’s en opensourcelicenties te vinden. Het ⋯-menu is verdwenen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque na engrenagem, ou pressione ⌘, no teclado, para escolher o ícone do app, avaliar o ImgZen, enviar feedback e encontrar as páginas legais e as licenças de código aberto. O menu ⋯ não existe mais."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нажми на шестерёнку или ⌘, на клавиатуре, чтобы выбрать значок приложения, оценить ImgZen, отправить отзыв и найти юридические страницы и лицензии открытого ПО. Меню ⋯ больше нет."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻点齿轮按钮，或在键盘上按 ⌘,，即可选择 App 图标、为 ImgZen 评分、发送反馈，并查看法律页面和开源许可证。⋯ 菜单已移除。"
+          }
+        }
+      }
+    },
+    "whatsNew.settings.title" : {
+      "comment" : "What's New: title of the new feature that the app's settings are now gathered in their own screen, behind the gear button.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles in den Einstellungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everything in Settings"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo en Ajustes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tout dans les Réglages"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutto nelle Impostazioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてを設定に"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정에서 한 번에"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles in Instellingen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo nos Ajustes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Всё в Настройках"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一切尽在设置"
+          }
+        }
+      }
+    },
+    "whatsNew.title" : {
+      "comment" : "Title of the sheet listing the new features of a release, shown once after an update and from Settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu in ImgZen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What’s New"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新機能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로운 기능"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieuw in ImgZen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Что нового"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新功能"
+          }
+        }
+      }
+    },
+    "whatsNew.versionHistory.text" : {
+      "comment" : "What's New: description of the version history in Settings.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh dir an, was sich in jeder Version von ImgZen geändert hat – direkt in den Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See what changed in every version of ImgZen, right in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira qué cambió en cada versión de ImgZen, directamente en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Découvre ce qui a changé dans chaque version d’ImgZen, directement dans les Réglages."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri cosa è cambiato in ogni versione di ImgZen, direttamente nelle Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZenの各バージョンの変更点を、設定から直接確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ImgZen의 버전마다 무엇이 바뀌었는지 설정에서 바로 확인해 보세요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekijk wat er in elke versie van ImgZen is veranderd, gewoon in Instellingen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja o que mudou em cada versão do ImgZen, direto nos Ajustes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Смотри, что изменилось в каждой версии ImgZen, прямо в Настройках."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接在设置中查看 ImgZen 每个版本的更新内容。"
+          }
+        }
+      }
+    },
+    "whatsNew.versionHistory.title" : {
+      "comment" : "What's New: title of the new feature that the version history is in Settings. Same term as the Settings row \"Version History\".",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versionshistorie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version History"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial de versiones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historique des versions"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cronologia versioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン履歴"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버전 기록"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versiegeschiedenis"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histórico de versões"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "История версий"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本历史"
           }
         }
       }

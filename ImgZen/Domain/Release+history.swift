@@ -5,6 +5,17 @@ extension Release {
     /// the version history on the website. Add a new release at the top.
     static let history: [Release] = [
         Release(
+            version: "1.9.0",
+            year: 2026,
+            month: 11,
+            summary: "versionHistory.v1_9_0.summary",
+            notes: [
+                "versionHistory.v1_9_0.note1",
+                "versionHistory.v1_9_0.note2",
+                "versionHistory.v1_9_0.note3",
+            ]
+        ),
+        Release(
             version: "1.8.1",
             year: 2026,
             month: 11,

@@ -1,13 +1,15 @@
 import SwiftUI
 
-/// About the app: what changed in each version, the legal pages on the website, the licenses of
-/// the open-source libraries, and the installed version.
+/// About the app: what's new in the latest release, what changed in each version, the legal pages on
+/// the website, the licenses of the open-source libraries, and the installed version.
 struct AboutSection: View {
+    let onShowWhatsNew: () -> Void
+
     var body: some View {
         Section {
-            NavigationLink {
-                VersionHistoryView()
-            } label: {
+            WhatsNewRow(action: onShowWhatsNew)
+
+            NavigationLink(value: SettingsPage.versionHistory) {
                 SettingsLabel(title: String(localized: "settings.versionHistory"), systemImage: "clock.arrow.circlepath")
             }
 
@@ -49,7 +51,10 @@ struct AboutSection: View {
 #Preview {
     NavigationStack {
         Form {
-            AboutSection()
+            AboutSection(onShowWhatsNew: {})
+        }
+        .navigationDestination(for: SettingsPage.self) { page in
+            SettingsPageView(page: page)
         }
     }
     .environment(AppIconStore.preview())
