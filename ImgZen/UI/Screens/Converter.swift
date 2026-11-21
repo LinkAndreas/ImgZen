@@ -12,12 +12,6 @@ struct Converter: View {
         let items: [OutputItem]
     }
 
-    /// Enum representing currently presented sheets (modals).
-    enum Sheet {
-        case appIcon
-        case mailComposer
-    }
-
     /// Images of a finished conversion that couldn't be converted.
     struct ConversionFailure {
         let failedCount: Int
@@ -31,14 +25,23 @@ struct Converter: View {
     @State private var progress: ProgressBar.State?
     @State private var conversion: Task<Void, Error>?
     @State private var results: Results?
-    @State private var sheet: Sheet?
+    @State private var isSettingsPresented = false
+    /// The page the settings open on, e.g. the version history when it's tried from What's New.
+    @State private var settingsInitialPage: SettingsPage?
+    @State private var isWhatsNewPresented = false
+    /// Where a feature of What's New is tried, once its sheet has closed.
+    @State private var whatsNewDestination: WhatsNew.Feature.Destination?
     @State private var conversionFailure: ConversionFailure?
     @State private var inputService = InputService()
     @State private var selectedImageFormat: FormatSelection = .lossy(.jpeg)
     @State private var selectedImageCompressionQuality: ImageCompressionQuality = 0.9
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.openURL) private var openURL
     @AppStorage("completedConversionsCount") var completedConversionsCount = 0
+    @AppStorage("isOnboardingCompleted") private var isOnboardingCompleted = false
+    /// The version of What's New last shown, so it's shown once after an update.
+    @AppStorage("lastSeenWhatsNew") private var lastSeenWhatsNew: String?
 
     /// The main application view structure. Sets up dependency context and manages navigation.
     var body: some View {
@@ -141,8 +144,10 @@ struct Converter: View {
                                 progress = nil
                             }
                         },
-                        onAppIcon: { sheet = .appIcon },
-                        onSendFeedback: { sheet = .mailComposer }
+                        onSettings: {
+                            settingsInitialPage = nil
+                            isSettingsPresented = true
+                        }
                     )
                 }
                 // The inspector is a column next to the navigation stack rather than inside it, so the stack's
@@ -156,15 +161,27 @@ struct Converter: View {
                     .inspectorColumnWidth(min: 300, ideal: 340, max: 420)
                 }
             }
-            .sheet(isPresented: $sheet.isAppIconPresented) {
-                AppIconSheet()
+            .sheet(isPresented: $isSettingsPresented) {
+                SettingsSheet(initialPage: settingsInitialPage)
             }
-            .mailComposer(
-                isPresenting: $sheet.isMailComposerPresented,
-                recipients: ["feedback@linkandreas.de"],
-                subject: String(localized: "mail.feedbackSubject"),
-                body: String(localized: "mail.feedbackBody")
-            )
+            // What the release brings, once after an update; trying a feature goes there once it's closed.
+            .sheet(isPresented: $isWhatsNewPresented, onDismiss: tryWhatsNewDestination) {
+                WhatsNewView(
+                    onTry: { destination in
+                        whatsNewDestination = destination
+                        isWhatsNewPresented = false
+                    },
+                    onDone: { isWhatsNewPresented = false },
+                    onSeen: { lastSeenWhatsNew = WhatsNew.version }
+                )
+                .presentationSizing(.form)
+            }
+            .onFirstAppear {
+                isWhatsNewPresented = WhatsNew.shouldShow(
+                    lastSeen: lastSeenWhatsNew,
+                    hasCompletedOnboarding: isOnboardingCompleted
+                )
+            }
             .fullScreenProgressBar(
                 title: String(localized: "progress.imageConversion"),
                 subtitle: String(localized: "progress.convertingImages"),
@@ -225,6 +242,26 @@ struct Converter: View {
         }
     }
 
+    /// Goes where the feature tried in What's New is: the settings, the version history in them, or the
+    /// app's page in the Settings app to pick a language.
+    private func tryWhatsNewDestination() {
+        guard let destination = whatsNewDestination else { return }
+        whatsNewDestination = nil
+
+        switch destination {
+        case .settings:
+            settingsInitialPage = nil
+            isSettingsPresented = true
+        case .versionHistory:
+            settingsInitialPage = .versionHistory
+            isSettingsPresented = true
+        case .languageSettings:
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                openURL(url)
+            }
+        }
+    }
+
     fileprivate static func alertTitle(for failure: ConversionFailure) -> String {
         failure.isComplete
             ? String(localized: "alert.conversionFailed.title")
@@ -245,43 +282,6 @@ struct Converter: View {
         completedConversionsCount += 1
         if completedConversionsCount == 3 {
             requestReview()
-        }
-    }
-}
-
-/// Extension to help present sheets in ContentView using optional Sheet binding.
-extension Converter.Sheet? {
-    /// Returns true if the App Icon sheet should be presented.
-    var isAppIconPresented: Bool {
-        get {
-            if case .appIcon = self {
-                return true
-            } else {
-                return false
-            }
-        }
-
-        set {
-            if !newValue {
-                self = nil
-            }
-        }
-    }
-
-    /// Returns true if the mail composer sheet should be presented.
-    var isMailComposerPresented: Bool {
-        get {
-            if case .mailComposer = self {
-                return true
-            } else {
-                return false
-            }
-        }
-
-        set {
-            if !newValue {
-                self = nil
-            }
         }
     }
 }
