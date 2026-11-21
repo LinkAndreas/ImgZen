@@ -20,6 +20,8 @@ struct AppIconSection: View {
             }
             .padding(.vertical, 6)
             .sensoryFeedback(.selection, trigger: iconStore.current)
+        } header: {
+            Text(String(localized: "button.appIcon"))
         } footer: {
             Text(String(localized: "appIcon.pickAnIcon"))
         }
