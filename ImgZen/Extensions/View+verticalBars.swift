@@ -46,28 +46,6 @@ extension View {
             toolbar(content: content)
         }
     }
-
-    /// Adds secondary actions to the toolbar's overflow menu, which iPhone Duo shares with the items
-    /// that don't fit the vertical bar. Earlier systems show them in an ellipsis menu at the top.
-    @ViewBuilder
-    func toolbarOverflowMenu<Content: View>(
-        title: String,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        if #available(iOS 27.1, *) {
-            toolbar {
-                ToolbarOverflowMenu {
-                    content()
-                }
-            }
-        } else {
-            toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu(title, systemImage: "ellipsis", content: content)
-                }
-            }
-        }
-    }
 }
 
 /// Gives its content whether the bars are vertical, from the `toolbarVerticalEdge` environment value:
