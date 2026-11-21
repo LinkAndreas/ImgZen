@@ -150,6 +150,15 @@
 				en,
 				Base,
 				de,
+				es,
+				fr,
+				it,
+				ja,
+				ko,
+				nl,
+				"pt-BR",
+				ru,
+				"zh-Hans",
 			);
 			mainGroup = 38A18B512E9BFF9F00291847;
 			minimizedProjectReferenceProxies = 1;

@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/Xcode-27%2B-147EFB?logo=xcode&amp;logoColor=white" alt="Xcode 27 or later">
   <img src="https://img.shields.io/badge/UI-SwiftUI-0D96F6" alt="SwiftUI">
   <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
-  <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE-8E8E93" alt="Localized in English and German">
+  <img src="https://img.shields.io/badge/localized-11%20languages-8E8E93" alt="Localized in 11 languages: English, German, Spanish, French, Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Simplified Chinese and Russian">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow" alt="License: MIT"></a>
   <a href="https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml"><img src="https://github.com/LinkAndreas/ImgZen/actions/workflows/deploy.yml/badge.svg" alt="Deploy to App Store Connect"></a>
 </p>
